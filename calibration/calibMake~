@@ -1,0 +1,19 @@
+CC = g++
+CFLAGS = -c
+LIB = 
+LFLAGS = 
+OPENCVCONF = `pkg-config --cflags --libs opencv`
+#OPENCVFLAGS = `pkg-config --cflags opencv`
+
+all: calib stereo_calib
+calib: camera_calibration.o
+	$(CC) camera_calibration.o -o calib $(OPENCVCONF)
+camera_calibration.o: camera_calibration.cpp
+	$(CC) $(CFLAGS) $(OPENCVCONF) stereo_calib.cpp
+stereo_calib: stereo_calib.o
+	$(CC) stereo_calib.o -o calib $(OPENCVCONF)
+stereo_calib.o: stereo_calib.cpp
+	$(CC) $(CFLAGS) $(OPENCVCONF) stereo_calib.cpp
+
+clean:
+	rm -rf *.o *~

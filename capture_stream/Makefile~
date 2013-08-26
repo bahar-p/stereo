@@ -1,0 +1,21 @@
+CC = g++
+CFLAGS = -c
+LIB = 
+LFLAGS = 
+OPENCVCONF = `pkg-config --cflags --libs opencv`
+#OPENCVFLAGS = `pkg-config --cflags opencv`
+
+all: capture disparity
+capture: stcapture.o
+	$(CC) stcapture.o -o capture $(OPENCVCONF)
+stcapture.o: stcapture.cpp
+	$(CC) $(CFLAGS) $(OPENCVCONF) stcapture.cpp
+
+disparity: disparity.o
+	$(CC) disparity.o -o disparity $(OPENCVCONF)
+
+disparity.o: disparity.cpp
+	$(CC) $(CFLAGS) $(OPENCVCONF) disparity.cpp
+
+clean:
+	rm -rf *.o *~
