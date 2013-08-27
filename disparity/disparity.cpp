@@ -31,6 +31,8 @@
 #include <GL/gl.h>
 #include <sstream>
 #include <thread>
+#include <mutex>
+#include <condition_variable>
 
 using namespace std;
 using namespace cv;
@@ -50,10 +52,13 @@ VideoCapture glcap1, glcap2;
 int win_w = 500, win_h=500;
 Mat Image3d;
 int imgRow, imgCol;
+std::mutex mtx;
+std::condition_variable cvar;
+bool filled;
+bool rendered=true;
 
-void farmes();
 
-void frames(){
+void frames(int id){
 	
 	double dWidth = glcap1.get(CV_CAP_PROP_FRAME_WIDTH); 			//get the width of frames of the video
 	double dHeight = glcap1.get(CV_CAP_PROP_FRAME_HEIGHT); 		//get the height of frames of the video
@@ -67,6 +72,8 @@ void frames(){
 	initUndistortRectifyMap(cameraMatrix[0], distCoeffs[0], R1, P1, frameSize, CV_16SC2, map[0][0], map[0][1]); //left
     initUndistortRectifyMap(cameraMatrix[1], distCoeffs[1], R2, P2, frameSize, CV_16SC2, map[1][0], map[1][1]); //right
 	while (1) {
+		cout << "id: " << id <<endl;
+		filled=false;
 		Mat frameL, frameR;
 		bool rightRead = glcap1.read(frameR);
 		bool leftRead = glcap2.read(frameL);
@@ -79,6 +86,7 @@ void frames(){
 		
 		
 		Mat GframeL, GframeR, uframeL, uframeR;
+		
 		Mat disp(dHeight,dWidth,CV_8U);
 		//remap and show the rectified videos
 		cvtColor(frameL, GframeL, CV_BGR2GRAY);
@@ -86,21 +94,26 @@ void frames(){
 		remap(GframeL, uframeL, map[0][0], map[0][1], CV_INTER_LINEAR);
 		remap(GframeR, uframeR, map[1][0], map[1][1], CV_INTER_LINEAR);
 		
-		
 		imshow("camLeft", uframeL); 		//show the frame
 		imshow("camRight", uframeR); 	//show the frame
 		
 		//Apply SGBM and produce disparity map
 		StereoSGBM sgbm(mindisp, maxdisp, SADWindow, 8*P, 32*P, dispMaxdiff,
                         preFilterCap, uniqueness, speckleWS, speckleRange, false);
-
 		sgbm(uframeL,uframeR,disp);
-		Image3d = Mat(disp.size().height, disp.size().width, CV_32FC3);
+		cout << "0before: rendered: " << rendered << "filled: " << filled << endl;
+	
+		std::unique_lock<std::mutex> lock(mtx);
+		cvar.wait(lock, []{return rendered;});
+		
+		cout << "0after: rendered: " << rendered << "filled: " << filled << endl;
+		Image3d = Mat(disp.size().height, disp.size().width, CV_32FC3,Scalar::all(0));
 		reprojectImageTo3D(disp,Image3d, Q, false,CV_32F);
+		filled=true;
 		
 		Mat disp8;
         disp.convertTo(disp8, CV_8U, 255/(maxdisp*16.));
-        
+        cvar.notify_one();
 		imshow("disparity", disp8);
 		
 		if (waitKey(10) == 27) 				//wait for 'esc' key press for 10ms. If 'esc' key is pressed, break loop
@@ -125,25 +138,38 @@ void display(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(30.0, (GLfloat)win_w/(GLfloat)win_h, 1.0,100.0);
+	//glOrtho(-1, 10, -1,10, -1.0, 1.0);
+	gluPerspective(65.0, (GLfloat)win_w/(GLfloat)win_h, 1,80.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(5,10,20,0,0,0, 0,1,0);
+	gluLookAt(10,5,100,0,0,0, 0,1,0);
 	
-	/*glColor3ub(112,112,112);
-	for (int j = 0; j < imgRow ; j++){
-		for (int i= 0; i < imgCol; i++){
-			glBegin(GL_POINT);
-				glVertex3f(Image3d.at<Vec3f>(j,i)[0], Image3d.at<Vec3f>(j,i)[1], Image3d.at<Vec3f>(j,i)[2]);
-			glEnd();
+	
+	
+	cout << "1before: rendered: " << rendered << "filled: " << filled << endl;
+	std::unique_lock<std::mutex> lock(mtx);
+	
+	cvar.wait(lock, []{return filled;});
+	rendered = false;
+	cout << "1after: rendered: " << rendered << "filled: " << filled << endl;
+	
+	glBegin(GL_POINTS);
+	glColor3f(1.0,1.0,0.0);
+	for (int j = 0; j < 10 ; j++){
+		for (int i= 0; i < 10; i++){
+			cout << Image3d.at<Vec3f>(j,i)[0]/100 << " " << Image3d.at<Vec3f>(j,i)[1]/100 << " " << -Image3d.at<Vec3f>(j,i)[2]/100 << endl;
+
+			//glVertex3f(i,j, 4);
+			glVertex3f( -Image3d.at<Vec3f>(j,i)[0]/100,-Image3d.at<Vec3f>(j,i)[1]/100 , -Image3d.at<Vec3f>(j,i)[2]/100 );
 		}
-	}*/
-	//glColor3f(1.0, 1.0, 0.0);
+	}
+	glEnd();
+	rendered = true;
 	//glutWireCube(1.0);
 	glFlush(); 
 	glutSwapBuffers();
 	glutPostRedisplay();
-	cout<< "\nDisplay" << endl;
+	cvar.notify_one();
 }
 void reshape(int w, int h){
 	win_w = w;
@@ -152,7 +178,7 @@ void reshape(int w, int h){
 	
 }
 
-void draw(){
+void draw(int id){
 	
 	cout << " \ngraphics" <<endl;
 	
@@ -163,6 +189,7 @@ void draw(){
 	init();
 	
 	glutDisplayFunc(display);
+	cout << "id: " << id <<endl;
 	glutReshapeFunc(reshape);
 	glutMainLoop();
 	
@@ -178,18 +205,20 @@ int main(int argc, char **argv)
 	
 	readCalibfile(argv[1], argv[2]);
 	// Load stereo video //
-	char dir[100];
+	/*char dir[100];
 	printf("Enter right camera file path: ");
 	scanf("%s",dir);
 	string path = string(dir);
-	cout << path << endl;
+	cout << path << endl;*/
+	string path = "../Day01/Office01R.mpg";
 	VideoCapture cap1(path); // open the video camera no. 0 (Right)
 	glcap1 = cap1;
 	
-	printf("Enter left camera file path: ");
+	/*printf("Enter left camera file path: ");
 	scanf("%s",dir);
 	path = string(dir);
-	cout << path << endl;
+	cout << path << endl;*/
+	path = "../Day01/Office01L.mpg";
 	VideoCapture cap2(path); // open the video camera no. 1 (Left)
 	glcap2 = cap2;
 	
@@ -199,8 +228,10 @@ int main(int argc, char **argv)
 		return -1;
 	}
 	glutInit(&argc, argv);
-	std::thread camProcess(frames);
-	std::thread graphics(draw);
+	//Image3d = Mat(480, 640, CV_32FC3, Scalar::all(0));
+	
+	std::thread camProcess(frames, 1);
+	std::thread graphics(draw, 2);
 	
 	camProcess.join();
 	graphics.join();
