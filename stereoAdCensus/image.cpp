@@ -10,10 +10,6 @@ image::image(Mat image_leftRGB, Mat image_rightRGB, int dMin, int dMax){
 	dispMin = dMin;
 	dispMax = dMax;
 	Size s = img_leftRGB.size();
-	cost = Mat(s, CV_64FC1);
-	
-	disp=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
-	cost=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	
 	int sz[] = {s.height, s.width, dispMax-dispMin+1};
 	//std::cout << "Maximum value for double: " << std::numeric_limits<double>::max() << '\n';
@@ -61,6 +57,7 @@ image::image(Mat image_leftRGB, Mat image_rightRGB, int dMin, int dMax){
 			}
 		}
 	}
+	
 }
 
 /*
@@ -160,7 +157,6 @@ void image::costCensus(int winX, int winY, int left){
 			//printf("x: %d\t , y: %d\t , census: %lld\n" , x,y, census);
 		}
 	}
-	
 }
 
 /* Calculating the hamming distance between each pixel and its correspondence census cost */
@@ -186,6 +182,7 @@ void image::hamdist(uint64_t** censL, uint64_t** censR, int winX, int winY){
 			}
 		}
 	}
+	//std::cout<< "census_hamming(100,200,10): " << census_hamming[100][200][10] << std::endl;
 }
 
 /* Calculate census cost */
@@ -388,7 +385,7 @@ void image::IImage(cv::Mat in, cv::Mat out, char dir){
 
 /* Calculating final cost at each stage based on calculated integral image and the local support region for each pixel */
 void image::finalSum(cv::Mat in, cv::Mat out, char dir, int count){
-	switch (dir){
+switch (dir){
 		case 'H':
 			for(int d=0; d<dispMax-dispMin+1; d++){
 				for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
@@ -492,7 +489,7 @@ int image::colDiffer(cv::Mat in, int x1, int y1, int x2, int y2){
 }
 
 /* Scanline optimization from 4 direction: LRUD */
-cv::Mat image::scanline(double P1, double P2, double lim){
+void image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost){
 	double minLeft=0.0;
 	double minRight=0.0;
 	double minUp=0.0;
@@ -553,7 +550,7 @@ cv::Mat image::scanline(double P1, double P2, double lim){
 	finalCost(left_cost,right_cost,down_cost,up_cost, final_cost);
 	find_disparity(final_cost, disp, cost);
 	//subpxEnhance(final_cost,disp);
-	return disp;
+	
 }
 
 
@@ -585,7 +582,7 @@ void image::finalCost(cv::Mat Lpath, cv::Mat Rpath, cv::Mat Upath, cv::Mat Dpath
 }
 
 /* Find the final disparity for each pixel based on WTA method */
-void image::find_disparity(cv::Mat in, cv::Mat idisp ,cv::Mat icost){
+void image::find_disparity(cv::Mat in, cv::Mat& idisp ,cv::Mat& icost){
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
 			double tmpcost=1.79769e+308;
@@ -675,7 +672,6 @@ double image::costOpt(cv::Mat in, int p, int q, int d, double preMin, char dir, 
 }
 
 bool image::checkDisp(int d, bool incr){
-	
 	if(!incr)
 		return d < 0 ? true:false;
 	else
@@ -733,8 +729,6 @@ std::pair<double,double> image::calc_param(int x1, int y1, int x2, int y2, int x
 	
 	p1 = std::make_pair(param1, param2);
 	return p1;
-	
-	//return p1;
 }
 
 double image::findMax(cv::Mat in){
@@ -756,7 +750,7 @@ double image::findMax(cv::Mat in){
 }
 
 
-void image::subpxEnhance(cv::Mat fcost, cv::Mat idisp){
+void image::subpxEnhance(cv::Mat fcost, cv::Mat& idisp){
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
 				int d = idisp.at<float>(p,q)-dispMin;

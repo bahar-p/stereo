@@ -17,7 +17,7 @@ int main(int argc, char **argv)
 	Mat image_left = imread(argv[1], CV_LOAD_IMAGE_COLOR);
    	Mat image_right = imread(argv[2], CV_LOAD_IMAGE_COLOR);
    	Size s = image_left.size();
-   	int minDisp=0, maxDisp=20;
+   	int minDisp=0, maxDisp=40;
     img = new image(image_left,image_right, minDisp, maxDisp);
     //cost=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
    // img->read_image();
@@ -27,26 +27,35 @@ int main(int argc, char **argv)
 	img->costAD();
 	
 	img->c_census(7,9);
-	img->initCost(10,30);
-	img->line_segment(20,6,34,17);
+	img->initCost(10,20);
+	img->line_segment(20.0,6.0,34.0,17.0);
 	img->aggregateCost();
-	cv::Mat disp = img->scanline(1.0,3.0,15);
 	
+	Mat disp=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
+	Mat cost=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
+	img->scanline(1.0,3.0,15, disp, cost);
 	
-	/*
-	for(int p=0; p<image_left.rows;p++){
-		for(int q=0;q<image_left.cols;q++){
-			disp.at<float>(p,q) = (float)disparity[p][q];
-			//cout << disp.at<float>(p,q) << "  ,  " << (float)disparity[p][q]<< endl;
-		}
-		
-	}*/
+	cout<< disp.type() << endl;
 	double minv, maxv;
 	//cv::Point minL, maxL;
 	cv::minMaxLoc(disp, &minv,&maxv);
-	disp.convertTo( disp, CV_8UC1, 255/(maxv-minv));
 	
-    imshow( "Disp", disp );                   		// Show our image inside it.
+	Mat disp8 = Mat(disp.size().height, disp.size().width, CV_8UC1, Scalar::all(0));
+	disp.convertTo( disp8, CV_8UC1,255.0/(maxv-minv));
+	 
+   /* for (int i = 0; i < image_left.rows; i++)
+	{
+		for (int j = 0; j < image_left.cols ; j++)
+		{
+			cout<< "disp: " << disp.at<float>(i,j) << endl;
+		}
+		
+	}*/
+	
+	cout<< disp8.type() << endl;
+    imshow( "Disp", disp8 );                   	
+    waitKey(0);
+   
     /*namedWindow( "Display Rightwindow", CV_WINDOW_AUTOSIZE );
     imshow( "Display Rightwindow", img->get_image(0)); 
     */
@@ -56,8 +65,8 @@ int main(int argc, char **argv)
   //  double c = fabs((double) b-a)/2;
     printf ("b: %f\t , a: %u\t\n " , b, a);
     */
-    waitKey(0);
-    if (waitKey(10) == 27)  
+	char c = waitKey(10);
+    if (c == ' ')  
 		return 0;
 }
 
