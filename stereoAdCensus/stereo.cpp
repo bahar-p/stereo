@@ -17,7 +17,7 @@ int main(int argc, char **argv)
 	Mat image_left = imread(argv[1], CV_LOAD_IMAGE_COLOR);
    	Mat image_right = imread(argv[2], CV_LOAD_IMAGE_COLOR);
    	Size s = image_left.size();
-   	int minDisp=0, maxDisp=40;
+   	int minDisp=0, maxDisp=20;
     img = new image(image_left,image_right, minDisp, maxDisp);
     //cost=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
    // img->read_image();
@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 	img->costAD();
 	
 	img->c_census(7,9);
-	img->initCost(10,20);
+	img->initCost(10,30);
 	img->line_segment(20.0,6.0,34.0,17.0);
 	img->aggregateCost();
 	
@@ -39,9 +39,9 @@ int main(int argc, char **argv)
 	double minv, maxv;
 	//cv::Point minL, maxL;
 	cv::minMaxLoc(disp, &minv,&maxv);
-	
-	Mat disp8 = Mat(disp.size().height, disp.size().width, CV_8UC1, Scalar::all(0));
-	disp.convertTo( disp8, CV_8UC1,255.0/(maxv-minv));
+	cout << "dispMaxval: " << (double)maxv << " dispMinval: " << (double)minv << endl;
+	//Mat disp8 = Mat(disp.size().height, disp.size().width, CV_8UC1, Scalar::all(0));
+	disp.convertTo( disp, CV_8UC1,128.0/(maxv-minv));
 	 
    /* for (int i = 0; i < image_left.rows; i++)
 	{
@@ -52,8 +52,8 @@ int main(int argc, char **argv)
 		
 	}*/
 	
-	cout<< disp8.type() << endl;
-    imshow( "Disp", disp8 );                   	
+	cout<< disp.type() << endl;
+    imshow( "Disp", disp );                   	
     waitKey(0);
    
     /*namedWindow( "Display Rightwindow", CV_WINDOW_AUTOSIZE );

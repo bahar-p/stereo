@@ -589,8 +589,8 @@ void image::find_disparity(cv::Mat in, cv::Mat& idisp ,cv::Mat& icost){
 			for(int d=0; d<dispMax-dispMin+1; d++){
 				if(in.at<double>(p,q,d)< tmpcost){
 					tmpcost=in.at<double>(p,q,d);
-					idisp.at<float>(p,q)=(float)d+dispMin;				//Check again later to make sure it's correct..
-					icost.at<float>(p,q)=tmpcost;
+					idisp.at<float>(p,q)=(float)(d+dispMin);				//Check again later to make sure it's correct..
+					icost.at<float>(p,q)=(float)tmpcost;
 				}
 			}
 			
