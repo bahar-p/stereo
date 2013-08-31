@@ -37,6 +37,8 @@
 using namespace std;
 using namespace cv;
 
+#define PI 3.14159265
+
 void readCalibfile(string, string);
 Mat cameraMatrix[2], distCoeffs[2];
 Mat T,R,R1,R2,P1,P2,Q;
@@ -49,14 +51,15 @@ VideoCapture glcap1, glcap2;
 	int speckleWS = 100;
 	int speckleRange =32;
 
-int win_w = 500, win_h=500;
+int win_w = 800, win_h=800;
 Mat Image3d;
 int imgRow, imgCol;
 std::mutex mtx;
 std::condition_variable cvar;
 bool filled;
 bool rendered=true;
-
+Mat glLeftf;
+double LR_angle=271, UD_angle=0, ZOOM=8000.0;
 
 void frames(int id){
 	
@@ -101,19 +104,18 @@ void frames(int id){
 		StereoSGBM sgbm(mindisp, maxdisp, SADWindow, 8*P, 32*P, dispMaxdiff,
                         preFilterCap, uniqueness, speckleWS, speckleRange, false);
 		sgbm(uframeL,uframeR,disp);
-		cout << "0before: rendered: " << rendered << "filled: " << filled << endl;
+		cout << "VIDEOPROCESS: before: rendered: " << rendered << "filled: " << filled << endl;
 	
 		std::unique_lock<std::mutex> lock(mtx);
 		cvar.wait(lock, []{return rendered;});
 		
-		cout << "0after: rendered: " << rendered << "filled: " << filled << endl;
+		cout << "VIDEOPROCESS: after: rendered: " << rendered << "filled: " << filled << endl;
 		Image3d = Mat(disp.size().height, disp.size().width, CV_32FC3,Scalar::all(0));
 		reprojectImageTo3D(disp,Image3d, Q, false,CV_32F);
-		filled=true;
+		
 		
 		Mat disp8;
-        disp.convertTo(disp8, CV_8U, 255/(maxdisp*16.));
-        cvar.notify_one();
+        disp.convertTo(disp8, CV_8U, 255/(maxdisp*16.));        
 		imshow("disparity", disp8);
 		
 		if (waitKey(10) == 27) 				//wait for 'esc' key press for 10ms. If 'esc' key is pressed, break loop
@@ -121,7 +123,9 @@ void frames(int id){
 			cout << "esc key is pressed by user" << endl;
 			break; 
 		}
-		
+		filled=true;
+		glLeftf = frameL;
+		cvar.notify_one();
 	}
 	
 }
@@ -136,31 +140,41 @@ void init(){
 }
 void display(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	
+	//convert angles to radian
+	double UD_rd= UD_angle*(2*PI)/180;
+	double LR_rd= LR_angle*(2*PI)/180;
+	double camX= cos(UD_rd)*ZOOM*cos(LR_rd);
+	double camY= sin(UD_rd)*ZOOM;
+	double camZ= cos(UD_rd)*ZOOM*sin(LR_rd);
+	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	//glOrtho(-1, 10, -1,10, -1.0, 1.0);
-	gluPerspective(65.0, (GLfloat)win_w/(GLfloat)win_h, 1,80.0);
+	gluPerspective(65.0, (GLfloat)win_w/(GLfloat)win_h, 1,8000.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(10,5,100,0,0,0, 0,1,0);
+	gluLookAt(camX,camY,camZ,0,-100,0, 0,1,0);
 	
 	
 	
-	cout << "1before: rendered: " << rendered << "filled: " << filled << endl;
+	cout << "RENDER: before: rendered: " << rendered << "filled: " << filled << endl;
 	std::unique_lock<std::mutex> lock(mtx);
 	
 	cvar.wait(lock, []{return filled;});
 	rendered = false;
-	cout << "1after: rendered: " << rendered << "filled: " << filled << endl;
+	cout << "RENDER: after: rendered: " << rendered << "filled: " << filled << endl;
 	
 	glBegin(GL_POINTS);
-	glColor3f(1.0,1.0,0.0);
-	for (int j = 0; j < 10 ; j++){
-		for (int i= 0; i < 10; i++){
-			cout << Image3d.at<Vec3f>(j,i)[0]/100 << " " << Image3d.at<Vec3f>(j,i)[1]/100 << " " << -Image3d.at<Vec3f>(j,i)[2]/100 << endl;
+	
+	for (int j = 0; j < imgRow ; j++){
+		for (int i= 0; i < imgCol; i++){
+			glColor3ub(glLeftf.at<Vec3b>(j,i)[2],glLeftf.at<Vec3b>(j,i)[1],glLeftf.at<Vec3b>(j,i)[0]);
+			//cout << Image3d.at<Vec3f>(j,i)[0] << " " << Image3d.at<Vec3f>(j,i)[1] << " " << Image3d.at<Vec3f>(j,i)[2] << endl;
 
 			//glVertex3f(i,j, 4);
-			glVertex3f( -Image3d.at<Vec3f>(j,i)[0]/100,-Image3d.at<Vec3f>(j,i)[1]/100 , -Image3d.at<Vec3f>(j,i)[2]/100 );
+			//glVertex3f( -Image3d.at<Vec3f>(j,i)[0]/100,-Image3d.at<Vec3f>(j,i)[1]/100 , -Image3d.at<Vec3f>(j,i)[2]/100 );
+			glVertex3f( Image3d.at<Vec3f>(j,i)[0],Image3d.at<Vec3f>(j,i)[1], -Image3d.at<Vec3f>(j,i)[2]);
 		}
 	}
 	glEnd();
@@ -178,6 +192,26 @@ void reshape(int w, int h){
 	
 }
 
+void mouse_press(int bt, int state, int i, int j){
+	//Exit program on Mouse_Right_Button press
+	if(bt==GLUT_RIGHT_BUTTON && state==GLUT_DOWN)
+		exit(0);
+	if ((bt == 3)) 		//mouse wheel event
+	{
+		ZOOM-=20;
+	}
+	if(bt ==4){			//mouse wheel event
+	   ZOOM+=20;
+	}
+	/*if(bt==GLUT_LEFT_BUTTON && state==GLUT_DOWN){
+		dragging=1;
+		drag_x_origin = i;
+		drag_y_origin = j;
+	}
+	else 
+		dragging=0;*/
+}
+
 void draw(int id){
 	
 	cout << " \ngraphics" <<endl;
@@ -190,6 +224,7 @@ void draw(int id){
 	
 	glutDisplayFunc(display);
 	cout << "id: " << id <<endl;
+	glutMouseFunc(mouse_press);
 	glutReshapeFunc(reshape);
 	glutMainLoop();
 	

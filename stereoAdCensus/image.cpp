@@ -218,7 +218,7 @@ void image::line_segment(double colLim1, double colLim2, double distLim1, double
 		for(p= subRH ; p<img_leftRGB.rows-subRH; p++){					//Rows = height
 			for(q= subRW ; q<img_leftRGB.cols-subRW ; q++){				//cols = width
 				
-				for(y=q-1; y>=0; y--){							//scan left arm - The first arg
+				for(y=q-1; y>=subRW; y--){							//scan left arm - The first arg
 					double col_diff1 = colDiffer(img_leftRGB, p,y,p,q);
 					double col_diff2 = colDiffer(img_leftRGB, p,y,p,y+1);		//the endpoint and its predecessor
 					int dist= std::abs(y-q);
@@ -231,12 +231,12 @@ void image::line_segment(double colLim1, double colLim2, double distLim1, double
 				}
 				
 				if( supReg.at<int>(p,q,0)==0){							//if no endpoint found and it's not one of the edges' pixels
-					 int dist = std::abs(0-q);
+					 int dist = std::abs(subRW-q);
 					 supReg.at<int>(p,q,0)= dist;										//The edge pixel will be the end point.
 					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The left arm endpoint is: " << dist << std::endl;
 				}
 				
-				for(y=q+1; y<img_leftRGB.cols; y++){							//scan right arm - The second arg
+				for(y=q+1; y<img_leftRGB.cols - subRW; y++){							//scan right arm - The second arg
 					double col_diff1 = colDiffer(img_leftRGB, p,y,p,q);
 					double col_diff2 = colDiffer(img_leftRGB,p,y,p,y-1);						//the end point and its predecessor
 					int dist= std::abs(y-q);
@@ -248,11 +248,11 @@ void image::line_segment(double colLim1, double colLim2, double distLim1, double
 					}
 				}
 				if( supReg.at<int>(p,q,1)==0){	
-					int dist = std::abs(img_leftRGB.cols-1-q);	
+					int dist = std::abs(img_leftRGB.cols-1-subRW-q);	
 					 supReg.at<int>(p,q,1)=dist;										
 					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The right arm endpoint is: " << dist << std::endl;
 				}
-				for(x=p-1; x>=0; x--){											//scan up arm - The third arg
+				for(x=p-1; x>=subRH; x--){											//scan up arm - The third arg
 					double col_diff1 = colDiffer(img_leftRGB,x,q,p,q);
 					double col_diff2 = colDiffer(img_leftRGB,x,q,x+1,q);
 					int dist= std::abs(x-p);
@@ -264,12 +264,12 @@ void image::line_segment(double colLim1, double colLim2, double distLim1, double
 					}
 				}
 				if( supReg.at<int>(p,q,2)==0){
-					int dist = std::abs(0-p);
+					int dist = std::abs(subRH-p);
 					 supReg.at<int>(p,q,2)= dist;										
 					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The up arm endpoint is: " << dist << std::endl;
 				}
 				
-				for(x=p+1; x<img_leftRGB.rows; x++){							//scan bottom arm - The fourth arg
+				for(x=p+1; x<img_leftRGB.rows-subRH; x++){							//scan bottom arm - The fourth arg
 					double col_diff1 = colDiffer(img_leftRGB,x,q,p,q);
 					double col_diff2 = colDiffer(img_leftRGB,x,q,x-1,q);						//the end point and its predecessor
 					int dist= std::abs(x-p);
@@ -282,7 +282,7 @@ void image::line_segment(double colLim1, double colLim2, double distLim1, double
 				}
 				
 				if( supReg.at<int>(p,q,3)==0){
-					int dist = std::abs(img_leftRGB.rows-1-p);
+					int dist = std::abs(img_leftRGB.rows-1-subRH-p);
 					 supReg.at<int>(p,q,3)= dist;
 					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The bottom arm endpoint is: " << dist << std::endl;
 				}
@@ -301,6 +301,7 @@ void image::aggregateCost(){
 		switch(counter){
 			case 1:
 				std::cout<<"1"<<std::endl;
+				HII = cv::Scalar::all(0);
 				IImage(init_cost, HII, 'H');
 				finalSum(HII, sumH, 'H', counter);
 				HII = cv::Scalar::all(0);
@@ -345,8 +346,9 @@ void image::aggregateCost(){
 		}
 		counter++;
 	}
+	aggr_cost = cv::Scalar::all(0);
 	finalSum(sumH, aggr_cost, 'C',  counter-1);
-	//std::cout<< "aggr_cost(100,200,10): " << aggr_cost.at<double>(100,200,10) << std::endl;
+	std::cout<< "aggr_cost(100,200,10): " << aggr_cost.at<double>(100,200,10) << std::endl;
 	std::cout << "Aggregating cost execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
 		
 }
