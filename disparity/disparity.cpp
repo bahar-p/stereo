@@ -59,7 +59,7 @@ std::condition_variable cvar;
 bool filled;
 bool rendered=true;
 Mat glLeftf;
-double LR_angle=271, UD_angle=0, ZOOM=4000.0;
+double LR_angle=271, UD_angle=0, ZOOM=3000.0;
 int dragging, drag_x_origin, drag_y_origin;
 
 void frames(int id){
@@ -113,7 +113,7 @@ void frames(int id){
 		
 		//cout << "VIDEOPROCESS: after: rendered: " << rendered << "filled: " << filled << endl;
 		Image3d = Mat(disp.size().height, disp.size().width, CV_32FC3,Scalar::all(0));
-		reprojectImageTo3D(disp,Image3d, Q, false,CV_32F);
+		reprojectImageTo3D(disp,Image3d, Q, true,CV_32F);
 		
 		
 		Mat disp8;
@@ -156,7 +156,7 @@ void display(){
 	gluPerspective(30.0, (GLfloat)win_w/(GLfloat)win_h, 1.0,8000.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(camX+100,camY+100,camZ+500, 0,0,4000, 0.0,1.0,0.0);
+	gluLookAt(camX-100,camY-200,camZ, -imgCol/2,-imgRow/2,400, 0.0,1.0,0.0);
 	
 	
 	
@@ -172,12 +172,9 @@ void display(){
 	for (int j = 0; j < imgRow ; j++){
 		for (int i= 0; i < imgCol; i++){
 			glColor3ub(glLeftf.at<Vec3b>(j,i)[2],glLeftf.at<Vec3b>(j,i)[1],glLeftf.at<Vec3b>(j,i)[0]);
-			cout << Image3d.at<Vec3f>(j,i)[0] << " " << Image3d.at<Vec3f>(j,i)[1] << " " << Image3d.at<Vec3f>(j,i)[2] << endl;
-
-			//glVertex3f(i,j, 4);
-			//glVertex3f( -Image3d.at<Vec3f>(j,i)[0]/100,-Image3d.at<Vec3f>(j,i)[1]/100 , -Image3d.at<Vec3f>(j,i)[2]/100 );
-			//glVertex3f( Image3d.at<Vec3f>(j,i)[0],Image3d.at<Vec3f>(j,i)[1], -Image3d.at<Vec3f>(j,i)[2]);
-			//glVertex3f( Image3d.at<Vec3f>(j,i)[0],Image3d.at<Vec3f>(j,i)[1], -Image3d.at<Vec3f>(j,i)[2]);
+			//cout << Image3d.at<Vec3f>(j,i)[0] << " " << Image3d.at<Vec3f>(j,i)[1] << " " << Image3d.at<Vec3f>(j,i)[2] << endl;
+			//glVertex3f( -Image3d.at<Vec3f>(j,i)[0],-Image3d.at<Vec3f>(j,i)[1],Image3d.at<Vec3f>(j,i)[2]);
+			glVertex3f( -i,-j, Image3d.at<Vec3f>(j,i)[2]);
 		}
 	}
 	glEnd();
@@ -233,7 +230,7 @@ void SpecialKeys(int key, int x, int y){
 void mouse_move(int x, int y){
 	if(dragging){
 		LR_angle += (x-drag_x_origin) * 0.2;
-		UD_angle += (y-drag_y_origin)*0.2;
+		UD_angle += (y-drag_y_origin)* 0.2;
 		drag_x_origin = x;
 		drag_y_origin = y;
 		
@@ -293,11 +290,6 @@ int main(int argc, char **argv)
 		cout << "ERROR: Cannot open the video file" << endl;
 		return -1;
 	}
-	glcap1.set(CV_CAP_PROP_FRAME_WIDTH, 160);
-    glcap1.set(CV_CAP_PROP_FRAME_HEIGHT, 120);
-
-	glcap2.set(CV_CAP_PROP_FRAME_WIDTH, 160);
-    glcap2.set(CV_CAP_PROP_FRAME_HEIGHT, 120);
 
 	glutInit(&argc, argv);
 	//Image3d = Mat(480, 640, CV_32FC3, Scalar::all(0));
@@ -307,8 +299,6 @@ int main(int argc, char **argv)
 	
 	camProcess.join();
 	graphics.join();
-	
-	
 	
 	/*
 	double dWidth = cap1.get(CV_CAP_PROP_FRAME_WIDTH); 			//get the width of frames of the video
