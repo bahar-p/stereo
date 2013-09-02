@@ -59,13 +59,16 @@ std::condition_variable cvar;
 bool filled;
 bool rendered=true;
 Mat glLeftf;
-double LR_angle=271, UD_angle=0, ZOOM=8000.0;
+double LR_angle=271, UD_angle=0, ZOOM=4000.0;
+int dragging, drag_x_origin, drag_y_origin;
 
 void frames(int id){
 	
+	
 	double dWidth = glcap1.get(CV_CAP_PROP_FRAME_WIDTH); 			//get the width of frames of the video
 	double dHeight = glcap1.get(CV_CAP_PROP_FRAME_HEIGHT); 		//get the height of frames of the video
-	cout << "Frame Size = " << dWidth << "x" << dHeight << endl;
+	double fps = glcap1.get(CV_CAP_PROP_FPS);
+	cout << "fps: " << fps << " Frame Size = " << dWidth << "x" << dHeight << endl;
 	Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
 	imgRow = dHeight;
 	imgCol = dWidth;
@@ -75,7 +78,6 @@ void frames(int id){
 	initUndistortRectifyMap(cameraMatrix[0], distCoeffs[0], R1, P1, frameSize, CV_16SC2, map[0][0], map[0][1]); //left
     initUndistortRectifyMap(cameraMatrix[1], distCoeffs[1], R2, P2, frameSize, CV_16SC2, map[1][0], map[1][1]); //right
 	while (1) {
-		cout << "id: " << id <<endl;
 		filled=false;
 		Mat frameL, frameR;
 		bool rightRead = glcap1.read(frameR);
@@ -104,12 +106,12 @@ void frames(int id){
 		StereoSGBM sgbm(mindisp, maxdisp, SADWindow, 8*P, 32*P, dispMaxdiff,
                         preFilterCap, uniqueness, speckleWS, speckleRange, false);
 		sgbm(uframeL,uframeR,disp);
-		cout << "VIDEOPROCESS: before: rendered: " << rendered << "filled: " << filled << endl;
+		//cout << "VIDEOPROCESS: before: rendered: " << rendered << "filled: " << filled << endl;
 	
 		std::unique_lock<std::mutex> lock(mtx);
 		cvar.wait(lock, []{return rendered;});
 		
-		cout << "VIDEOPROCESS: after: rendered: " << rendered << "filled: " << filled << endl;
+		//cout << "VIDEOPROCESS: after: rendered: " << rendered << "filled: " << filled << endl;
 		Image3d = Mat(disp.size().height, disp.size().width, CV_32FC3,Scalar::all(0));
 		reprojectImageTo3D(disp,Image3d, Q, false,CV_32F);
 		
@@ -142,8 +144,8 @@ void display(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	
 	//convert angles to radian
-	double UD_rd= UD_angle*(2*PI)/180;
-	double LR_rd= LR_angle*(2*PI)/180;
+	double UD_rd= (UD_angle*PI)/180;
+	double LR_rd= (LR_angle*PI)/180;
 	double camX= cos(UD_rd)*ZOOM*cos(LR_rd);
 	double camY= sin(UD_rd)*ZOOM;
 	double camZ= cos(UD_rd)*ZOOM*sin(LR_rd);
@@ -151,30 +153,31 @@ void display(){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	//glOrtho(-1, 10, -1,10, -1.0, 1.0);
-	gluPerspective(65.0, (GLfloat)win_w/(GLfloat)win_h, 1,8000.0);
+	gluPerspective(30.0, (GLfloat)win_w/(GLfloat)win_h, 1.0,8000.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(camX,camY,camZ,0,-100,0, 0,1,0);
+	gluLookAt(camX+100,camY+100,camZ+500, 0,0,4000, 0.0,1.0,0.0);
 	
 	
 	
-	cout << "RENDER: before: rendered: " << rendered << "filled: " << filled << endl;
+	//cout << "RENDER: before: rendered: " << rendered << " filled: " << filled << endl;
 	std::unique_lock<std::mutex> lock(mtx);
 	
 	cvar.wait(lock, []{return filled;});
 	rendered = false;
-	cout << "RENDER: after: rendered: " << rendered << "filled: " << filled << endl;
+	//cout << "RENDER: after: rendered: " << rendered << " filled: " << filled << endl;
 	
 	glBegin(GL_POINTS);
 	
 	for (int j = 0; j < imgRow ; j++){
 		for (int i= 0; i < imgCol; i++){
 			glColor3ub(glLeftf.at<Vec3b>(j,i)[2],glLeftf.at<Vec3b>(j,i)[1],glLeftf.at<Vec3b>(j,i)[0]);
-			//cout << Image3d.at<Vec3f>(j,i)[0] << " " << Image3d.at<Vec3f>(j,i)[1] << " " << Image3d.at<Vec3f>(j,i)[2] << endl;
+			cout << Image3d.at<Vec3f>(j,i)[0] << " " << Image3d.at<Vec3f>(j,i)[1] << " " << Image3d.at<Vec3f>(j,i)[2] << endl;
 
 			//glVertex3f(i,j, 4);
 			//glVertex3f( -Image3d.at<Vec3f>(j,i)[0]/100,-Image3d.at<Vec3f>(j,i)[1]/100 , -Image3d.at<Vec3f>(j,i)[2]/100 );
-			glVertex3f( Image3d.at<Vec3f>(j,i)[0],Image3d.at<Vec3f>(j,i)[1], -Image3d.at<Vec3f>(j,i)[2]);
+			//glVertex3f( Image3d.at<Vec3f>(j,i)[0],Image3d.at<Vec3f>(j,i)[1], -Image3d.at<Vec3f>(j,i)[2]);
+			//glVertex3f( Image3d.at<Vec3f>(j,i)[0],Image3d.at<Vec3f>(j,i)[1], -Image3d.at<Vec3f>(j,i)[2]);
 		}
 	}
 	glEnd();
@@ -196,20 +199,46 @@ void mouse_press(int bt, int state, int i, int j){
 	//Exit program on Mouse_Right_Button press
 	if(bt==GLUT_RIGHT_BUTTON && state==GLUT_DOWN)
 		exit(0);
-	if ((bt == 3)) 		//mouse wheel event
+	if (bt == 3) 		//mouse wheel event
 	{
 		ZOOM-=20;
 	}
 	if(bt ==4){			//mouse wheel event
 	   ZOOM+=20;
 	}
-	/*if(bt==GLUT_LEFT_BUTTON && state==GLUT_DOWN){
+	if(bt==GLUT_LEFT_BUTTON && state==GLUT_DOWN){
 		dragging=1;
 		drag_x_origin = i;
 		drag_y_origin = j;
 	}
 	else 
-		dragging=0;*/
+		dragging=0;
+}
+
+void SpecialKeys(int key, int x, int y){
+	
+	if(key==GLUT_KEY_LEFT)
+		LR_angle +=1;
+		
+	if(key == GLUT_KEY_RIGHT)
+		LR_angle -=1;
+		
+	if(key==GLUT_KEY_UP)
+		UD_angle +=1;
+		
+	if(key==GLUT_KEY_DOWN)
+		UD_angle -=1;
+	
+}
+void mouse_move(int x, int y){
+	if(dragging){
+		LR_angle += (x-drag_x_origin) * 0.2;
+		UD_angle += (y-drag_y_origin)*0.2;
+		drag_x_origin = x;
+		drag_y_origin = y;
+		
+	}
+	
 }
 
 void draw(int id){
@@ -225,7 +254,9 @@ void draw(int id){
 	glutDisplayFunc(display);
 	cout << "id: " << id <<endl;
 	glutMouseFunc(mouse_press);
+	glutSpecialFunc(SpecialKeys);
 	glutReshapeFunc(reshape);
+	glutMotionFunc(mouse_move);
 	glutMainLoop();
 	
 }
@@ -262,6 +293,12 @@ int main(int argc, char **argv)
 		cout << "ERROR: Cannot open the video file" << endl;
 		return -1;
 	}
+	glcap1.set(CV_CAP_PROP_FRAME_WIDTH, 160);
+    glcap1.set(CV_CAP_PROP_FRAME_HEIGHT, 120);
+
+	glcap2.set(CV_CAP_PROP_FRAME_WIDTH, 160);
+    glcap2.set(CV_CAP_PROP_FRAME_HEIGHT, 120);
+
 	glutInit(&argc, argv);
 	//Image3d = Mat(480, 640, CV_32FC3, Scalar::all(0));
 	
