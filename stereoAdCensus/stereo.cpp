@@ -24,10 +24,14 @@ int main(int argc, char **argv)
 	//cout << numeric_limits<double>::max()<<endl;
 	//cout << numeric_limits<double>::digits10<<endl;
 	//cout << numeric_limits<double>::max()<<endl;
+	
+	//uint64_t a = 8;
+	//printf("%s \n" , img->itob(a));
+	
 	img->costAD();
 	
 	img->c_census(7,9);
-	img->initCost(10,20);
+	img->initCost(10,30);
 	img->line_segment(20.0,6.0,34.0,17.0);
 	img->aggregateCost();
 	

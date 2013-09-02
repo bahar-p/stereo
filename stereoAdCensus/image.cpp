@@ -128,20 +128,13 @@ void image::costCensus(int winX, int winY, int left){
 			for(i=x - winX/2; i <= x + winX/2 ; i++){
 				for(j = y - winY/2; j <= y + winY/2 ; j++){
 					if(shifts != winX*winY/2){						//just to exclude the central pixel from the calculation
-						census <<= 1;								//shift left
-						if(left==1){								//left image
-							
-							/*if((img_leftRGB.at<cv::Vec3b>(i,j)[0] >= img_leftRGB.at<cv::Vec3b>(x,y)[0]) && \
-								(img_leftRGB.at<cv::Vec3b>(i,j)[1] >= img_leftRGB.at<cv::Vec3b>(x,y)[1]) && \
-								(img_leftRGB.at<cv::Vec3b>(i,j)[2] >= img_leftRGB.at<cv::Vec3b>(x,y)[2]))*/
-							if(left_gray.at<unsigned char>(i,j)>=left_gray.at<unsigned char>(x,y))
+						//census <<= 1;								//shift left
+						if(left==1){								//left image			
+							if(left_gray.at<unsigned char>(i,j)<left_gray.at<unsigned char>(x,y))
 								bit=1;
 							else bit=0;
 						} else {
-							/*if(img_rightRGB.at<cv::Vec3b>(i,j)[0] >= img_rightRGB.at<cv::Vec3b>(x,y)[0] && \
-								img_rightRGB.at<cv::Vec3b>(i,j)[1] >= img_rightRGB.at<cv::Vec3b>(x,y)[1] && \
-								img_rightRGB.at<cv::Vec3b>(i,j)[2] >= img_rightRGB.at<cv::Vec3b>(x,y)[2])*/
-							if(right_gray.at<unsigned char>(i,j)>=right_gray.at<unsigned char>(x,y))
+							if(right_gray.at<unsigned char>(i,j)<right_gray.at<unsigned char>(x,y))
 								bit=1;
 							else bit=0;
 						}
@@ -154,9 +147,29 @@ void image::costCensus(int winX, int winY, int left){
 			if(left==1)
 				censusLeft[x][y]= census;
 			else censusRight[x][y]= census;
-			//printf("x: %d\t , y: %d\t , census: %lld\n" , x,y, census);
+			if(x==23 && y==60){
+				printf("x: %d\t , y: %d\t , censusL: %s\n" , x,y, itob(censusLeft[x][y]));
+				printf("x: %d\t , y: %d\t , censusR: %s\n" , x,y, itob(censusRight[x][y]));
+			}
 		}
 	}
+}
+
+char * image::itob(uint64_t x)
+{
+	cout << sizeof(uint64_t) << endl;
+	static char buff[sizeof(uint64_t) * CHAR_BIT + 1];
+	int i;
+	for(i=0;i<sizeof(uint64_t) * CHAR_BIT; i++)
+	{
+		uint64_t unit = 1;
+		if(x & (unit << (sizeof(uint64_t) * CHAR_BIT -1- i)))
+			buff[i] = '1';
+		else
+			buff[i] = '0';
+	}
+	cout << "length: " << i << endl;
+	return buff;
 }
 
 /* Calculating the hamming distance between each pixel and its correspondence census cost */

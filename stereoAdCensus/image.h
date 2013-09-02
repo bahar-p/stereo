@@ -47,4 +47,6 @@ void finalCost(cv::Mat , cv::Mat , cv::Mat , cv::Mat , cv::Mat );
 double findMax(cv::Mat);
 void subpxEnhance(cv::Mat, cv::Mat&);
 
+//DEBUG
+char *itob(uint64_t);
 };
