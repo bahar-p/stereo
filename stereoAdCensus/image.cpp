@@ -117,7 +117,6 @@ void image::costCensus(int winX, int winY, int left){
 	uint64_t census;
 	uint64_t bit=0;
 	int i,j,x,y;
-	int k=62;
 	int shifts;
 	cv::Mat left_gray, right_gray;
 	cvtColor(img_leftRGB,left_gray,CV_BGR2GRAY);
