@@ -115,7 +115,9 @@ void image::costAD(){
 /* Encoding each pixel local structure */
 void image::costCensus(int winX, int winY, int left){
 	uint64_t census;
-	int bit=0,i,j,x,y;
+	uint64_t bit=0;
+	int i,j,x,y;
+	int k=62;
 	int shifts;
 	cv::Mat left_gray, right_gray;
 	cvtColor(img_leftRGB,left_gray,CV_BGR2GRAY);
@@ -128,8 +130,8 @@ void image::costCensus(int winX, int winY, int left){
 			for(i=x - winX/2; i <= x + winX/2 ; i++){
 				for(j = y - winY/2; j <= y + winY/2 ; j++){
 					if(shifts != winX*winY/2){						//just to exclude the central pixel from the calculation
-						//census <<= 1;								//shift left
-						if(left==1){								//left image			
+						census <<= 1;	
+						if(left==1){								//left image		
 							if(left_gray.at<unsigned char>(i,j)<left_gray.at<unsigned char>(x,y))
 								bit=1;
 							else bit=0;
@@ -147,10 +149,11 @@ void image::costCensus(int winX, int winY, int left){
 			if(left==1)
 				censusLeft[x][y]= census;
 			else censusRight[x][y]= census;
-			if(x==23 && y==60){
+			if(x==23 && y==60)
 				printf("x: %d\t , y: %d\t , censusL: %s\n" , x,y, itob(censusLeft[x][y]));
+			if(x==23 && y==58)
 				printf("x: %d\t , y: %d\t , censusR: %s\n" , x,y, itob(censusRight[x][y]));
-			}
+			
 		}
 	}
 }
@@ -191,10 +194,15 @@ void image::hamdist(uint64_t** censL, uint64_t** censR, int winX, int winY){
 					}
 					census_hamming[p][q][d]= dist;
 					//printf("hammingDist: %u\t\t", dist);
+					if(p==23 && q==60 && (q-d-dispMin==58)){
+						printf("x: %d\t , q: %d\t , census_hamming: %u\n" , p,q-d-dispMin, census_hamming[p][q][d]);
+					}
 				}
 			}
 		}
+		
 	}
+	
 	//std::cout<< "census_hamming(100,200,10): " << census_hamming[100][200][10] << std::endl;
 }
 

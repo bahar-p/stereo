@@ -25,8 +25,12 @@ int main(int argc, char **argv)
 	//cout << numeric_limits<double>::digits10<<endl;
 	//cout << numeric_limits<double>::max()<<endl;
 	
-	//uint64_t a = 8;
-	//printf("%s \n" , img->itob(a));
+	/*uint64_t a = 0;
+	a <<= 1;
+	a+=1;
+	a <<= 1;
+	a+=1;
+	printf("%s \n" , img->itob(a));*/
 	
 	img->costAD();
 	
@@ -60,9 +64,6 @@ int main(int argc, char **argv)
     imshow( "Disp", disp8 );                   	
     waitKey(0);
    
-    /*namedWindow( "Display Rightwindow", CV_WINDOW_AUTOSIZE );
-    imshow( "Display Rightwindow", img->get_image(0)); 
-    */
     /*
     unsigned a = 12;
     double b = (double)a;
