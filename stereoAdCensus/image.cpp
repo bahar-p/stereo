@@ -16,7 +16,8 @@ image::image(Mat image_leftRGB, Mat image_rightRGB, int dMin, int dMax){
 	//std::cout << "Maximum value for long double: " << std::numeric_limits<long double>::max() << '\n';
 	//std::cout << "height: " << s.height << " , " <<  img_leftRGB.rows<< '\n';
 	//std::cout << "width: " << s.width << " , " <<  img_leftRGB.cols<< '\n';
-	//idisp = disp;
+
+	
 	//Initialization of different cost space
 	
 	//color_left=cv::Mat(s, CV_8UC3, cv::Scalar::all(0));
@@ -57,6 +58,91 @@ image::image(Mat image_leftRGB, Mat image_rightRGB, int dMin, int dMax){
 			}
 		}
 	}
+	//DEBUG
+	/*init_cost.at<double>(1,1)=1;
+	init_cost.at<double>(1,2)=3;
+	init_cost.at<double>(1,3)=2;
+	init_cost.at<double>(1,4)=0;
+	init_cost.at<double>(2,1)=5;
+	init_cost.at<double>(2,2)=8;
+	init_cost.at<double>(2,3)=1;
+	init_cost.at<double>(2,4)=2;
+	init_cost.at<double>(3,1)=1;
+	init_cost.at<double>(3,2)=7;
+	init_cost.at<double>(3,3)=6;
+	init_cost.at<double>(3,4)=1;
+	init_cost.at<double>(4,1)=0;
+	init_cost.at<double>(4,2)=2;
+	init_cost.at<double>(4,3)=0;
+	init_cost.at<double>(4,4)=5;
+	
+	supReg.at<int>(1,1,0)=0;
+	supReg.at<int>(1,1,1)=1;
+	supReg.at<int>(1,1,2)=0;
+	supReg.at<int>(1,1,3)=2;
+	supReg.at<int>(1,2,0)=1;
+	supReg.at<int>(1,2,1)=2;
+	supReg.at<int>(1,2,2)=0;
+	supReg.at<int>(1,2,3)=2;
+	supReg.at<int>(1,3,0)=1;
+	supReg.at<int>(1,3,1)=1;
+	supReg.at<int>(1,3,2)=0;
+	supReg.at<int>(1,3,3)=3;
+	supReg.at<int>(1,4,0)=3;
+	supReg.at<int>(1,4,1)=0;
+	supReg.at<int>(1,4,2)=0;
+	supReg.at<int>(1,4,3)=2;
+	
+	supReg.at<int>(2,1,0)=0;
+	supReg.at<int>(2,1,1)=2;
+	supReg.at<int>(2,1,2)=1;
+	supReg.at<int>(2,1,3)=2;
+	supReg.at<int>(2,2,0)=1;
+	supReg.at<int>(2,2,1)=1;
+	supReg.at<int>(2,2,2)=1;
+	supReg.at<int>(2,2,3)=1;
+	supReg.at<int>(2,3,0)=1;
+	supReg.at<int>(2,3,1)=1;
+	supReg.at<int>(2,3,2)=1;
+	supReg.at<int>(2,3,3)=1;
+	supReg.at<int>(2,4,0)=3;
+	supReg.at<int>(2,4,1)=0;
+	supReg.at<int>(2,4,2)=1;
+	supReg.at<int>(2,4,3)=1;
+	
+	supReg.at<int>(3,1,0)=0;
+	supReg.at<int>(3,1,1)=2;
+	supReg.at<int>(3,1,2)=2;
+	supReg.at<int>(3,1,3)=1;
+	supReg.at<int>(3,2,0)=1;
+	supReg.at<int>(3,2,1)=2;
+	supReg.at<int>(3,2,2)=2;
+	supReg.at<int>(3,2,3)=1;
+	supReg.at<int>(3,3,0)=2;
+	supReg.at<int>(3,3,1)=1;
+	supReg.at<int>(3,3,2)=1;
+	supReg.at<int>(3,3,3)=1;
+	supReg.at<int>(3,4,0)=3;
+	supReg.at<int>(3,4,1)=0;
+	supReg.at<int>(3,4,2)=2;
+	supReg.at<int>(3,4,3)=1;
+	
+	supReg.at<int>(4,1,0)=0;
+	supReg.at<int>(4,1,1)=2;
+	supReg.at<int>(4,1,2)=1;
+	supReg.at<int>(4,1,3)=0;
+	supReg.at<int>(4,2,0)=1;
+	supReg.at<int>(4,2,1)=1;
+	supReg.at<int>(4,2,2)=3;
+	supReg.at<int>(4,2,3)=0;
+	supReg.at<int>(4,3,0)=1;
+	supReg.at<int>(4,3,1)=1;
+	supReg.at<int>(4,3,2)=3;
+	supReg.at<int>(4,3,3)=0;
+	supReg.at<int>(4,4,0)=3;
+	supReg.at<int>(4,4,1)=0;
+	supReg.at<int>(4,4,2)=3;
+	supReg.at<int>(4,4,3)=0;*/
 	
 }
 
@@ -99,13 +185,14 @@ void image::costAD(){
 	for(d=0;d<dispMax-dispMin+1;d++){
 		for(p=subRH;p<img_leftRGB.rows-subRH;p++){					//Rows = height
 			for(q=subRW;q<img_leftRGB.cols-subRW;q++){				//cols = width
-				if(q-d-dispMin>-1){
+				if(q-d-dispMin>subRW-1){
 					DSI.at<double>(p,q,d)= (double)((abs(img_leftRGB.at<cv::Vec3b>(p,q).val[0] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[0])) + 
 					(abs(img_leftRGB.at<cv::Vec3b>(p,q).val[1] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[1])) +
 					(abs(img_leftRGB.at<cv::Vec3b>(p,q).val[2] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[2])))/3;
 
-					/*printf ("b: %u\t, g: %u\t, r: %u\t, bR: %u\t, gR: %u\t , rR: %u\t" , color_left[p][q+d+dispMin][0], color_left[p][q+d+dispMin][1], color_left[p][q+d+dispMin][2], color_right[p][q][0],
-					color_right[p][q][1],color_right[p][q][2]);*/
+					/*printf ("b: %f\t, g: %u\t, r: %u\t, bR: %u\t, gR: %u\t , rR: %u\t" , (double)img_leftRGB.at<cv::Vec3b>(p,q).val[0], img_leftRGB.at<cv::Vec3b>(p,q).val[1],
+					img_leftRGB.at<cv::Vec3b>(p,q).val[2], img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[0],
+					img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[1],img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[2]);*/
 				}
 			}
 		}
@@ -184,7 +271,7 @@ void image::hamdist(uint64_t** censL, uint64_t** censR, int winX, int winY){
 			for(q= winY/2 ; q<img_leftRGB.cols - winY/2 ; q++){				//cols = width
 				dist=0;
 				val=0;
-				if(q-d-dispMin>-1){
+				if(q-d-dispMin>subRW-1){
 					val = censL[p][q] ^ censR[p][q-d-dispMin];				//XOR operation
 					//printf("censL: %lld\t\t , censR: %lld\t\t", censL[p][q+d+dispMin], censR[p][q]);
 					while(val){
@@ -238,15 +325,16 @@ void image::line_segment(double colLim1, double colLim2, double distLim1, double
 		for(p= subRH ; p<img_leftRGB.rows-subRH; p++){					//Rows = height
 			for(q= subRW ; q<img_leftRGB.cols-subRW ; q++){				//cols = width
 				
-				for(y=q-1; y>=subRW; y--){							//scan left arm - The first arg
-					double col_diff1 = colDiffer(img_leftRGB, p,y,p,q);
-					double col_diff2 = colDiffer(img_leftRGB, p,y,p,y+1);		//the endpoint and its predecessor
-					int dist= std::abs(y-q);
-										
-					if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){	//if violates any of these rules
-						 supReg.at<int>(p,q,0)=dist;
-						 //std::cout<< "For the point (" << p << " , "  << q << ") The left arm endpoint is: " << dist << std::endl;
-						 break;
+				if(q!=subRW){
+					for(y=q-1; y>=subRW; y--){							//scan left arm - The first arg
+						double col_diff1 = colDiffer(img_leftRGB, p,y,p,q);
+						double col_diff2 = colDiffer(img_leftRGB, p,y,p,y+1);		//the endpoint and its predecessor
+						 int dist= std::abs(y-q);					
+						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){	//if violates any of these rules
+							 supReg.at<int>(p,q,0)=dist;
+							 //std::cout<< "For the point (" << p << " , "  << q << ") The left arm endpoint is: " << dist << std::endl;
+							 break;
+						}
 					}
 				}
 				
@@ -256,15 +344,17 @@ void image::line_segment(double colLim1, double colLim2, double distLim1, double
 					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The left arm endpoint is: " << dist << std::endl;
 				}
 				
-				for(y=q+1; y<img_leftRGB.cols - subRW; y++){							//scan right arm - The second arg
-					double col_diff1 = colDiffer(img_leftRGB, p,y,p,q);
-					double col_diff2 = colDiffer(img_leftRGB,p,y,p,y-1);						//the end point and its predecessor
-					int dist= std::abs(y-q);
-					
-					if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){
-						  supReg.at<int>(p,q,1)=dist;
-						// std::cout<< "For the point (" << p << " , "  << q << ") The right arm endpoint is: " << dist << std::endl;
-						 break;
+				if(q!=img_leftRGB.cols-subRW-1){
+					for(y=q+1; y<img_leftRGB.cols - subRW; y++){							//scan right arm - The second arg
+						double col_diff1 = colDiffer(img_leftRGB, p,y,p,q);
+						double col_diff2 = colDiffer(img_leftRGB,p,y,p,y-1);						//the end point and its predecessor
+						int dist= std::abs(y-q);
+						
+						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){
+							  supReg.at<int>(p,q,1)=dist;
+							// std::cout<< "For the point (" << p << " , "  << q << ") The right arm endpoint is: " << dist << std::endl;
+							 break;
+						}
 					}
 				}
 				if( supReg.at<int>(p,q,1)==0){	
@@ -272,15 +362,17 @@ void image::line_segment(double colLim1, double colLim2, double distLim1, double
 					 supReg.at<int>(p,q,1)=dist;										
 					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The right arm endpoint is: " << dist << std::endl;
 				}
-				for(x=p-1; x>=subRH; x--){											//scan up arm - The third arg
-					double col_diff1 = colDiffer(img_leftRGB,x,q,p,q);
-					double col_diff2 = colDiffer(img_leftRGB,x,q,x+1,q);
-					int dist= std::abs(x-p);
-					
-					if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){
-						  supReg.at<int>(p,q,2)=dist;
-						 //std::cout<< "For the point (" << p << " , "  << q << ") The up arm	endpoint is: " << dist << std::endl;
-						 break;
+				if(p!=subRH){
+					for(x=p-1; x>=subRH; x--){											//scan up arm - The third arg
+						double col_diff1 = colDiffer(img_leftRGB,x,q,p,q);
+						double col_diff2 = colDiffer(img_leftRGB,x,q,x+1,q);
+						int dist= std::abs(x-p);
+						
+						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){
+							  supReg.at<int>(p,q,2)=dist;
+							 //std::cout<< "For the point (" << p << " , "  << q << ") The up arm	endpoint is: " << dist << std::endl;
+							 break;
+						}
 					}
 				}
 				if( supReg.at<int>(p,q,2)==0){
@@ -288,16 +380,17 @@ void image::line_segment(double colLim1, double colLim2, double distLim1, double
 					 supReg.at<int>(p,q,2)= dist;										
 					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The up arm endpoint is: " << dist << std::endl;
 				}
-				
-				for(x=p+1; x<img_leftRGB.rows-subRH; x++){							//scan bottom arm - The fourth arg
-					double col_diff1 = colDiffer(img_leftRGB,x,q,p,q);
-					double col_diff2 = colDiffer(img_leftRGB,x,q,x-1,q);						//the end point and its predecessor
-					int dist= std::abs(x-p);
-					
-					if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){
-						 supReg.at<int>(p,q,3)=dist;
-						//std::cout<< "For the point (" << p << " , "  << q << ") The bottom arm endpoint is: " << dist << std::endl;
-						break;
+				if(p!=img_leftRGB.rows-subRH-1){
+					for(x=p+1; x<img_leftRGB.rows-subRH; x++){							//scan bottom arm - The fourth arg
+						double col_diff1 = colDiffer(img_leftRGB,x,q,p,q);
+						double col_diff2 = colDiffer(img_leftRGB,x,q,x-1,q);						//the end point and its predecessor
+						int dist= std::abs(x-p);
+						
+						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){
+							 supReg.at<int>(p,q,3)=dist;
+							//std::cout<< "For the point (" << p << " , "  << q << ") The bottom arm endpoint is: " << dist << std::endl;
+							break;
+						}
 					}
 				}
 				
@@ -308,68 +401,74 @@ void image::line_segment(double colLim1, double colLim2, double distLim1, double
 				}
 			}
 		}
-	//printf("supReg[100][200][0]= %u\t, supReg[100][200][1]= %u\t , supReg[100][200][2]= %u\t, supReg[100][200][3]= %u\t\n" , supReg.at<int>(100,200,0), supReg.at<int>(100,200,1),
-	//supReg.at<int>(100,200,2),supReg.at<int>(100,200,3));
 }
 
 /* Calculating aggregated cost */
 void image::aggregateCost(){
 	int counter=1;
 	int iter=4;
-	clock_t tStart = clock();
+	
 	while(counter<iter+1){
 		switch(counter){
 			case 1:
 				std::cout<<"1"<<std::endl;
-				HII = cv::Scalar::all(0);
 				IImage(init_cost, HII, 'H');
 				finalSum(HII, sumH, 'H', counter);
-				HII = cv::Scalar::all(0);
 				IImage(sumH, VII, 'V');
 				finalSum(VII, sumV,'V', counter);
-				VII = cv::Scalar::all(0);
+				//VII = cv::Scalar::all(0);
 				//std::cout<< "sumV(100,200,10): " << sumV.at<double>(100,200,10) << std::endl;
 			break;
 			case 2:
 				std::cout<<"2"<<std::endl;
 				IImage(sumV, VII, 'V');
 				finalSum(VII, sumV,'V', counter);
-				VII = cv::Scalar::all(0);
+				//VII = cv::Scalar::all(0);
 				IImage(sumV, HII, 'H');
 				finalSum(HII, sumH, 'H', counter);
-				HII = cv::Scalar::all(0);
+				//HII = cv::Scalar::all(0);
 				//std::cout<< "sumH(100,200,10): " << sumH.at<double>(100,200,10) << std::endl;
 			break;
 			case 3:
 				std::cout<<"3"<<std::endl;
 				IImage(sumH, HII,'H');
 				finalSum(HII, sumH, 'H',counter);
-				HII = cv::Scalar::all(0);
+				//HII = cv::Scalar::all(0);
 				IImage(sumH, VII, 'V');
 				finalSum(VII,sumV,'V',counter);
-				VII = cv::Scalar::all(0);
+				//VII = cv::Scalar::all(0);
 				//std::cout<< "sumV(100,200,10): " << sumV.at<double>(100,200,10) << std::endl;
 			break;
 			case 4:
 				std::cout<< "4"<<std::endl;
 				IImage(sumV, VII, 'V');
 				finalSum(VII, sumV,'V',counter);
-				VII = cv::Scalar::all(0);
+				//VII = cv::Scalar::all(0);
 				IImage(sumV, HII, 'H');
 				finalSum(HII, sumH, 'H',counter);
-				HII = cv::Scalar::all(0);
+				//HII = cv::Scalar::all(0);
 				//std::cout<< "sumH(100,200,10): " << sumH.at<double>(100,200,10) << std::endl;
 			break;
 			default:
 				std::cout<< "iteration out of range" <<std::endl;
 			break;
 		}
+		
+		/*if(counter==2){
+			for(int d=0; d<dispMax-dispMin+1; d++){
+				for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
+					for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
+						cout<<"sumH: "  << sumH.at<double>(p,q,d) << endl;
+						//cout<<"sumV: "  << sumV.at<double>(p,q,d) << endl;
+					}
+				}
+			}
+		}*/
 		counter++;
 	}
-	aggr_cost = cv::Scalar::all(0);
+	//aggr_cost = cv::Scalar::all(0);
 	finalSum(sumH, aggr_cost, 'C',  counter-1);
-	std::cout<< "aggr_cost(100,200,10): " << aggr_cost.at<double>(100,200,10) << std::endl;
-	std::cout << "Aggregating cost execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
+	//std::cout<< "aggr_cost(100,200,10): " << aggr_cost.at<double>(100,200,10) << std::endl;
 		
 }
 /* Calculating Integral Image */
@@ -414,33 +513,7 @@ switch (dir){
 					for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
 						int left= supReg.at<int>(p,q,0);				//left arm
 						int right= supReg.at<int>(p,q,1);				//right arm
-						//cout << "left arm: " << left << " , right arm: " << right << " " << p << " , " << q << endl;
-						
-						//Take care of the boundries..
-						if(q-left-1<subRW && !(q+right>=img_leftRGB.cols-subRW)){
-							out.at<double>(p,q,d) = in.at<double>(p,q+right,d)-0;
-						}
-						else if(q+right>=img_leftRGB.cols-subRW && !(q-left-1<subRW)){
-							
-							out.at<double>(p,q,d) = in.at<double>(p,img_leftRGB.cols-subRW-1,d)-in.at<double>(p,q-left-1,d);
-						}
-						else if(q-left-1<subRW && q+right>=img_leftRGB.cols-subRW ){
-							
-							out.at<double>(p,q,d) = in.at<double>(p,img_leftRGB.cols-subRW-1,d)-0;
-						}
-						else
-							out.at<double>(p,q,d) = in.at<double>(p,q+right,d)-in.at<double>(p,q-left-1,d);
-						
-						
-						/*if( p==243 && q==4){
-							if(q-left-1<0)
-								printf("outta border: sumH[%d][%d][%d]= %Lf \t, iter: %d\t, HII[%d][%d][%d]=%Lf\t, HII[%d][%d][%d]=\t\n", p, q, d, out[p][q][d], count,
-								p, q+right, d, in[p][q+right][d], p, q-left-1,d );
-							else
-								printf("sumH[%d][%d][%d]= %Lf \t, iter: %d\t, HII[%d][%d][%d]=%Lf\t, HII[%d][%d][%d]=%Lf\t\n", p, q, d, out[p][q][d], count,
-								p, q+right, d, in[p][q+right][d], p, q-left-1,d, in[p][q-left-1][d]);
-						}*/
-						
+						out.at<double>(p,q,d) = in.at<double>(p,q+right,d)-in.at<double>(p,q-left-1,d);
 					}
 				}
 			}
@@ -451,27 +524,9 @@ switch (dir){
 					for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){		
 						int up= supReg.at<int>(p,q,2);					//up arm
 						int down= supReg.at<int>(p,q,3);				//down arm
-						if(p-up-1<subRH && !(p+down>=img_leftRGB.rows-subRH))
-							out.at<double>(p,q,d) = in.at<double>(p+down,q,d)-0;
-							
-						else if(p+down>=img_leftRGB.rows-subRH && !(p-up-1<subRH)){
-							out.at<double>(p,q,d) = in.at<double>(img_leftRGB.rows-subRH-1,q,d)-in.at<double>(p-up-1,q,d);
-						}
-						else if(p+down>=img_leftRGB.rows-subRH && p-up-1<subRH){
-							out.at<double>(p,q,d) = in.at<double>(img_leftRGB.rows-subRH-1,q,d)-0;
-						}
-						else
-							out.at<double>(p,q,d) = in.at<double>(p+down,q,d)-in.at<double>(p-up-1,q,d);
 						
-						/*if(count==2 && q==4){
-							if(p-up-1<0)
-								printf("outta border: sumV[%d][%d][%d]= %Lf \t, iter: %d\t, VII[%d][%d][%d]=%Lf\t, VII[%d][%d][%d]=\t\n ", p, q, d, out[p][q][d], count, 
-								p+down,q,d, in[p+down][q][d], p-up-1,q,d);
-							else
-								printf("sumV[%d][%d][%d]= %Lf \t, iter: %d\t, VII[%d][%d][%d]=%Lf\t, VII[%d][%d][%d]=%Lf\t\n ", p, q, d, out[p][q][d], count, 
-								p+down,q,d, in[p+down][q][d], p-up-1,q,d,in[p-up-1][q][d]);
-								
-						}*/
+						out.at<double>(p,q,d) = in.at<double>(p+down,q,d)-in.at<double>(p-up-1,q,d);
+						
 					}
 				}
 			}
@@ -502,9 +557,9 @@ switch (dir){
 }
 
 /* Calculate color difference */
-int image::colDiffer(cv::Mat in, int x1, int y1, int x2, int y2){
+double image::colDiffer(cv::Mat in, int x1, int y1, int x2, int y2){
 	
-	int color = std::max(std::max(abs(in.at<cv::Vec3b>(x1,y1)[0]-in.at<cv::Vec3b>(x2,y2)[0]), abs(in.at<cv::Vec3b>(x1,y1)[1]-in.at<cv::Vec3b>(x2,y2)[1])), 
+	double color = (double) std::max(std::max(abs(in.at<cv::Vec3b>(x1,y1)[0]-in.at<cv::Vec3b>(x2,y2)[0]), abs(in.at<cv::Vec3b>(x1,y1)[1]-in.at<cv::Vec3b>(x2,y2)[1])), 
 					abs(in.at<cv::Vec3b>(x1,y1)[2]-in.at<cv::Vec3b>(x2,y2)[2]));
 					
 	return color;

@@ -16,8 +16,10 @@ int main(int argc, char **argv)
 	//Read input images into Matrices
 	Mat image_left = imread(argv[1], CV_LOAD_IMAGE_COLOR);
    	Mat image_right = imread(argv[2], CV_LOAD_IMAGE_COLOR);
+   	//Mat image_left = Mat(6,6, CV_8U, Scalar::all(0));
+   //Mat image_right = Mat(6,6, CV_8U, Scalar::all(0));
    	Size s = image_left.size();
-   	int minDisp=0, maxDisp=40;
+   	int minDisp=0, maxDisp=30;
     img = new image(image_left,image_right, minDisp, maxDisp);
     //cost=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
    // img->read_image();
@@ -32,6 +34,7 @@ int main(int argc, char **argv)
 	a+=1;
 	printf("%s \n" , img->itob(a));*/
 	
+	clock_t tStart = clock();
 	img->costAD();
 	
 	img->c_census(7,9);
@@ -42,10 +45,10 @@ int main(int argc, char **argv)
 	Mat disp=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	Mat cost=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	img->scanline(1.0,3.0,15, disp, cost);
-	
-	cout<< disp.type() << endl;
+	std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
+	//cout<< disp.type() << endl;
 	double minv, maxv;
-	//cv::Point minL, maxL;
+	cv::Point minL, maxL;
 	cv::minMaxLoc(disp, &minv,&maxv);
 	
 	Mat disp8 = Mat(disp.size().height, disp.size().width, CV_8UC1, Scalar::all(0));

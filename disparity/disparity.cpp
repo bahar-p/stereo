@@ -59,8 +59,10 @@ std::condition_variable cvar;
 bool filled;
 bool rendered=true;
 Mat glLeftf;
-double LR_angle=271, UD_angle=0, ZOOM=3000.0;
+double LR_angle=271, UD_angle=5, ZOOM=3000.0;
 int dragging, drag_x_origin, drag_y_origin;
+bool PAUSE;
+int frameNum;
 
 void frames(int id){
 	
@@ -68,7 +70,8 @@ void frames(int id){
 	double dWidth = glcap1.get(CV_CAP_PROP_FRAME_WIDTH); 			//get the width of frames of the video
 	double dHeight = glcap1.get(CV_CAP_PROP_FRAME_HEIGHT); 		//get the height of frames of the video
 	double fps = glcap1.get(CV_CAP_PROP_FPS);
-	cout << "fps: " << fps << " Frame Size = " << dWidth << "x" << dHeight << endl;
+	int frs = glcap1.get(CV_CAP_PROP_FRAME_COUNT);
+	cout << "frs: " << frs << " Frame Size = " << dWidth << "x" << dHeight << endl;
 	Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
 	imgRow = dHeight;
 	imgCol = dWidth;
@@ -77,7 +80,9 @@ void frames(int id){
 
 	initUndistortRectifyMap(cameraMatrix[0], distCoeffs[0], R1, P1, frameSize, CV_16SC2, map[0][0], map[0][1]); //left
     initUndistortRectifyMap(cameraMatrix[1], distCoeffs[1], R2, P2, frameSize, CV_16SC2, map[1][0], map[1][1]); //right
-	while (1) {
+    
+    int nextframe=0;
+	for (frameNum=nextframe; frameNum<frs; frameNum++) {
 		filled=false;
 		Mat frameL, frameR;
 		bool rightRead = glcap1.read(frameR);
@@ -113,9 +118,7 @@ void frames(int id){
 		
 		//cout << "VIDEOPROCESS: after: rendered: " << rendered << "filled: " << filled << endl;
 		Image3d = Mat(disp.size().height, disp.size().width, CV_32FC3,Scalar::all(0));
-		reprojectImageTo3D(disp,Image3d, Q, true,CV_32F);
-		
-		
+		reprojectImageTo3D(disp,Image3d, Q, false,CV_32F);
 		Mat disp8;
         disp.convertTo(disp8, CV_8U, 255/(maxdisp*16.));        
 		imshow("disparity", disp8);
@@ -156,7 +159,7 @@ void display(){
 	gluPerspective(30.0, (GLfloat)win_w/(GLfloat)win_h, 1.0,8000.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(camX-100,camY-200,camZ, -imgCol/2,-imgRow/2,400, 0.0,1.0,0.0);
+	gluLookAt(camX+200,camY+500,-camZ-1000, 0,0,-1000, 0.0,1.0,0.0);
 	
 	
 	
@@ -173,8 +176,8 @@ void display(){
 		for (int i= 0; i < imgCol; i++){
 			glColor3ub(glLeftf.at<Vec3b>(j,i)[2],glLeftf.at<Vec3b>(j,i)[1],glLeftf.at<Vec3b>(j,i)[0]);
 			//cout << Image3d.at<Vec3f>(j,i)[0] << " " << Image3d.at<Vec3f>(j,i)[1] << " " << Image3d.at<Vec3f>(j,i)[2] << endl;
-			//glVertex3f( -Image3d.at<Vec3f>(j,i)[0],-Image3d.at<Vec3f>(j,i)[1],Image3d.at<Vec3f>(j,i)[2]);
-			glVertex3f( -i,-j, Image3d.at<Vec3f>(j,i)[2]);
+			glVertex3f( (int)Image3d.at<Vec3f>(j,i)[0],imgRow-(int)Image3d.at<Vec3f>(j,i)[1], -Image3d.at<Vec3f>(j,i)[2]);
+			//glVertex3f( imgCol-i,imgRow-j, Image3d.at<Vec3f>(j,i)[2]);
 		}
 	}
 	glEnd();
@@ -194,8 +197,8 @@ void reshape(int w, int h){
 
 void mouse_press(int bt, int state, int i, int j){
 	//Exit program on Mouse_Right_Button press
-	if(bt==GLUT_RIGHT_BUTTON && state==GLUT_DOWN)
-		exit(0);
+	//if(bt==GLUT_RIGHT_BUTTON && state==GLUT_DOWN)
+		//exit(0);
 	if (bt == 3) 		//mouse wheel event
 	{
 		ZOOM-=20;
@@ -227,6 +230,15 @@ void SpecialKeys(int key, int x, int y){
 		UD_angle -=1;
 	
 }
+
+/*---Keyboard function to change view position----*/
+void keyboard_press(unsigned char key, int x, int y){
+	//Exit program when "Q" or "q" key is pressed on keyboard
+	if(key== 'Q' | key== 'q')
+		exit(0);
+		
+}
+
 void mouse_move(int x, int y){
 	if(dragging){
 		LR_angle += (x-drag_x_origin) * 0.2;
@@ -254,6 +266,7 @@ void draw(int id){
 	glutSpecialFunc(SpecialKeys);
 	glutReshapeFunc(reshape);
 	glutMotionFunc(mouse_move);
+	glutKeyboardFunc(keyboard_press);
 	glutMainLoop();
 	
 }

@@ -32,7 +32,7 @@ void hamdist(uint64_t**, uint64_t** , int , int );
 void c_census(int, int);
 void initCost(double , double);
 void line_segment(double,double,double,double);
-int colDiffer (cv::Mat, int, int, int, int);
+double colDiffer (cv::Mat, int, int, int, int);
 void aggregateCost( );
 double costOpt(cv::Mat, int, int, int, double, char, double, double, double);
 double MinPathCost(cv::Mat, int, int);
