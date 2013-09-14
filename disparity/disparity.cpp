@@ -44,7 +44,7 @@ Mat cameraMatrix[2], distCoeffs[2];
 Mat T,R,R1,R2,P1,P2,Q;
 VideoCapture glcap1, glcap2;
 // Disparity parameters //
-	int mindisp=0, maxdisp=64, SADWindow=9,dispMaxdiff=2;
+	int mindisp=0, maxdisp=128, SADWindow=9,dispMaxdiff=2;
 	int P= 3*SADWindow;
 	int preFilterCap = 31;
 	int uniqueness = 10;
@@ -95,13 +95,14 @@ void frames(int id){
 		}
 		
 		
-		Mat GframeL, GframeR, uframeL, uframeR;
+		Mat GframeL, GframeR, uframeL, uframeR, newframeL;
 		
 		Mat disp(dHeight,dWidth,CV_8U);
 		//remap and show the rectified videos
 		cvtColor(frameL, GframeL, CV_BGR2GRAY);
 		cvtColor(frameR, GframeR, CV_BGR2GRAY);
 		remap(GframeL, uframeL, map[0][0], map[0][1], CV_INTER_LINEAR);
+		remap(frameL, newframeL, map[0][0], map[0][1], CV_INTER_LINEAR);
 		remap(GframeR, uframeR, map[1][0], map[1][1], CV_INTER_LINEAR);
 		
 		imshow("camLeft", uframeL); 		//show the frame
@@ -118,7 +119,7 @@ void frames(int id){
 		
 		//cout << "VIDEOPROCESS: after: rendered: " << rendered << "filled: " << filled << endl;
 		Image3d = Mat(disp.size().height, disp.size().width, CV_32FC3,Scalar::all(0));
-		reprojectImageTo3D(disp,Image3d, Q, false,CV_32F);
+		reprojectImageTo3D(disp,Image3d, Q, true,CV_32F);
 		Mat disp8;
         disp.convertTo(disp8, CV_8U, 255/(maxdisp*16.));        
 		imshow("disparity", disp8);
@@ -129,7 +130,7 @@ void frames(int id){
 			break; 
 		}
 		filled=true;
-		glLeftf = frameL;
+		glLeftf = newframeL;
 		cvar.notify_one();
 	}
 	
@@ -174,10 +175,13 @@ void display(){
 	
 	for (int j = 0; j < imgRow ; j++){
 		for (int i= 0; i < imgCol; i++){
-			glColor3ub(glLeftf.at<Vec3b>(j,i)[2],glLeftf.at<Vec3b>(j,i)[1],glLeftf.at<Vec3b>(j,i)[0]);
-			//cout << Image3d.at<Vec3f>(j,i)[0] << " " << Image3d.at<Vec3f>(j,i)[1] << " " << Image3d.at<Vec3f>(j,i)[2] << endl;
-			glVertex3f( (int)Image3d.at<Vec3f>(j,i)[0],imgRow-(int)Image3d.at<Vec3f>(j,i)[1], -Image3d.at<Vec3f>(j,i)[2]);
-			//glVertex3f( imgCol-i,imgRow-j, Image3d.at<Vec3f>(j,i)[2]);
+			
+			if (Image3d.at<Vec3f>(j,i)[2]>0) { 
+				glColor3ub(glLeftf.at<Vec3b>(j,i)[2],glLeftf.at<Vec3b>(j,i)[1],glLeftf.at<Vec3b>(j,i)[0]);
+				//cout << Image3d.at<Vec3f>(j,i)[0] << " " << Image3d.at<Vec3f>(j,i)[1] << " " << Image3d.at<Vec3f>(j,i)[2] << endl;
+				glVertex3f( (int)Image3d.at<Vec3f>(j,i)[0],-(int)Image3d.at<Vec3f>(j,i)[1], -Image3d.at<Vec3f>(j,i)[2]);
+				//glVertex3f( imgCol-i,imgRow-j, Image3d.at<Vec3f>(j,i)[2]);
+			}
 		}
 	}
 	glEnd();
