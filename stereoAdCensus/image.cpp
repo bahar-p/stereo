@@ -536,12 +536,14 @@ switch (dir){
 					for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
 						out.at<double>(p,q,d) = in.at<double>(p,q,d);
 						
-						if(q==subRW || p==subRH || q==img_leftRGB.cols-subRW-1 || p==img_leftRGB.rows-subRH-1){
+						if(q==subRW)
 							left_cost.at<double>(p,q,d)=in.at<double>(p,q,d);
+						if (q==img_leftRGB.cols-subRW-1 )
 							right_cost.at<double>(p,q,d)=in.at<double>(p,q,d);
+						if (p==subRH)
 							up_cost.at<double>(p,q,d)=in.at<double>(p,q,d);
+						if (p==img_leftRGB.rows-subRH-1)
 							down_cost.at<double>(p,q,d)=in.at<double>(p,q,d);
-						}
 						
 						//if( p==243 && q==4)
 							//printf("Final: aggcost[%d][%d][%d]= %Lf \t, iter: %d\t\n ", p, q, d, aggr_cost.at<double>(p,q,d), count);
@@ -571,28 +573,28 @@ void image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost){
 	double minUp=0.0;
 	double minDown=0.0;
 	//Left path opt
-	for(int p= subRH+1 ; p<img_leftRGB.rows-subRH-1 ; p++){				//Excluding boundaries
-		for(int q= subRW+1 ; q<img_leftRGB.cols-subRW-1 ; q++){				
+	for(int p= subRH ; p<img_leftRGB.rows-subRH ; p++){				//Excluding boundaries
+		for(int q= subRW+1 ; q<img_leftRGB.cols-subRW ; q++){				
 			minLeft=0.0;
 			minLeft=MinPathCost(left_cost, p,q-1);
 			for(int d=0; d<dispMax-dispMin+1; d++){
-				if(q-d-dispMin>0){									// > 0 because in calculation of parameters P1 and P2 for Left path optimization, 
+				if(q-d-dispMin>subRW){									// > 0 because in calculation of parameters P1 and P2 for Left path optimization, 
 																	//the intensity of the the previous pixel on the left is required, which causes an out of boundry error in case of (q-d-dispMin=0)
 					left_cost.at<double>(p,q,d) = costOpt(left_cost, p,q,d, minLeft, 'L', P1, P2, lim);
 				}
 					
 			}
+			
 		}
 	}
 	
 	//Right path opt
-	for(int p=subRH+1 ; p<img_leftRGB.rows-subRH-1 ; p++){				//Excluding boundaries
-		for(int q=img_leftRGB.cols-subRW-2 ; q>subRW ; q--){				
+	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){				//Excluding boundaries
+		for(int q=img_leftRGB.cols-subRW-2 ; q>=subRW ; q--){				
 			minRight=0.0;
 				minRight=MinPathCost(right_cost, p,q+1);
 				for(int d=0; d<dispMax-dispMin+1; d++){
-					
-					if(q-d-dispMin>-1)
+					if(q-d-dispMin>subRW-1)
 						right_cost.at<double>(p,q,d) = costOpt(right_cost, p,q,d, minRight, 'R', P1, P2, lim);
 					
 				}
@@ -600,24 +602,24 @@ void image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost){
 	}
 	
 	//Up path opt
-	for(int q= subRW+1; q< img_leftRGB.cols-subRW-1 ; q++){				//Excluding boundaries
-		for(int p= subRH+1 ; p<img_leftRGB.rows-subRH-1 ; p++){					
+	for(int q= subRW; q< img_leftRGB.cols-subRW ; q++){				//Excluding boundaries
+		for(int p= subRH+1 ; p<img_leftRGB.rows-subRH ; p++){					
 			minUp=0.0;
 				minUp=MinPathCost(up_cost, p-1,q);
 				for(int d=0; d<dispMax-dispMin+1; d++){
-					if(q-d-dispMin>-1)
+					if(q-d-dispMin>subRW-1)
 						up_cost.at<double>(p,q,d) = costOpt(up_cost, p,q,d, minUp, 'U', P1, P2, lim);
 				}
 		}
 	}
 	
 	//Down Path cost
-	for(int q= subRW+1 ; q< img_leftRGB.cols-subRW-1 ; q++){			//Excluding boundaries
-		for(int p= img_leftRGB.rows-subRH-2 ; p>subRH ; p--){			
+	for(int q= subRW; q< img_leftRGB.cols-subRW ; q++){			//Excluding boundaries
+		for(int p= img_leftRGB.rows-subRH-2 ; p>=subRH ; p--){			
 			minDown=0.0;
 				minDown=MinPathCost(down_cost, p+1,q);
 				for(int d=0; d<dispMax-dispMin+1; d++){
-					if(q-d-dispMin>-1)
+					if(q-d-dispMin>subRW-1)
 						down_cost.at<double>(p,q,d) = costOpt(down_cost, p,q,d, minDown, 'D', P1, P2, lim);
 				}
 		}
@@ -651,7 +653,7 @@ void image::finalCost(cv::Mat Lpath, cv::Mat Rpath, cv::Mat Upath, cv::Mat Dpath
 	for(int d=0; d<dispMax-dispMin+1; d++){
 		for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 			for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
-				outCost.at<double>(p,q,d) = (Lpath.at<double>(p,q,d) + Rpath.at<double>(p,q,d) + Upath.at<double>(p,q,d) + Dpath.at<double>(p,q,d))/4;
+				outCost.at<double>(p,q,d) = (Lpath.at<double>(p,q,d) + Rpath.at<double>(p,q,d) + Upath.at<double>(p,q,d) + Dpath.at<double>(p,q,d))/4.0;
 				//printf("final_cost(%d,%d,%d): %f\t, left: %f\t, right: %f\t, up: %f\t, down: %f\t\n", p,q,d, outCost.at<double>(p,q,d), Lpath.at<double>(p,q,d), Rpath.at<double>(p,q,d), Upath.at<double>(p,q,d), \
 				Dpath.at<double>(p,q,d));
 				
@@ -676,9 +678,11 @@ void image::finalCost(cv::Mat Lpath, cv::Mat Rpath, cv::Mat Upath, cv::Mat Dpath
 void image::find_disparity(cv::Mat in, cv::Mat& idisp ,cv::Mat& icost){
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
-			double tmpcost=1.79769e+308;
+			//double tmpcost=1.79769e+308;
+			double tmpcost=in.at<double>(p,q,0);
+			
 			for(int d=0; d<dispMax-dispMin+1; d++){
-				if(in.at<double>(p,q,d)< tmpcost){
+				if(in.at<double>(p,q,d)<= tmpcost){
 					tmpcost=in.at<double>(p,q,d);
 					idisp.at<float>(p,q)=(float)d+dispMin;				//Check again later to make sure it's correct..
 					icost.at<float>(p,q)=tmpcost;
@@ -767,8 +771,8 @@ bool image::dispValid(int d){
 }
 
 double image::minimum(double a, double b, double c, double d){
-	if(d==-1){
-		return a > b ? (a > c ? a : c) : (b > c ? b : c);
+	if(d==-100){
+		return a < b ? (a < c ? a : c) : (b < c ? b : c);
 	}
 	else {
 		double tmp1 = a < b ? a : b;
