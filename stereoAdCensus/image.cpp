@@ -524,7 +524,6 @@ switch (dir){
 					for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){		
 						int up= supReg.at<int>(p,q,2);					//up arm
 						int down= supReg.at<int>(p,q,3);				//down arm
-						
 						out.at<double>(p,q,d) = in.at<double>(p+down,q,d)-in.at<double>(p-up-1,q,d);
 						
 					}
@@ -575,14 +574,14 @@ void image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost){
 	for(int p= subRH+1 ; p<img_leftRGB.rows-subRH-1 ; p++){				//Excluding boundaries
 		for(int q= subRW+1 ; q<img_leftRGB.cols-subRW-1 ; q++){				
 			minLeft=0.0;
-				minLeft=MinPathCost(left_cost, p,q-1);
-				for(int d=0; d<dispMax-dispMin+1; d++){
-					if(q-d-dispMin>0){									// > 0 because in calculation of parameters P1 and P2 for Left path optimization, 
-																		//the intensity of the the previous pixel on the left is required, which causes an out of boundry error in case of (q-d-dispMin=0)
-						left_cost.at<double>(p,q,d) = costOpt(left_cost, p,q,d, minLeft, 'L', P1, P2, lim);
-					}
-						
+			minLeft=MinPathCost(left_cost, p,q-1);
+			for(int d=0; d<dispMax-dispMin+1; d++){
+				if(q-d-dispMin>0){									// > 0 because in calculation of parameters P1 and P2 for Left path optimization, 
+																	//the intensity of the the previous pixel on the left is required, which causes an out of boundry error in case of (q-d-dispMin=0)
+					left_cost.at<double>(p,q,d) = costOpt(left_cost, p,q,d, minLeft, 'L', P1, P2, lim);
 				}
+					
+			}
 		}
 	}
 	
@@ -630,6 +629,19 @@ void image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost){
 	
 }
 
+/* Minimum path cost of pixel predecessor */
+double image::MinPathCost(cv::Mat in, int p, int q){
+	//double min_cost=1.79769e+308;
+	double min_cost=in.at<double>(p,q,0);
+	for(int d=0; d<dispMax-dispMin+1; d++){
+		if(in.at<double>(p,q,d)<min_cost){
+			min_cost = in.at<double>(p,q,d);
+		}
+		//printf("MinPathCost: cost[%d][%d][%d]: %Lf\t\n", p,q,d, in[p][q][d]);
+	}
+	return min_cost;
+}
+
 
 /* Take the average of all the path cost */
 void image::finalCost(cv::Mat Lpath, cv::Mat Rpath, cv::Mat Upath, cv::Mat Dpath, cv::Mat outCost){
@@ -657,6 +669,8 @@ void image::finalCost(cv::Mat Lpath, cv::Mat Rpath, cv::Mat Upath, cv::Mat Dpath
 	}
 	std::cout<< "min n max value in the whole cost image: " << min << " , " << max << "  x: " << loc_x<< " , y: " << loc_y << " d: " << loc_d <<std::endl;
 }
+
+
 
 /* Find the final disparity for each pixel based on WTA method */
 void image::find_disparity(cv::Mat in, cv::Mat& idisp ,cv::Mat& icost){
@@ -686,10 +700,10 @@ double image::costOpt(cv::Mat in, int p, int q, int d, double preMin, char dir, 
 	switch (dir){
 		case 'L':
 			P = calc_param(p,q,p,q-1, p,q-d-dispMin,p,q-d-dispMin-1, threshold, param1, param2);
-			if(checkDisp(d-1,false) && !(checkDisp(d+1,true))){
+			if(!dispValid(d-1) && dispValid(d+1)){
 				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q-1,d), in.at<double>(p,q-1,d+1)+P.first,preMin+P.second)- preMin;
 			}
-			else if (!(checkDisp(d-1,false)) && checkDisp(d+1,true)){
+			else if (dispValid(d-1) && !(dispValid(d+1))){
 				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q-1,d), in.at<double>(p,q-1,d-1)+P.first,preMin+P.second)- preMin;
 			}
 			else {
@@ -703,10 +717,10 @@ double image::costOpt(cv::Mat in, int p, int q, int d, double preMin, char dir, 
 		
 		case 'R':
 			P = calc_param(p,q,p,q+1, p,q-d-dispMin,p,q-d-dispMin+1, threshold, param1, param2);
-			if(checkDisp(d-1,false) && !(checkDisp(d+1,true))){
+			if(!dispValid(d-1) && dispValid(d+1)){
 				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q+1,d), in.at<double>(p,q+1,d+1)+P.first,preMin+P.second)- preMin;
 			}
-			else if (!(checkDisp(d-1,false)) && checkDisp(d+1,true)){
+			else if (dispValid(d-1) && !(dispValid(d+1))){
 				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q+1,d), in.at<double>(p,q+1,d-1)+P.first,preMin+P.second)- preMin;
 			}
 			else {
@@ -717,10 +731,10 @@ double image::costOpt(cv::Mat in, int p, int q, int d, double preMin, char dir, 
 		case 'U':
 		
 			P = calc_param(p,q,p-1,q, p,q-d-dispMin,p-1,q-d-dispMin, threshold, param1, param2);
-			if(checkDisp(d-1,false) && !(checkDisp(d+1,true))){
+			if(!dispValid(d-1) && dispValid(d+1)){
 				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p-1,q,d), in.at<double>(p-1,q,d+1)+P.first,preMin+P.second)- preMin;
 			}
-			else if (!(checkDisp(d-1,false)) && checkDisp(d+1,true)){
+			else if (dispValid(d-1) && !(dispValid(d+1))){
 				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p-1,q,d), in.at<double>(p-1,q,d-1)+P.first,preMin+P.second)- preMin;
 			}
 			else {
@@ -730,10 +744,10 @@ double image::costOpt(cv::Mat in, int p, int q, int d, double preMin, char dir, 
 		
 		case 'D':
 			P = calc_param(p,q,p+1,q, p,q-d-dispMin,p+1,q-d-dispMin, threshold, param1, param2);
-			if(checkDisp(d-1,false) && !(checkDisp(d+1,true))){
+			if(!dispValid(d-1) && dispValid(d+1)){
 				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p+1,q,d), in.at<double>(p+1,q,d+1)+P.first,preMin+P.second)- preMin;
 			}
-			else if (!(checkDisp(d-1,false)) && checkDisp(d+1,true)){
+			else if (dispValid(d-1) && !(dispValid(d+1))){
 				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p+1,q,d), in.at<double>(p+1,q,d-1)+P.first,preMin+P.second)- preMin;
 			}
 			else {
@@ -748,11 +762,8 @@ double image::costOpt(cv::Mat in, int p, int q, int d, double preMin, char dir, 
 	return cost;
 }
 
-bool image::checkDisp(int d, bool incr){
-	if(!incr)
-		return d < 0 ? true:false;
-	else
-		return d > dispMax-dispMin ? true:false;
+bool image::dispValid(int d){
+	return (d < 0 || d >dispMax-dispMin) ? false:true;
 }
 
 double image::minimum(double a, double b, double c, double d){
@@ -767,18 +778,6 @@ double image::minimum(double a, double b, double c, double d){
 }
 
 
-/* Minimum path cost of pixel predecessor */
-double image::MinPathCost(cv::Mat in, int p, int q){
-	double min_cost=1.79769e+308;
-	for(int d=0; d<dispMax-dispMin+1; d++){
-		if(in.at<double>(p,q,d)<min_cost){
-			min_cost = in.at<double>(p,q,d);
-		}
-		//printf("MinPathCost: cost[%d][%d][%d]: %Lf\t\n", p,q,d, in[p][q][d]);
-	}
-	return min_cost;
-}
-
 /* Calculating some of the constants for the algorithm */
 std::pair<double,double> image::calc_param(int x1, int y1, int x2, int y2, int x3, int y3, 
 									int x4, int y4, double thr, double const1, 
@@ -786,8 +785,8 @@ std::pair<double,double> image::calc_param(int x1, int y1, int x2, int y2, int x
 	
 	double param1=0, param2=0;
 	std::pair <double,double> p1;
-	double leftdiff= (double)colDiffer(img_leftRGB, x1,y1,x2,y2);
-	double rightdiff= (double)colDiffer(img_rightRGB, x3,y3,x4,y4);
+	double leftdiff= colDiffer(img_leftRGB, x1,y1,x2,y2);
+	double rightdiff= colDiffer(img_rightRGB, x3,y3,x4,y4);
 	if(leftdiff<thr && rightdiff<thr)
 	{
 		param1=const1;
@@ -798,10 +797,10 @@ std::pair<double,double> image::calc_param(int x1, int y1, int x2, int y2, int x
 		param1=const1/4;
 		param2=const2/4;
 	}
-	else
+	else  					///FIXME: Here also includes when the values are equal, but in the paper it's just when they are bigger than threshold. Test it to see...
 	{
-		param1=const1/10;
-		param2=const2/10;
+		param1=const1/10;		
+		param2=const1/10;
 	}
 	
 	p1 = std::make_pair(param1, param2);

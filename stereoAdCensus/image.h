@@ -41,7 +41,7 @@ std::pair<double,double> calc_param(int, int, int, int, int, int ,int , int, dou
 void IImage(cv::Mat, cv::Mat, char);
 void finalSum(cv::Mat , cv::Mat, char, int a=0);
 double minimum(double, double, double, double val=-1);
-bool checkDisp(int, bool);
+bool dispValid(int);
 void find_disparity(cv::Mat, cv::Mat&, cv::Mat&);
 void finalCost(cv::Mat , cv::Mat , cv::Mat , cv::Mat , cv::Mat );
 double findMax(cv::Mat);

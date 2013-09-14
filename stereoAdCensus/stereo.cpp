@@ -8,11 +8,14 @@
 
 using namespace std;
 using namespace cv;
+using namespace cv::gpu;
 
 image *img;
 
 int main(int argc, char **argv)
 {
+	
+	
 	//Read input images into Matrices
 	Mat image_left = imread(argv[1], CV_LOAD_IMAGE_COLOR);
    	Mat image_right = imread(argv[2], CV_LOAD_IMAGE_COLOR);
@@ -25,8 +28,7 @@ int main(int argc, char **argv)
    // img->read_image();
 	//cout << numeric_limits<double>::max()<<endl;
 	//cout << numeric_limits<double>::digits10<<endl;
-	//cout << numeric_limits<double>::max()<<endl;
-	
+	//cout << numeric_limits<double>::max()<<endl;       	
 	/*uint64_t a = 0;
 	a <<= 1;
 	a+=1;
@@ -44,7 +46,7 @@ int main(int argc, char **argv)
 	
 	Mat disp=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	Mat cost=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
-	img->scanline(1.0,3.0,15, disp, cost);
+	img->scanline(1.0,3.0,10, disp, cost);
 	std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
 	//cout<< disp.type() << endl;
 	double minv, maxv;
