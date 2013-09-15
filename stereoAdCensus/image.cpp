@@ -58,6 +58,8 @@ image::image(Mat image_leftRGB, Mat image_rightRGB, int dMin, int dMax){
 			}
 		}
 	}
+	
+	
 	//DEBUG
 	/*init_cost.at<double>(1,1)=1;
 	init_cost.at<double>(1,2)=3;
@@ -203,26 +205,25 @@ void image::costAD(){
 void image::costCensus(int winX, int winY, int left){
 	uint64_t census;
 	uint64_t bit=0;
-	int i,j,x,y;
 	int shifts;
 	cv::Mat left_gray, right_gray;
 	cvtColor(img_leftRGB,left_gray,CV_BGR2GRAY);
 	cvtColor(img_rightRGB,right_gray,CV_BGR2GRAY);
-	for(x=winX/2; x<img_leftRGB.rows - winX/2; x++){
-		for(y=winY/2; y<img_leftRGB.cols - winY/2; y++){
+	for(int x = winX/2; x<img_leftRGB.rows - winX/2; x++){
+		for(int y = winY/2; y<img_leftRGB.cols - winY/2 ; y++){
 			//printf("x: %d\t , y: %d\t" , x,y);
 			census=0;
 			shifts=0;
-			for(i=x - winX/2; i <= x + winX/2 ; i++){
-				for(j = y - winY/2; j <= y + winY/2 ; j++){
+			for(int i=x - winX/2; i <= x + winX/2 ; i++){
+				for(int j = y - winY/2; j <= y + winY/2 ; j++){
 					if(shifts != winX*winY/2){						//just to exclude the central pixel from the calculation
 						census <<= 1;	
 						if(left==1){								//left image		
-							if(left_gray.at<unsigned char>(i,j)<left_gray.at<unsigned char>(x,y))
+							if(left_gray.at<uchar>(i,j)<left_gray.at<uchar>(x,y))
 								bit=1;
 							else bit=0;
 						} else {
-							if(right_gray.at<unsigned char>(i,j)<right_gray.at<unsigned char>(x,y))
+							if(right_gray.at<uchar>(i,j)<right_gray.at<uchar>(x,y))
 								bit=1;
 							else bit=0;
 						}
@@ -271,7 +272,7 @@ void image::hamdist(uint64_t** censL, uint64_t** censR, int winX, int winY){
 			for(q= winY/2 ; q<img_leftRGB.cols - winY/2 ; q++){				//cols = width
 				dist=0;
 				val=0;
-				if(q-d-dispMin>subRW-1){
+				if(q-d-dispMin>subRW -1){
 					val = censL[p][q] ^ censR[p][q-d-dispMin];				//XOR operation
 					//printf("censL: %lld\t\t , censR: %lld\t\t", censL[p][q+d+dispMin], censR[p][q]);
 					while(val){
@@ -579,7 +580,7 @@ void image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost){
 			minLeft=MinPathCost(left_cost, p,q-1);
 			for(int d=0; d<dispMax-dispMin+1; d++){
 				if(q-d-dispMin>subRW){									// > 0 because in calculation of parameters P1 and P2 for Left path optimization, 
-																	//the intensity of the the previous pixel on the left is required, which causes an out of boundry error in case of (q-d-dispMin=0)
+																		//the intensity of the the previous pixel on the left is required, which causes an out of boundry error in case of (q-d-dispMin=0)
 					left_cost.at<double>(p,q,d) = costOpt(left_cost, p,q,d, minLeft, 'L', P1, P2, lim);
 				}
 					
