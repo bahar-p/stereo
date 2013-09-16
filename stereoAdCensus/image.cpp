@@ -182,19 +182,32 @@ Mat image::get_image(int left){
 }
 
 /* Calculating the average intesity difference for each pixel and its correspondence */
-void image::costAD(){
+void image::costAD(bool dispR){
 	int d,p,q;
+	
 	for(d=0;d<dispMax-dispMin+1;d++){
 		for(p=subRH;p<img_leftRGB.rows-subRH;p++){					//Rows = height
 			for(q=subRW;q<img_leftRGB.cols-subRW;q++){				//cols = width
-				if(q-d-dispMin>subRW-1){
-					DSI.at<double>(p,q,d)= (double)((abs(img_leftRGB.at<cv::Vec3b>(p,q).val[0] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[0])) + 
-					(abs(img_leftRGB.at<cv::Vec3b>(p,q).val[1] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[1])) +
-					(abs(img_leftRGB.at<cv::Vec3b>(p,q).val[2] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[2])))/3;
+			
+			//Left disparity
+				if(!dispR){
+					if(q-d-dispMin>subRW-1){
+						DSI.at<double>(p,q,d)= (double)((abs(img_leftRGB.at<cv::Vec3b>(p,q).val[0] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[0])) + 
+						(abs(img_leftRGB.at<cv::Vec3b>(p,q).val[1] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[1])) +
+						(abs(img_leftRGB.at<cv::Vec3b>(p,q).val[2] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[2])))/3;
 
-					/*printf ("b: %f\t, g: %u\t, r: %u\t, bR: %u\t, gR: %u\t , rR: %u\t" , (double)img_leftRGB.at<cv::Vec3b>(p,q).val[0], img_leftRGB.at<cv::Vec3b>(p,q).val[1],
-					img_leftRGB.at<cv::Vec3b>(p,q).val[2], img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[0],
-					img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[1],img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[2]);*/
+						/*printf ("b: %f\t, g: %u\t, r: %u\t, bR: %u\t, gR: %u\t , rR: %u\t" , (double)img_leftRGB.at<cv::Vec3b>(p,q).val[0], img_leftRGB.at<cv::Vec3b>(p,q).val[1],
+						img_leftRGB.at<cv::Vec3b>(p,q).val[2], img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[0],
+						img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[1],img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[2]);*/
+					}
+				}
+				else{
+					//Right disparity
+					if(q+d+dispMin<img_leftRGB.cols-subRW){
+						DSI.at<double>(p,q,d)= (double)((abs(img_leftRGB.at<cv::Vec3b>(p,q+d+dispMin).val[0] - img_rightRGB.at<cv::Vec3b>(p,q).val[0])) + 
+						(abs(img_leftRGB.at<cv::Vec3b>(p,q+d+dispMin).val[1] - img_rightRGB.at<cv::Vec3b>(p,q).val[1])) +
+						(abs(img_leftRGB.at<cv::Vec3b>(p,q+d+dispMin).val[2] - img_rightRGB.at<cv::Vec3b>(p,q).val[2])))/3;
+					}
 				}
 			}
 		}
@@ -263,7 +276,7 @@ char * image::itob(uint64_t x)
 }
 
 /* Calculating the hamming distance between each pixel and its correspondence census cost */
-void image::hamdist(uint64_t** censL, uint64_t** censR, int winX, int winY){
+void image::hamdist(uint64_t** censL, uint64_t** censR, int winX, int winY, bool dispR){
 	int d,p,q;
 	uint64_t val=0;
 	unsigned dist=0;
@@ -272,17 +285,31 @@ void image::hamdist(uint64_t** censL, uint64_t** censR, int winX, int winY){
 			for(q= winY/2 ; q<img_leftRGB.cols - winY/2 ; q++){				//cols = width
 				dist=0;
 				val=0;
-				if(q-d-dispMin>subRW -1){
-					val = censL[p][q] ^ censR[p][q-d-dispMin];				//XOR operation
-					//printf("censL: %lld\t\t , censR: %lld\t\t", censL[p][q+d+dispMin], censR[p][q]);
-					while(val){
-						++dist;
-						val &= val - 1;
+				if(!dispR){
+					if(q-d-dispMin>subRW -1){
+						val = censL[p][q] ^ censR[p][q-d-dispMin];				//XOR operation
+						//printf("censL: %lld\t\t , censR: %lld\t\t", censL[p][q+d+dispMin], censR[p][q]);
+						while(val){
+							++dist;
+							val &= val - 1;
+						}
+						census_hamming[p][q][d]= dist;
+						//printf("hammingDist: %u\t\t", dist);
+						/*if(p==23 && q==60 && (q-d-dispMin==58)){
+							printf("x: %d\t , q: %d\t , census_hamming: %u\n" , p,q-d-dispMin, census_hamming[p][q][d]);
+						}*/
 					}
-					census_hamming[p][q][d]= dist;
-					//printf("hammingDist: %u\t\t", dist);
-					if(p==23 && q==60 && (q-d-dispMin==58)){
-						printf("x: %d\t , q: %d\t , census_hamming: %u\n" , p,q-d-dispMin, census_hamming[p][q][d]);
+				}
+				else{
+					if(q+d+dispMin<img_leftRGB.cols-subRW){
+						val = censL[p][q+d+dispMin] ^ censR[p][q];				//XOR operation
+						//printf("censL: %lld\t\t , censR: %lld\t\t", censL[p][q+d+dispMin], censR[p][q]);
+						while(val){
+							++dist;
+							val &= val - 1;
+						}
+						census_hamming[p][q][d]= dist;
+						//printf("hammingDist: %u\t\t", dist);
 					}
 				}
 			}
@@ -294,12 +321,9 @@ void image::hamdist(uint64_t** censL, uint64_t** censR, int winX, int winY){
 }
 
 /* Calculate census cost */
-void image::c_census(int X, int Y){
-	costCensus(X,Y,1);
+void image::c_census(int X, int Y, bool dispR){
 	
-	costCensus(X,Y,0);
-	
-	hamdist(censusLeft, censusRight, X,Y);
+	hamdist(censusLeft, censusRight, X,Y, dispR);
 	
 }
 /* Calculating the initial cost: Census + AD */
@@ -321,11 +345,12 @@ void image::initCost(double lam_AD, double lam_census){
 }
 
 /* Building the cross-based region for each pixel */
-void image::line_segment(double colLim1, double colLim2, double distLim1, double distLim2){
+void image::line_segment(double colLim1, double colLim2, double distLim1, double distLim2, bool dispR){
 	int p,q,x,y;
-		for(p= subRH ; p<img_leftRGB.rows-subRH; p++){					//Rows = height
-			for(q= subRW ; q<img_leftRGB.cols-subRW ; q++){				//cols = width
-				
+	for(p= subRH ; p<img_leftRGB.rows-subRH; p++){					//Rows = height
+		for(q= subRW ; q<img_leftRGB.cols-subRW ; q++){				//cols = width
+			
+			if(!dispR){
 				if(q!=subRW){
 					for(y=q-1; y>=subRW; y--){							//scan left arm - The first arg
 						double col_diff1 = colDiffer(img_leftRGB, p,y,p,q);
@@ -340,8 +365,8 @@ void image::line_segment(double colLim1, double colLim2, double distLim1, double
 				}
 				
 				if( supReg.at<int>(p,q,0)==0){							//if no endpoint found and it's not one of the edges' pixels
-					 int dist = std::abs(subRW-q);
-					 supReg.at<int>(p,q,0)= dist;										//The edge pixel will be the end point.
+					int dist = std::abs(subRW-q);
+					supReg.at<int>(p,q,0)= dist;										//The edge pixel will be the end point.
 					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The left arm endpoint is: " << dist << std::endl;
 				}
 				
@@ -352,16 +377,17 @@ void image::line_segment(double colLim1, double colLim2, double distLim1, double
 						int dist= std::abs(y-q);
 						
 						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){
-							  supReg.at<int>(p,q,1)=dist;
+							 supReg.at<int>(p,q,1)=dist;
 							// std::cout<< "For the point (" << p << " , "  << q << ") The right arm endpoint is: " << dist << std::endl;
 							 break;
 						}
 					}
-				}
-				if( supReg.at<int>(p,q,1)==0){	
-					int dist = std::abs(img_leftRGB.cols-1-subRW-q);	
-					 supReg.at<int>(p,q,1)=dist;										
-					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The right arm endpoint is: " << dist << std::endl;
+				
+					if( supReg.at<int>(p,q,1)==0){	
+						int dist = std::abs(img_leftRGB.cols-1-subRW-q);	
+						supReg.at<int>(p,q,1)=dist;										
+						//std::cout<< "excep: For the point (" << p << " , "  << q << ") The right arm endpoint is: " << dist << std::endl;
+					}
 				}
 				if(p!=subRH){
 					for(x=p-1; x>=subRH; x--){											//scan up arm - The third arg
@@ -378,7 +404,7 @@ void image::line_segment(double colLim1, double colLim2, double distLim1, double
 				}
 				if( supReg.at<int>(p,q,2)==0){
 					int dist = std::abs(subRH-p);
-					 supReg.at<int>(p,q,2)= dist;										
+					supReg.at<int>(p,q,2)= dist;										
 					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The up arm endpoint is: " << dist << std::endl;
 				}
 				if(p!=img_leftRGB.rows-subRH-1){
@@ -397,11 +423,87 @@ void image::line_segment(double colLim1, double colLim2, double distLim1, double
 				
 				if( supReg.at<int>(p,q,3)==0){
 					int dist = std::abs(img_leftRGB.rows-1-subRH-p);
+					supReg.at<int>(p,q,3)= dist;
+					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The bottom arm endpoint is: " << dist << std::endl;
+				}
+			} else {
+				if(q!=subRW){
+					for(y=q-1; y>=subRW; y--){							//scan left arm - The first arg
+						double col_diff1 = colDiffer(img_rightRGB, p,y,p,q);
+						double col_diff2 = colDiffer(img_rightRGB, p,y,p,y+1);		//the endpoint and its predecessor
+						int dist= std::abs(y-q);					
+						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){	//if violates any of these rules
+							 supReg.at<int>(p,q,0)=dist;
+							 //std::cout<< "For the point (" << p << " , "  << q << ") The left arm endpoint is: " << dist << std::endl;
+							 break;
+						}
+					}
+				}
+				
+				if( supReg.at<int>(p,q,0)==0){							//if no endpoint found and it's not one of the edges' pixels
+					 int dist = std::abs(subRW-q);
+					 supReg.at<int>(p,q,0)= dist;										//The edge pixel will be the end point.
+					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The left arm endpoint is: " << dist << std::endl;
+				}
+				
+				if(q!=img_leftRGB.cols-subRW-1){
+					for(y=q+1; y<img_leftRGB.cols - subRW; y++){							//scan right arm - The second arg
+						double col_diff1 = colDiffer(img_rightRGB, p,y,p,q);
+						double col_diff2 = colDiffer(img_rightRGB,p,y,p,y-1);						//the end point and its predecessor
+						int dist= std::abs(y-q);
+						
+						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){
+							  supReg.at<int>(p,q,1)=dist;
+							// std::cout<< "For the point (" << p << " , "  << q << ") The right arm endpoint is: " << dist << std::endl;
+							 break;
+						}
+					}
+				}
+				if( supReg.at<int>(p,q,1)==0){	
+					int dist = std::abs(img_leftRGB.cols-1-subRW-q);	
+					 supReg.at<int>(p,q,1)=dist;										
+					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The right arm endpoint is: " << dist << std::endl;
+				}
+				if(p!=subRH){
+					for(x=p-1; x>=subRH; x--){											//scan up arm - The third arg
+						double col_diff1 = colDiffer(img_rightRGB,x,q,p,q);
+						double col_diff2 = colDiffer(img_rightRGB,x,q,x+1,q);
+						int dist= std::abs(x-p);
+						
+						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){
+							  supReg.at<int>(p,q,2)=dist;
+							 //std::cout<< "For the point (" << p << " , "  << q << ") The up arm	endpoint is: " << dist << std::endl;
+							 break;
+						}
+					}
+				}
+				if( supReg.at<int>(p,q,2)==0){
+					int dist = std::abs(subRH-p);
+					 supReg.at<int>(p,q,2)= dist;										
+					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The up arm endpoint is: " << dist << std::endl;
+				}
+				if(p!=img_leftRGB.rows-subRH-1){
+					for(x=p+1; x<img_leftRGB.rows-subRH; x++){							//scan bottom arm - The fourth arg
+						double col_diff1 = colDiffer(img_rightRGB,x,q,p,q);
+						double col_diff2 = colDiffer(img_rightRGB,x,q,x-1,q);						//the end point and its predecessor
+						int dist= std::abs(x-p);
+						
+						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){
+							 supReg.at<int>(p,q,3)=dist;
+							//std::cout<< "For the point (" << p << " , "  << q << ") The bottom arm endpoint is: " << dist << std::endl;
+							break;
+						}
+					}
+				}
+				
+				if( supReg.at<int>(p,q,3)==0){
+					int dist = std::abs(img_leftRGB.rows-1-subRH-p);
 					 supReg.at<int>(p,q,3)= dist;
 					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The bottom arm endpoint is: " << dist << std::endl;
 				}
 			}
 		}
+	}
 }
 
 /* Calculating aggregated cost */
@@ -454,17 +556,6 @@ void image::aggregateCost(){
 				std::cout<< "iteration out of range" <<std::endl;
 			break;
 		}
-		
-		/*if(counter==2){
-			for(int d=0; d<dispMax-dispMin+1; d++){
-				for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
-					for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
-						cout<<"sumH: "  << sumH.at<double>(p,q,d) << endl;
-						//cout<<"sumV: "  << sumV.at<double>(p,q,d) << endl;
-					}
-				}
-			}
-		}*/
 		counter++;
 	}
 	//aggr_cost = cv::Scalar::all(0);
@@ -568,7 +659,7 @@ double image::colDiffer(cv::Mat in, int x1, int y1, int x2, int y2){
 }
 
 /* Scanline optimization from 4 direction: LRUD */
-void image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost){
+void image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost, bool dispR){
 	double minLeft=0.0;
 	double minRight=0.0;
 	double minUp=0.0;
@@ -578,14 +669,21 @@ void image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost){
 		for(int q= subRW+1 ; q<img_leftRGB.cols-subRW ; q++){				
 			minLeft=0.0;
 			minLeft=MinPathCost(left_cost, p,q-1);
-			for(int d=0; d<dispMax-dispMin+1; d++){
-				if(q-d-dispMin>subRW){									// > 0 because in calculation of parameters P1 and P2 for Left path optimization, 
-																		//the intensity of the the previous pixel on the left is required, which causes an out of boundry error in case of (q-d-dispMin=0)
-					left_cost.at<double>(p,q,d) = costOpt(left_cost, p,q,d, minLeft, 'L', P1, P2, lim);
+			if(!dispR){
+				for(int d=0; d<dispMax-dispMin+1; d++){
+					if(q-d-dispMin>subRW){									// > 0 because in calculation of parameters P1 and P2 for Left path optimization, 
+																			//the intensity of the the previous pixel on the left is required, which causes an out of boundry error in case of (q-d-dispMin=0)
+						left_cost.at<double>(p,q,d) = costOpt(left_cost, p,q,d, minLeft, 'L', P1, P2, lim);
+					}	
 				}
-					
+			} else {
+				for(int d=0; d<dispMax-dispMin+1; d++){
+					if(q+d+dispMin<img_leftRGB.cols-subRW){									// > 0 because in calculation of parameters P1 and P2 for Left path optimization, 
+																			//the intensity of the the previous pixel on the left is required, which causes an out of boundry error in case of (q-d-dispMin=0)
+						left_cost.at<double>(p,q,d) = costOpt(left_cost, p,q,d, minLeft, 'L', P1, P2, lim, dispR);
+					}	
+				}
 			}
-			
 		}
 	}
 	
@@ -593,12 +691,18 @@ void image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost){
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){				//Excluding boundaries
 		for(int q=img_leftRGB.cols-subRW-2 ; q>=subRW ; q--){				
 			minRight=0.0;
-				minRight=MinPathCost(right_cost, p,q+1);
+			minRight=MinPathCost(right_cost, p,q+1);
+			if(!dispR){
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q-d-dispMin>subRW-1)
 						right_cost.at<double>(p,q,d) = costOpt(right_cost, p,q,d, minRight, 'R', P1, P2, lim);
-					
 				}
+			} else {
+				for(int d=0; d<dispMax-dispMin+1; d++){
+					if(q+d+dispMin<img_leftRGB.cols-subRW-1)
+						right_cost.at<double>(p,q,d) = costOpt(right_cost, p,q,d, minRight, 'R', P1, P2, lim,dispR);
+				}
+			}
 		}
 	}
 	
@@ -606,11 +710,18 @@ void image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost){
 	for(int q= subRW; q< img_leftRGB.cols-subRW ; q++){				//Excluding boundaries
 		for(int p= subRH+1 ; p<img_leftRGB.rows-subRH ; p++){					
 			minUp=0.0;
-				minUp=MinPathCost(up_cost, p-1,q);
+			minUp=MinPathCost(up_cost, p-1,q);
+			if(!dispR){
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q-d-dispMin>subRW-1)
 						up_cost.at<double>(p,q,d) = costOpt(up_cost, p,q,d, minUp, 'U', P1, P2, lim);
 				}
+			} else {
+				for(int d=0; d<dispMax-dispMin+1; d++){
+					if(q+d+dispMin<img_leftRGB.cols-subRW)
+						up_cost.at<double>(p,q,d) = costOpt(up_cost, p,q,d, minUp, 'U', P1, P2, lim, dispR);
+				}					
+			}
 		}
 	}
 	
@@ -618,11 +729,18 @@ void image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost){
 	for(int q= subRW; q< img_leftRGB.cols-subRW ; q++){			//Excluding boundaries
 		for(int p= img_leftRGB.rows-subRH-2 ; p>=subRH ; p--){			
 			minDown=0.0;
-				minDown=MinPathCost(down_cost, p+1,q);
+			minDown=MinPathCost(down_cost, p+1,q);
+			if(!dispR){
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q-d-dispMin>subRW-1)
 						down_cost.at<double>(p,q,d) = costOpt(down_cost, p,q,d, minDown, 'D', P1, P2, lim);
 				}
+			} else {
+				for(int d=0; d<dispMax-dispMin+1; d++){
+					if(q+d+dispMin<img_leftRGB.cols-subRW)
+						down_cost.at<double>(p,q,d) = costOpt(down_cost, p,q,d, minDown, 'D', P1, P2, lim, dispR);
+				}
+			}
 		}
 	}
 	
@@ -637,7 +755,7 @@ double image::MinPathCost(cv::Mat in, int p, int q){
 	//double min_cost=1.79769e+308;
 	double min_cost=in.at<double>(p,q,0);
 	for(int d=0; d<dispMax-dispMin+1; d++){
-		if(in.at<double>(p,q,d)<min_cost){
+		if(in.at<double>(p,q,d)<=min_cost){
 			min_cost = in.at<double>(p,q,d);
 		}
 		//printf("MinPathCost: cost[%d][%d][%d]: %Lf\t\n", p,q,d, in[p][q][d]);
@@ -699,70 +817,135 @@ void image::find_disparity(cv::Mat in, cv::Mat& idisp ,cv::Mat& icost){
 }
 
 /* Calculating ech path cost to a pixel of interest */
-double image::costOpt(cv::Mat in, int p, int q, int d, double preMin, char dir, double param1, double param2, double threshold){
+double image::costOpt(cv::Mat in, int p, int q, int d, double preMin, char dir, double param1, double param2, double threshold,bool dispR){
 	double cost=0.0;
 	std::pair<double,double> P;
-	switch (dir){
-		case 'L':
-			P = calc_param(p,q,p,q-1, p,q-d-dispMin,p,q-d-dispMin-1, threshold, param1, param2);
-			if(!dispValid(d-1) && dispValid(d+1)){
-				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q-1,d), in.at<double>(p,q-1,d+1)+P.first,preMin+P.second)- preMin;
-			}
-			else if (dispValid(d-1) && !(dispValid(d+1))){
-				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q-1,d), in.at<double>(p,q-1,d-1)+P.first,preMin+P.second)- preMin;
-			}
-			else {
-				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q-1,d), in.at<double>(p,q-1,d-1)+P.first, in.at<double>(p,q-1,d+1)+P.first,preMin+P.second) - preMin;
-			}
-			/*if(p==4 && q==7 && d==5){
-				printf("CostOpt: aggr_cost[%d][%d][%d]= %Lf \t , minLeft:%Lf\t\n , pre_d: %Lf\t, pre_d-1: %Lf\t, param1: %f\t, param2: %f\t\n", p, q, d, 
-				aggr_cost[p][q][d], preMin, in[p][q-1][d], in[p][q-1][d-1]+P.first,P.first, P.second);
-			}*/
-		break;
-		
-		case 'R':
-			P = calc_param(p,q,p,q+1, p,q-d-dispMin,p,q-d-dispMin+1, threshold, param1, param2);
-			if(!dispValid(d-1) && dispValid(d+1)){
-				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q+1,d), in.at<double>(p,q+1,d+1)+P.first,preMin+P.second)- preMin;
-			}
-			else if (dispValid(d-1) && !(dispValid(d+1))){
-				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q+1,d), in.at<double>(p,q+1,d-1)+P.first,preMin+P.second)- preMin;
-			}
-			else {
-				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q+1,d), in.at<double>(p,q+1,d-1)+P.first, in.at<double>(p,q+1,d+1)+P.first,preMin+P.second) - preMin;
-			}
-		break;
-			
-		case 'U':
-		
-			P = calc_param(p,q,p-1,q, p,q-d-dispMin,p-1,q-d-dispMin, threshold, param1, param2);
-			if(!dispValid(d-1) && dispValid(d+1)){
-				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p-1,q,d), in.at<double>(p-1,q,d+1)+P.first,preMin+P.second)- preMin;
-			}
-			else if (dispValid(d-1) && !(dispValid(d+1))){
-				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p-1,q,d), in.at<double>(p-1,q,d-1)+P.first,preMin+P.second)- preMin;
-			}
-			else {
-				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p-1,q,d), in.at<double>(p-1,q,d-1)+P.first, in.at<double>(p-1,q,d+1)+P.first,preMin+P.second) - preMin;
-			}
-		break;
-		
-		case 'D':
-			P = calc_param(p,q,p+1,q, p,q-d-dispMin,p+1,q-d-dispMin, threshold, param1, param2);
-			if(!dispValid(d-1) && dispValid(d+1)){
-				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p+1,q,d), in.at<double>(p+1,q,d+1)+P.first,preMin+P.second)- preMin;
-			}
-			else if (dispValid(d-1) && !(dispValid(d+1))){
-				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p+1,q,d), in.at<double>(p+1,q,d-1)+P.first,preMin+P.second)- preMin;
-			}
-			else {
-				cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p+1,q,d), in.at<double>(p+1,q,d-1)+P.first, in.at<double>(p+1,q,d+1)+P.first,preMin+P.second) - preMin;
-			}
-		break;
-		
-		default:
-			std::cout << "no direction specified" <<std::endl;
+	if(!dispR){
+		switch (dir){
+			case 'L':
+				P = calc_param(p,q,p,q-1, p,q-d-dispMin,p,q-d-dispMin-1, threshold, param1, param2);
+				if(!dispValid(d-1) && dispValid(d+1)){
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q-1,d), in.at<double>(p,q-1,d+1)+P.first,preMin+P.second)- preMin;
+				}
+				else if (dispValid(d-1) && !(dispValid(d+1))){
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q-1,d), in.at<double>(p,q-1,d-1)+P.first,preMin+P.second)- preMin;
+				}
+				else {
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q-1,d), in.at<double>(p,q-1,d-1)+P.first, in.at<double>(p,q-1,d+1)+P.first,preMin+P.second) - preMin;
+				}
+				/*if(p==4 && q==7 && d==5){
+					printf("CostOpt: aggr_cost[%d][%d][%d]= %Lf \t , minLeft:%Lf\t\n , pre_d: %Lf\t, pre_d-1: %Lf\t, param1: %f\t, param2: %f\t\n", p, q, d, 
+					aggr_cost[p][q][d], preMin, in[p][q-1][d], in[p][q-1][d-1]+P.first,P.first, P.second);
+				}*/
 			break;
+			
+			case 'R':
+				P = calc_param(p,q,p,q+1, p,q-d-dispMin,p,q-d-dispMin+1, threshold, param1, param2);
+				if(!dispValid(d-1) && dispValid(d+1)){
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q+1,d), in.at<double>(p,q+1,d+1)+P.first,preMin+P.second)- preMin;
+				}
+				else if (dispValid(d-1) && !(dispValid(d+1))){
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q+1,d), in.at<double>(p,q+1,d-1)+P.first,preMin+P.second)- preMin;
+				}
+				else {
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q+1,d), in.at<double>(p,q+1,d-1)+P.first, in.at<double>(p,q+1,d+1)+P.first,preMin+P.second) - preMin;
+				}
+			break;
+				
+			case 'U':
+			
+				P = calc_param(p,q,p-1,q, p,q-d-dispMin,p-1,q-d-dispMin, threshold, param1, param2);
+				if(!dispValid(d-1) && dispValid(d+1)){
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p-1,q,d), in.at<double>(p-1,q,d+1)+P.first,preMin+P.second)- preMin;
+				}
+				else if (dispValid(d-1) && !(dispValid(d+1))){
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p-1,q,d), in.at<double>(p-1,q,d-1)+P.first,preMin+P.second)- preMin;
+				}
+				else {
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p-1,q,d), in.at<double>(p-1,q,d-1)+P.first, in.at<double>(p-1,q,d+1)+P.first,preMin+P.second) - preMin;
+				}
+			break;
+			
+			case 'D':
+				P = calc_param(p,q,p+1,q, p,q-d-dispMin,p+1,q-d-dispMin, threshold, param1, param2);
+				if(!dispValid(d-1) && dispValid(d+1)){
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p+1,q,d), in.at<double>(p+1,q,d+1)+P.first,preMin+P.second)- preMin;
+				}
+				else if (dispValid(d-1) && !(dispValid(d+1))){
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p+1,q,d), in.at<double>(p+1,q,d-1)+P.first,preMin+P.second)- preMin;
+				}
+				else {
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p+1,q,d), in.at<double>(p+1,q,d-1)+P.first, in.at<double>(p+1,q,d+1)+P.first,preMin+P.second) - preMin;
+				}
+			break;
+			
+			default:
+				std::cout << "no direction specified" <<std::endl;
+				break;
+		}
+	} else {					//Right disparity
+		switch (dir){
+			case 'L':
+				P = calc_param(p,q+d+dispMin,p,q+d+dispMin-1, p,q,p,q-1, threshold, param1, param2);
+				if(!dispValid(d-1) && dispValid(d+1)){
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q-1,d), in.at<double>(p,q-1,d+1)+P.first,preMin+P.second)- preMin;
+				}
+				else if (dispValid(d-1) && !(dispValid(d+1))){
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q-1,d), in.at<double>(p,q-1,d-1)+P.first,preMin+P.second)- preMin;
+				}
+				else {
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q-1,d), in.at<double>(p,q-1,d-1)+P.first, in.at<double>(p,q-1,d+1)+P.first,preMin+P.second) - preMin;
+				}
+				/*if(p==4 && q==7 && d==5){
+					printf("CostOpt: aggr_cost[%d][%d][%d]= %Lf \t , minLeft:%Lf\t\n , pre_d: %Lf\t, pre_d-1: %Lf\t, param1: %f\t, param2: %f\t\n", p, q, d, 
+					aggr_cost[p][q][d], preMin, in[p][q-1][d], in[p][q-1][d-1]+P.first,P.first, P.second);
+				}*/
+			break;
+			
+			case 'R':
+				P = calc_param(p,q+d+dispMin,p,q+d+dispMin+1, p,q,p,q+1, threshold, param1, param2);
+				if(!dispValid(d-1) && dispValid(d+1)){
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q+1,d), in.at<double>(p,q+1,d+1)+P.first,preMin+P.second)- preMin;
+				}
+				else if (dispValid(d-1) && !(dispValid(d+1))){
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q+1,d), in.at<double>(p,q+1,d-1)+P.first,preMin+P.second)- preMin;
+				}
+				else {
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p,q+1,d), in.at<double>(p,q+1,d-1)+P.first, in.at<double>(p,q+1,d+1)+P.first,preMin+P.second) - preMin;
+				}
+			break;
+				
+			case 'U':
+			
+				P = calc_param(p,q+d+dispMin,p-1,q+d+dispMin, p,q,p-1,q, threshold, param1, param2);
+				if(!dispValid(d-1) && dispValid(d+1)){
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p-1,q,d), in.at<double>(p-1,q,d+1)+P.first,preMin+P.second)- preMin;
+				}
+				else if (dispValid(d-1) && !(dispValid(d+1))){
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p-1,q,d), in.at<double>(p-1,q,d-1)+P.first,preMin+P.second)- preMin;
+				}
+				else {
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p-1,q,d), in.at<double>(p-1,q,d-1)+P.first, in.at<double>(p-1,q,d+1)+P.first,preMin+P.second) - preMin;
+				}
+			break;
+			
+			case 'D':
+				P = calc_param(p,q+d+dispMin,p+1,q+d+dispMin, p,q,p+1,q, threshold, param1, param2);
+				if(!dispValid(d-1) && dispValid(d+1)){
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p+1,q,d), in.at<double>(p+1,q,d+1)+P.first,preMin+P.second)- preMin;
+				}
+				else if (dispValid(d-1) && !(dispValid(d+1))){
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p+1,q,d), in.at<double>(p+1,q,d-1)+P.first,preMin+P.second)- preMin;
+				}
+				else {
+					cost=aggr_cost.at<double>(p,q,d)+minimum(in.at<double>(p+1,q,d), in.at<double>(p+1,q,d-1)+P.first, in.at<double>(p+1,q,d+1)+P.first,preMin+P.second) - preMin;
+				}
+			break;
+			
+			default:
+				std::cout << "no direction specified" <<std::endl;
+				break;
+		}
 	}
 	return cost;
 }
