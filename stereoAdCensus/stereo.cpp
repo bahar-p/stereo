@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 	img-> costCensus(7,9,0);
 	img->c_census(7,9);
 	img->initCost(10,30);
-	img->line_segment(20.,6.,34.,17.);
+	img->line_segment(10.,5.,34.,17.);
 	img->aggregateCost();
 	
 	Mat dispL=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 	img->costAD(Rdisp);
 	img->c_census(7,9,Rdisp);
 	img->initCost(10,30);
-	img->line_segment(20.,6.,34.,17.,Rdisp);
+	img->line_segment(10.,5.,34.,17.,Rdisp);
 	img->aggregateCost();
 	Mat dispR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	Mat costR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
