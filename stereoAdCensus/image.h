@@ -11,8 +11,8 @@ using namespace cv;
 class image
 {
 private:
-#define subRW 0
-#define subRH 0
+#define subRW 4
+#define subRH 4
 #define mytype CV_64FC1
 cv::Mat DSI,init_cost,aggr_cost,final_cost,left_cost,right_cost, up_cost, down_cost, HII, VII, sumH, sumV, supReg;
 uint64_t** censusLeft;

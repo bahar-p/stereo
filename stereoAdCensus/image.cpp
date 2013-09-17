@@ -347,159 +347,180 @@ void image::initCost(double lam_AD, double lam_census){
 /* Building the cross-based region for each pixel */
 void image::line_segment(double colLim1, double colLim2, double distLim1, double distLim2, bool dispR){
 	int p,q,x,y;
+	bool arm_found=false;
 	for(p= subRH ; p<img_leftRGB.rows-subRH; p++){					//Rows = height
 		for(q= subRW ; q<img_leftRGB.cols-subRW ; q++){				//cols = width
 			
 			if(!dispR){
+				arm_found=false;
 				if(q!=subRW){
+					int dist;
 					for(y=q-1; y>=subRW; y--){							//scan left arm - The first arg
 						double col_diff1 = colDiffer(img_leftRGB, p,y,p,q);
 						double col_diff2 = colDiffer(img_leftRGB, p,y,p,y+1);		//the endpoint and its predecessor
-						 int dist= std::abs(y-q);					
+						dist= std::abs(y-q);					
+						
 						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){	//if violates any of these rules
-							 supReg.at<int>(p,q,0)=dist;
+							 supReg.at<int>(p,q,0)=dist-1;
+							 arm_found=true;
 							 //std::cout<< "For the point (" << p << " , "  << q << ") The left arm endpoint is: " << dist << std::endl;
 							 break;
 						}
 					}
+					if( supReg.at<int>(p,q,0)==0 && !arm_found){							//if no endpoint found and it's not one of the edges' pixels
+						//int dist = std::abs(subRW-q);
+						supReg.at<int>(p,q,0)= dist;										//The edge pixel will be the end point.
+						//std::cout<< "excep: For the point (" << p << " , "  << q << ") The left arm endpoint is: " << dist << std::endl;
+					}
 				}
-				
-				if( supReg.at<int>(p,q,0)==0){							//if no endpoint found and it's not one of the edges' pixels
-					int dist = std::abs(subRW-q);
-					supReg.at<int>(p,q,0)= dist;										//The edge pixel will be the end point.
-					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The left arm endpoint is: " << dist << std::endl;
-				}
-				
+				arm_found=false;
 				if(q!=img_leftRGB.cols-subRW-1){
+					int dist;
 					for(y=q+1; y<img_leftRGB.cols - subRW; y++){							//scan right arm - The second arg
 						double col_diff1 = colDiffer(img_leftRGB, p,y,p,q);
 						double col_diff2 = colDiffer(img_leftRGB,p,y,p,y-1);						//the end point and its predecessor
-						int dist= std::abs(y-q);
+						dist= std::abs(y-q);
 						
 						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){
-							 supReg.at<int>(p,q,1)=dist;
+							 supReg.at<int>(p,q,1)=dist-1;
+							 arm_found=true;
 							// std::cout<< "For the point (" << p << " , "  << q << ") The right arm endpoint is: " << dist << std::endl;
 							 break;
 						}
 					}
 				
-					if( supReg.at<int>(p,q,1)==0){	
-						int dist = std::abs(img_leftRGB.cols-1-subRW-q);	
+					if( supReg.at<int>(p,q,1)==0 && !arm_found){	
+						//int dist = std::abs(img_leftRGB.cols-1-subRW-q);	
 						supReg.at<int>(p,q,1)=dist;										
 						//std::cout<< "excep: For the point (" << p << " , "  << q << ") The right arm endpoint is: " << dist << std::endl;
 					}
 				}
+				arm_found=false;
 				if(p!=subRH){
+					int dist;
 					for(x=p-1; x>=subRH; x--){											//scan up arm - The third arg
 						double col_diff1 = colDiffer(img_leftRGB,x,q,p,q);
 						double col_diff2 = colDiffer(img_leftRGB,x,q,x+1,q);
-						int dist= std::abs(x-p);
+						dist= std::abs(x-p);
 						
 						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){
-							  supReg.at<int>(p,q,2)=dist;
+							  supReg.at<int>(p,q,2)=dist-1;
+							  arm_found = true;
 							 //std::cout<< "For the point (" << p << " , "  << q << ") The up arm	endpoint is: " << dist << std::endl;
 							 break;
 						}
 					}
+				
+					if( supReg.at<int>(p,q,2)==0 && !arm_found){
+						//int dist = std::abs(subRH-p);
+						supReg.at<int>(p,q,2)= dist;										
+						//std::cout<< "excep: For the point (" << p << " , "  << q << ") The up arm endpoint is: " << dist << std::endl;
+					}
 				}
-				if( supReg.at<int>(p,q,2)==0){
-					int dist = std::abs(subRH-p);
-					supReg.at<int>(p,q,2)= dist;										
-					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The up arm endpoint is: " << dist << std::endl;
-				}
+				arm_found=false;
 				if(p!=img_leftRGB.rows-subRH-1){
+					int dist;
 					for(x=p+1; x<img_leftRGB.rows-subRH; x++){							//scan bottom arm - The fourth arg
 						double col_diff1 = colDiffer(img_leftRGB,x,q,p,q);
 						double col_diff2 = colDiffer(img_leftRGB,x,q,x-1,q);						//the end point and its predecessor
-						int dist= std::abs(x-p);
+						dist= std::abs(x-p);
 						
 						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){
-							 supReg.at<int>(p,q,3)=dist;
+							 supReg.at<int>(p,q,3)=dist-1;
+							 arm_found=true;
 							//std::cout<< "For the point (" << p << " , "  << q << ") The bottom arm endpoint is: " << dist << std::endl;
 							break;
 						}
 					}
-				}
-				
-				if( supReg.at<int>(p,q,3)==0){
-					int dist = std::abs(img_leftRGB.rows-1-subRH-p);
+				if( supReg.at<int>(p,q,3)==0 && !arm_found){
+					//int dist = std::abs(img_leftRGB.rows-1-subRH-p);
 					supReg.at<int>(p,q,3)= dist;
 					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The bottom arm endpoint is: " << dist << std::endl;
 				}
+			}
 			} else {
+				arm_found=false;
 				if(q!=subRW){
+					int dist;
 					for(y=q-1; y>=subRW; y--){							//scan left arm - The first arg
 						double col_diff1 = colDiffer(img_rightRGB, p,y,p,q);
 						double col_diff2 = colDiffer(img_rightRGB, p,y,p,y+1);		//the endpoint and its predecessor
-						int dist= std::abs(y-q);					
+						dist= std::abs(y-q);					
 						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){	//if violates any of these rules
-							 supReg.at<int>(p,q,0)=dist;
+							 supReg.at<int>(p,q,0)=dist-1;
+							 arm_found = true;
 							 //std::cout<< "For the point (" << p << " , "  << q << ") The left arm endpoint is: " << dist << std::endl;
 							 break;
 						}
 					}
+					if( supReg.at<int>(p,q,0)==0 && !arm_found){							//if no endpoint found and it's not one of the edges' pixels
+						 //int dist = std::abs(subRW-q);
+						 supReg.at<int>(p,q,0)= dist;										//The edge pixel will be the end point.
+						//std::cout<< "excep: For the point (" << p << " , "  << q << ") The left arm endpoint is: " << dist << std::endl;
+					}
 				}
-				
-				if( supReg.at<int>(p,q,0)==0){							//if no endpoint found and it's not one of the edges' pixels
-					 int dist = std::abs(subRW-q);
-					 supReg.at<int>(p,q,0)= dist;										//The edge pixel will be the end point.
-					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The left arm endpoint is: " << dist << std::endl;
-				}
-				
+				arm_found=false;
 				if(q!=img_leftRGB.cols-subRW-1){
+					int dist;
 					for(y=q+1; y<img_leftRGB.cols - subRW; y++){							//scan right arm - The second arg
 						double col_diff1 = colDiffer(img_rightRGB, p,y,p,q);
 						double col_diff2 = colDiffer(img_rightRGB,p,y,p,y-1);						//the end point and its predecessor
-						int dist= std::abs(y-q);
+						dist= std::abs(y-q);
 						
 						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){
-							  supReg.at<int>(p,q,1)=dist;
+							  supReg.at<int>(p,q,1)=dist-1;
+							  arm_found=true;
 							// std::cout<< "For the point (" << p << " , "  << q << ") The right arm endpoint is: " << dist << std::endl;
 							 break;
 						}
 					}
+					if( supReg.at<int>(p,q,1)==0 && !arm_found){	
+						//int dist = std::abs(img_leftRGB.cols-1-subRW-q);	
+						 supReg.at<int>(p,q,1)=dist;										
+						//std::cout<< "excep: For the point (" << p << " , "  << q << ") The right arm endpoint is: " << dist << std::endl;
+					}
 				}
-				if( supReg.at<int>(p,q,1)==0){	
-					int dist = std::abs(img_leftRGB.cols-1-subRW-q);	
-					 supReg.at<int>(p,q,1)=dist;										
-					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The right arm endpoint is: " << dist << std::endl;
-				}
+				arm_found=false;
 				if(p!=subRH){
+					int dist;
 					for(x=p-1; x>=subRH; x--){											//scan up arm - The third arg
 						double col_diff1 = colDiffer(img_rightRGB,x,q,p,q);
 						double col_diff2 = colDiffer(img_rightRGB,x,q,x+1,q);
-						int dist= std::abs(x-p);
+						dist= std::abs(x-p);
 						
 						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){
-							  supReg.at<int>(p,q,2)=dist;
+							  supReg.at<int>(p,q,2)=dist-1;
+							  arm_found=true;
 							 //std::cout<< "For the point (" << p << " , "  << q << ") The up arm	endpoint is: " << dist << std::endl;
 							 break;
 						}
 					}
+					if( supReg.at<int>(p,q,2)==0 && !arm_found){
+						//int dist = std::abs(subRH-p);
+						 supReg.at<int>(p,q,2)= dist;										
+						//std::cout<< "excep: For the point (" << p << " , "  << q << ") The up arm endpoint is: " << dist << std::endl;
+					}
 				}
-				if( supReg.at<int>(p,q,2)==0){
-					int dist = std::abs(subRH-p);
-					 supReg.at<int>(p,q,2)= dist;										
-					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The up arm endpoint is: " << dist << std::endl;
-				}
+				arm_found=false;
 				if(p!=img_leftRGB.rows-subRH-1){
+					int dist;
 					for(x=p+1; x<img_leftRGB.rows-subRH; x++){							//scan bottom arm - The fourth arg
 						double col_diff1 = colDiffer(img_rightRGB,x,q,p,q);
 						double col_diff2 = colDiffer(img_rightRGB,x,q,x-1,q);						//the end point and its predecessor
-						int dist= std::abs(x-p);
+						dist= std::abs(x-p);
 						
 						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){
-							 supReg.at<int>(p,q,3)=dist;
+							 supReg.at<int>(p,q,3)=dist-1;
+							 arm_found=true;
 							//std::cout<< "For the point (" << p << " , "  << q << ") The bottom arm endpoint is: " << dist << std::endl;
 							break;
 						}
 					}
-				}
-				
-				if( supReg.at<int>(p,q,3)==0){
-					int dist = std::abs(img_leftRGB.rows-1-subRH-p);
-					 supReg.at<int>(p,q,3)= dist;
-					//std::cout<< "excep: For the point (" << p << " , "  << q << ") The bottom arm endpoint is: " << dist << std::endl;
+					if( supReg.at<int>(p,q,3)==0 && !arm_found){
+						//int dist = std::abs(img_leftRGB.rows-1-subRH-p);
+						 supReg.at<int>(p,q,3)= dist;
+						//std::cout<< "excep: For the point (" << p << " , "  << q << ") The bottom arm endpoint is: " << dist << std::endl;
+					}
 				}
 			}
 		}
