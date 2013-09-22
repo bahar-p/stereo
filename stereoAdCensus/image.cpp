@@ -253,7 +253,6 @@ void image::costCensus(int winX, int winY, int left){
 				printf("x: %d\t , y: %d\t , censusL: %s\n" , x,y, itob(censusLeft[x][y]));
 			if(x==23 && y==58)
 				printf("x: %d\t , y: %d\t , censusR: %s\n" , x,y, itob(censusRight[x][y]));
-			
 		}
 	}
 }
@@ -1042,7 +1041,7 @@ void image::subpxEnhance(cv::Mat fcost, cv::Mat& idisp){
 				//std::cout << "float d: " << idisp.at<float>(p,q)<< " int d: " << d << std::endl;
 				if(d>dispMin && d < dispMax-2){
 					double val = (fcost.at<double>(p,q,d+1) - fcost.at<double>(p,q,d-1))/(2*(fcost.at<double>(p,q,d+1)+ \
-					fcost.at<double>(p,q,d-1) - 2*fcost.at<double>(p,q,d)) );
+					fcost.at<double>(p,q,d-1) - 2*fcost.at<double>(p,q,d)));
 					//std::cout << "val: " << val <<std::endl;
 					idisp.at<float>(p,q) = idisp.at<float>(p,q) - (float)val;
 					
