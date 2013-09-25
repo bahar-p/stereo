@@ -46,7 +46,9 @@ void find_disparity(cv::Mat, cv::Mat&, cv::Mat&);
 void finalCost(cv::Mat , cv::Mat , cv::Mat , cv::Mat , cv::Mat );
 double findMax(cv::Mat);
 void subpxEnhance(cv::Mat, cv::Mat&);
-
+int findOutliers(cv::Mat, cv::Mat, cv::Mat&);
+void fMatrix(cv::Mat, cv::Mat, cv::Mat&,int, double, double);
+void reset();
 //DEBUG
 char *itob(uint64_t);
 };

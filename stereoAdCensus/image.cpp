@@ -148,33 +148,31 @@ image::image(Mat image_leftRGB, Mat image_rightRGB, int dMin, int dMax){
 	
 }
 
-/*
-void image::read_image(){
-
-	if(!img_leftRGB.data || !img_rightRGB.data){                              // Check for invalid input
-        cout <<  "Could not open or find the image" << endl ;
-	}
-	CV_Assert(img_leftRGB.depth() == CV_8U);
-	CV_Assert(img_rightRGB.depth() == CV_8U);
-    int p, q;
-    //Read and store pixel color values
-    for(p=0;p<img_leftRGB.rows;p++){					//Rows = height
-		for(q=0;q<img_leftRGB.cols;q++){				//cols = width
-			Vec3b intensity_L = img_leftRGB.at<Vec3b>(p,q);
-			Vec3b intensity_R = img_rightRGB.at<Vec3b>(p,q);
-			color_left[p][q][0] = intensity_L.val[0];
-			color_left[p][q][1] = intensity_L.val[1];
-			color_left[p][q][2] = intensity_L.val[2];
-			color_right[p][q][0] = intensity_R.val[0];
-			color_right[p][q][1] = intensity_R.val[1];
-			color_right[p][q][2] = intensity_R.val[2];		
-			
+void image::reset(){
+	DSI=cv::Scalar::all(0);
+	init_cost=cv::Scalar::all(0);
+	aggr_cost=cv::Scalar::all(0);
+	final_cost=cv::Scalar::all(0);
+	left_cost=cv::Scalar::all(0);
+	right_cost=cv::Scalar::all(0);
+	up_cost=cv::Scalar::all(0);
+	down_cost=cv::Scalar::all(0);
+	HII= cv::Scalar::all(0);
+	VII=cv::Scalar::all(0);
+	sumH= cv::Scalar::all(0);
+	sumV=cv::Scalar::all(0);
+	supReg=cv::Scalar::all(0);
+	for(int p= 0 ; p<img_leftRGB.rows ; p++){
+		for(int q= 0 ; q<img_leftRGB.cols ; q++){
+			censusLeft[p][q]=0;
+			censusRight[p][q]=0;
+			for(int d=0;d<dispMax-dispMin+1;d++){		
+				census_hamming[p][q][d]=0;
+			}
 		}
 	}
-	//printf ("b: %u \t, g: %u\t, r: %u\t, bR: %u\t, gR: %u\t , rR: %u\t" , color_left[0+dispMin][0][0], color_left[0+dispMin][0][1], color_left[0+dispMin][0][2], color_right[0][0][0], color_right[0][0][1],
-	//color_right[0][0][2]);
-}*/
-
+	
+}
 Mat image::get_image(int left){
 	if(left==1)
 		return img_leftRGB;
@@ -249,10 +247,10 @@ void image::costCensus(int winX, int winY, int left){
 			if(left==1)
 				censusLeft[x][y]= census;
 			else censusRight[x][y]= census;
-			if(x==23 && y==60)
+			/*if(x==23 && y==60)
 				printf("x: %d\t , y: %d\t , censusL: %s\n" , x,y, itob(censusLeft[x][y]));
 			if(x==23 && y==58)
-				printf("x: %d\t , y: %d\t , censusR: %s\n" , x,y, itob(censusRight[x][y]));
+				printf("x: %d\t , y: %d\t , censusR: %s\n" , x,y, itob(censusRight[x][y]));*/
 		}
 	}
 }
@@ -834,6 +832,67 @@ void image::find_disparity(cv::Mat in, cv::Mat& idisp ,cv::Mat& icost){
 	cv::Point minL, maxL;
 	cv::minMaxLoc(icost, &minv,&maxv, &minL, &maxL);
 	std::cout<< "minv: " << (float)minv << " maxv: " << (float)maxv << " maxLx: " << maxL.x << " maxL.y: " << maxL.y << std::endl;
+}
+
+void image::fMatrix(cv::Mat pixflag, cv::Mat dispL, cv::Mat& FM, int N, double param1, double param2 ){
+	vector<cv::Point2f> pointsL;
+	vector<cv::Point2f> pointsR;
+	int n=0;
+	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
+		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
+			if(n<=N){
+				if(pixflag.at<float>(p,q)==0){ //reliable pixel
+					cv::Point2f p1= Point((float)q, (float)p);
+					pointsL.push_back(p1);
+					cv::Point2f p2= Point((float)(q-(int)dispL.at<float>(p,q)), (float)p);
+					pointsR.push_back(p2);
+					n++;
+				}
+			} else break;
+		}
+	}
+
+	FM = findFundamentalMat(pointsL, pointsR,FM_RANSAC);
+	cout << "fundamental matrix: " << FM << endl;
+}
+
+int image::findOutliers(cv::Mat dispL, cv::Mat dispR,cv::Mat& pixflag){
+	int n=0;
+	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
+		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
+			if(dispL.at<float>(p,q) != dispR.at<float>(p,q-(int)dispL.at<float>(p,q))){
+				n++;
+				pixflag.at<int>(p,q)=1;
+				cout << dispR.at<float>(p,q-(int)dispL.at<float>(p,q)) << endl;
+			}
+		}
+	}
+	cout<< n << " outlier!" << endl;
+}
+
+void regionVoting(cv::Mat dispL, float ts, float th){
+	Mat hist(dispMax+1,CV_32S, Scalar::all(0));
+	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
+		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
+			if(pixflag.at<int>(p,q)!=0){ 
+					hist=Scalar::all(0);
+					int up= supReg.at<int>(p,q,2);
+					int down= supReg.at<int>(p,q,3);
+					for(int y=p-up;y<=p+down; y++){
+						int left= supReg.at<int>(y,q,0);
+						int right= supReg.at<int>(y,q,1);
+						for(int x=q-left; q<=q+right; q++){
+							if(x!=q || y!=p){							//Don't involve the pixel of interest in calculation
+								if(pixflag.at<int>(y,x)==0){				//Reliable pixel
+									hist.at<int>((int)dispL.at<float>(y,x)) +=1;
+								}
+							}
+							
+						}
+					}
+			}
+		}
+	}
 }
 
 /* Calculating ech path cost to a pixel of interest */

@@ -35,6 +35,25 @@ int main(int argc, char **argv)
 	printf("%s \n" , img->itob(a));*/
 	
 	clock_t tStart = clock();
+	bool Rdisp= true;
+	img->costAD(Rdisp);
+	img->c_census(7,9,Rdisp);
+	img->initCost(10,30);
+	img->line_segment(20.,6.,34.,17.,Rdisp);
+	img->aggregateCost();
+	Mat dispR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
+	Mat costR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
+	img->scanline(1.0,3.0,15, dispR, costR,Rdisp);
+	std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
+	double minv, maxv;
+	cv::minMaxLoc(dispR, &minv,&maxv);
+	Mat dispR8 = Mat(dispR.size().height, dispR.size().width, CV_8UC1, Scalar::all(0));
+	dispR.convertTo( dispR8, CV_8UC1,255.0/(maxv-minv));
+	
+	
+	 
+	tStart = clock();
+	img->reset();
 	img->costAD();
 	img -> costCensus(7,9,1);
 	img-> costCensus(7,9,0);
@@ -47,27 +66,16 @@ int main(int argc, char **argv)
 	Mat costL=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	img->scanline(1.0,3.0,15, dispL, costL);
 	std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
-	double minv, maxv;
 	cv::Point minL, maxL;
 	cv::minMaxLoc(dispL, &minv,&maxv);
-	
 	Mat dispL8 = Mat(dispL.size().height, dispL.size().width, CV_8UC1, Scalar::all(0));
 	dispL.convertTo( dispL8, CV_8UC1,255.0/(maxv-minv));
-	 
-	tStart = clock();
-	bool Rdisp= true;
-	img->costAD(Rdisp);
-	img->c_census(7,9,Rdisp);
-	img->initCost(10,30);
-	img->line_segment(20.,6.,34.,17.,Rdisp);
-	img->aggregateCost();
-	Mat dispR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
-	Mat costR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
-	img->scanline(1.0,3.0,15, dispR, costR,Rdisp);
-	std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
-	cv::minMaxLoc(dispR, &minv,&maxv);
-	Mat dispR8 = Mat(dispR.size().height, dispR.size().width, CV_8UC1, Scalar::all(0));
-	dispR.convertTo( dispR8, CV_8UC1,255.0/(maxv-minv));
+
+	cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
+	img->findOutliers(dispL, dispR,pixflags);
+	cv::Mat f;
+	//img->fMatrix(pixflags,dispL,f, 16, 1, 0.99);
+	
 	
    /* for (int i = 0; i < image_left.rows; i++)
 	{
