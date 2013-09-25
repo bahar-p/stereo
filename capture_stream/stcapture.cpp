@@ -45,12 +45,12 @@ int main(int argc, char **argv)
 	char instring[7];
 	printf("Do you want to capture IMAGE or VIDEO?	");
 	scanf("%s",instring);
-	while(strcmp(instring,"IMAGE")!=0 && strcmp(instring,"VIDEO")!=0){
+	while(strcmp(instring,"IMAGE")!=0 && strcmp(instring, "image")!=0 && strcmp(instring,"VIDEO")!=0 && strcmp(instring,"video")!=0){
 		cout<< "Invalid input option! Please select either IMAGE or VIDEO"<<endl;
 		printf("Do you want to capture IMAGE or VIDEO?	");
 		scanf("%s",instring);
 	}
-	if(strcmp(instring,"IMAGE")==0)
+	if(strcmp(instring,"IMAGE")==0 || strcmp(instring, "image")==0)
 		option=IMAGE;
 	else
 		option=VIDEO;
@@ -79,21 +79,24 @@ int main(int argc, char **argv)
 
 
 void takeImage(){
-	CvCapture* captureL = cvCaptureFromCAM(1); //left
+	CvCapture* captureL = cvCaptureFromCAM(2); //left
 	CvCapture* captureR = cvCaptureFromCAM(0); //right
+	//CvCapture* captureUp = cvCaptureFromCAM(2); //right
 	
 	int img_num=30;
 	string filenameL[img_num];
 	string filenameR[img_num];
+	//string filenameU[img_num];
 	for (int i = 0; i < img_num; i++)
 	{
 		stringstream ss;
 		ss << i;
 		filenameL[i]=ss.str();
-		filenameL[i]+="left.jpg";
+		filenameL[i]+="up.jpg";
 		filenameR[i]=ss.str();
 		filenameR[i]+="right.jpg";
-		
+		//filenameU[i]=ss.str();
+		//filenameU[i]+="up.jpg";
 	}
 	
 	if ( !captureL || !captureR ) {
@@ -109,19 +112,23 @@ void takeImage(){
      // Get one frame
      IplImage* frameL = cvQueryFrame( captureL );
      IplImage* frameR = cvQueryFrame( captureR );
-     if ( !frameL || !frameR ) {
+     //IplImage* frameU = cvQueryFrame( captureUp );
+     if ( !frameL || !frameR) {
        fprintf( stderr, "ERROR: frame is null...\n" );
        getchar();
        break;
      }
-     
-     if(waitKey(10) == ' '){
+     char c = waitKey(10);
+     if(c == ' '){
 		cvSaveImage(filenameL[n].c_str(), frameL);
 		cvSaveImage(filenameR[n].c_str(), frameR);
+		//cvSaveImage(filenameU[n].c_str(), frameU);
 		n++;
+		cout << "n: " << n << endl;
 	}
 	cvShowImage( "windowL", frameL );
 	cvShowImage( "windowR", frameR );
+	//cvShowImage( "windowU", frameU );
 	
      // Do not release the frame!
      //If ESC key pressed, Key=0x10001B under OpenCV 0.9.7(linux version),
@@ -131,6 +138,7 @@ void takeImage(){
    // Release the capture device housekeeping
    cvReleaseCapture( &captureL );
    cvReleaseCapture( &captureR );
+   //cvReleaseCapture( &captureUp );
    cvDestroyAllWindows();
 }
 
