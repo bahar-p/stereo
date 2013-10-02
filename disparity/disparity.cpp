@@ -66,11 +66,12 @@ int frameNum;
 
 void frames(int id){
 	
-	
+	Mat disp8;
 	double dWidth = glcap1.get(CV_CAP_PROP_FRAME_WIDTH); 			//get the width of frames of the video
 	double dHeight = glcap1.get(CV_CAP_PROP_FRAME_HEIGHT); 		//get the height of frames of the video
 	double fps = glcap1.get(CV_CAP_PROP_FPS);
 	int frs = glcap1.get(CV_CAP_PROP_FRAME_COUNT);
+	//int frs=5;
 	cout << "frs: " << frs << " Frame Size = " << dWidth << "x" << dHeight << endl;
 	Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
 	imgRow = dHeight;
@@ -81,8 +82,8 @@ void frames(int id){
 	initUndistortRectifyMap(cameraMatrix[0], distCoeffs[0], R1, P1, frameSize, CV_16SC2, map[0][0], map[0][1]); //left
     initUndistortRectifyMap(cameraMatrix[1], distCoeffs[1], R2, P2, frameSize, CV_16SC2, map[1][0], map[1][1]); //right
     
-    int nextframe=0;
-	for (frameNum=nextframe; frameNum<frs; frameNum++) {
+    //int nextframe=0;
+	for (frameNum=0; frameNum<frs; frameNum++) {
 		filled=false;
 		Mat frameL, frameR;
 		bool rightRead = glcap1.read(frameR);
@@ -120,10 +121,10 @@ void frames(int id){
 		//cout << "VIDEOPROCESS: after: rendered: " << rendered << "filled: " << filled << endl;
 		Image3d = Mat(disp.size().height, disp.size().width, CV_32FC3,Scalar::all(0));
 		reprojectImageTo3D(disp,Image3d, Q, true,CV_32F);
-		Mat disp8;
+		
         disp.convertTo(disp8, CV_8U, 255/(maxdisp*16.));        
 		imshow("disparity", disp8);
-		
+		//imwrite( "/home/bahar/FrameDisp5.png", disp8 );
 		if (waitKey(10) == 27) 				//wait for 'esc' key press for 10ms. If 'esc' key is pressed, break loop
 		{
 			cout << "esc key is pressed by user" << endl;
@@ -133,6 +134,8 @@ void frames(int id){
 		glLeftf = newframeL;
 		cvar.notify_one();
 	}
+	
+	cout<< "framenum: " << frameNum << endl;
 	
 }
 void init(){
@@ -285,20 +288,20 @@ int main(int argc, char **argv)
 	
 	readCalibfile(argv[1], argv[2]);
 	// Load stereo video //
-	/*char dir[100];
+	char dir[100];
 	printf("Enter right camera file path: ");
 	scanf("%s",dir);
 	string path = string(dir);
-	cout << path << endl;*/
-	string path = "../Day01/Office01R.mpg";
+	cout << path << endl;
+	//string path = "../Day01/Office01R.mpg";
 	VideoCapture cap1(path); // open the video camera no. 0 (Right)
 	glcap1 = cap1;
 	
-	/*printf("Enter left camera file path: ");
+	printf("Enter left camera file path: ");
 	scanf("%s",dir);
 	path = string(dir);
-	cout << path << endl;*/
-	path = "../Day01/Office01L.mpg";
+	cout << path << endl;
+	//path = "../Day01/Office01L.mpg";
 	VideoCapture cap2(path); // open the video camera no. 1 (Left)
 	glcap2 = cap2;
 	
