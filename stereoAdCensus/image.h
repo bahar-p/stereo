@@ -49,6 +49,8 @@ void subpxEnhance(cv::Mat, cv::Mat&);
 int findOutliers(cv::Mat, cv::Mat, cv::Mat&);
 void fMatrix(cv::Mat, cv::Mat, cv::Mat&,int, double, double);
 void reset();
+void regionVoting(cv::Mat&, cv::Mat, int, double, int);
+int mostVote(cv::Mat);
 //DEBUG
 char *itob(uint64_t);
 };

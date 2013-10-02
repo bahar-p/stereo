@@ -164,8 +164,6 @@ void image::reset(){
 	supReg=cv::Scalar::all(0);
 	for(int p= 0 ; p<img_leftRGB.rows ; p++){
 		for(int q= 0 ; q<img_leftRGB.cols ; q++){
-			censusLeft[p][q]=0;
-			censusRight[p][q]=0;
 			for(int d=0;d<dispMax-dispMin+1;d++){		
 				census_hamming[p][q][d]=0;
 			}
@@ -841,7 +839,7 @@ void image::fMatrix(cv::Mat pixflag, cv::Mat dispL, cv::Mat& FM, int N, double p
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
 			if(n<=N){
-				if(pixflag.at<float>(p,q)==0){ //reliable pixel
+				if(pixflag.at<float>(p,q)==0){ 							//reliable pixel
 					cv::Point2f p1= Point((float)q, (float)p);
 					pointsL.push_back(p1);
 					cv::Point2f p2= Point((float)(q-(int)dispL.at<float>(p,q)), (float)p);
@@ -856,44 +854,80 @@ void image::fMatrix(cv::Mat pixflag, cv::Mat dispL, cv::Mat& FM, int N, double p
 	cout << "fundamental matrix: " << FM << endl;
 }
 
+/* Detecting and labeling outliers */
 int image::findOutliers(cv::Mat dispL, cv::Mat dispR,cv::Mat& pixflag){
 	int n=0;
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
+			//cout<< "dispL: " << dispL.at<float>(p,q) << " dispR: " << dispR.at<float>(p,q-(int)dispL.at<float>(p,q)) << endl;
 			if(dispL.at<float>(p,q) != dispR.at<float>(p,q-(int)dispL.at<float>(p,q))){
+				//cout<< "dispL: " << dispL.at<float>(p,q) << " dispR: " << dispR.at<float>(p,q-(int)dispL.at<float>(p,q)) << endl;
 				n++;
 				pixflag.at<int>(p,q)=1;
-				cout << dispR.at<float>(p,q-(int)dispL.at<float>(p,q)) << endl;
+				//cout << dispR.at<float>(p,q-(int)dispL.at<float>(p,q)) << endl;
 			}
+			
 		}
 	}
 	cout<< n << " outlier!" << endl;
 }
 
-void regionVoting(cv::Mat dispL, float ts, float th){
-	Mat hist(dispMax+1,CV_32S, Scalar::all(0));
-	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
-		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
-			if(pixflag.at<int>(p,q)!=0){ 
-					hist=Scalar::all(0);
-					int up= supReg.at<int>(p,q,2);
-					int down= supReg.at<int>(p,q,3);
-					for(int y=p-up;y<=p+down; y++){
-						int left= supReg.at<int>(y,q,0);
-						int right= supReg.at<int>(y,q,1);
-						for(int x=q-left; q<=q+right; q++){
-							if(x!=q || y!=p){							//Don't involve the pixel of interest in calculation
-								if(pixflag.at<int>(y,x)==0){				//Reliable pixel
-									hist.at<int>((int)dispL.at<float>(y,x)) +=1;
+/* Iterative region voting */
+void image::regionVoting(cv::Mat& dispL, cv::Mat pixflag, int TS, double TH,int iter){
+	int n=0;
+	Mat hist(dispMax+1,1,CV_32SC1, Scalar::all(0));
+	int reliables=0;				//Number of reliable pixels
+	while(n<iter){
+		for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
+			for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
+				if(pixflag.at<int>(p,q)!=0){
+					//cout << "p,q " << p << " , " << q << endl;
+						reliables=0;
+						hist=Scalar::all(0);
+						int up= supReg.at<int>(p,q,2);
+						int down= supReg.at<int>(p,q,3);
+						//cout << "up: " << up << " Down: " << down << endl;
+						for(int y=p-up;y<=p+down; y++){
+							int left= supReg.at<int>(y,q,0);
+							int right= supReg.at<int>(y,q,1);
+							//cout << "y: " << y << " q: " << q << " left: " << left << " Right: " << right << endl;
+							for(int x=q-left; x<=q+right; x++){
+								//cout << "q-left " << q-left << endl; 
+								if(x!=q || y!=p){							//Don't involve the pixel of interest in calculation
+									if(pixflag.at<int>(y,x)==0){				//Reliable pixel
+										reliables++;
+										hist.at<int>((int)dispL.at<float>(y,x)) +=1;
+									}
+									//cout << "reliable: " << reliables << endl;
 								}
 							}
-							
 						}
-					}
+						int newd= mostVote(hist);
+						//cout << "hist: " << hist << '\t' << " most vote: " << newd << endl;
+						if(reliables > TS && ( (double)(hist.at<int>(newd,0)/reliables) > TH)) {
+							//cout <<  p << " , " << q << " original disp: " << dispL.at<float>(p,q) << "  updated disp: " << newd << endl;
+							dispL.at<float>(p,q) = (float) newd;
+							pixflag.at<int>(p,q) == 0;
+						}
+				}
 			}
 		}
+		n++;
 	}
 }
+
+int image::mostVote(cv::Mat hist){
+	int votes = hist.at<int>(0,0);
+	int index=0;
+	for (int i=0; i<hist.rows; i++){
+		if(hist.at<int>(i,0)>=votes){
+			votes = hist.at<int>(i,0);
+			index=i;
+		}
+	}
+	return index;
+}
+
 
 /* Calculating ech path cost to a pixel of interest */
 double image::costOpt(cv::Mat in, int p, int q, int d, double preMin, char dir, double param1, double param2, double threshold,bool dispR){

@@ -37,10 +37,13 @@ int main(int argc, char **argv)
 	clock_t tStart = clock();
 	bool Rdisp= true;
 	img->costAD(Rdisp);
+	img -> costCensus(7,9,1);
+	img-> costCensus(7,9,0);
 	img->c_census(7,9,Rdisp);
 	img->initCost(10,30);
 	img->line_segment(20.,6.,34.,17.,Rdisp);
 	img->aggregateCost();
+	
 	Mat dispR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	Mat costR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	img->scanline(1.0,3.0,15, dispR, costR,Rdisp);
@@ -55,28 +58,27 @@ int main(int argc, char **argv)
 	tStart = clock();
 	img->reset();
 	img->costAD();
-	img -> costCensus(7,9,1);
-	img-> costCensus(7,9,0);
 	img->c_census(7,9);
 	img->initCost(10,30);
-	img->line_segment(10.,5.,34.,17.);
+	img->line_segment(20.,6.,34.,17.);
 	img->aggregateCost();
 	
 	Mat dispL=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	Mat costL=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	img->scanline(1.0,3.0,15, dispL, costL);
 	std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
-	cv::Point minL, maxL;
-	cv::minMaxLoc(dispL, &minv,&maxv);
-	Mat dispL8 = Mat(dispL.size().height, dispL.size().width, CV_8UC1, Scalar::all(0));
-	dispL.convertTo( dispL8, CV_8UC1,255.0/(maxv-minv));
-
 	cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
 	img->findOutliers(dispL, dispR,pixflags);
 	cv::Mat f;
 	//img->fMatrix(pixflags,dispL,f, 16, 1, 0.99);
+	img->regionVoting(dispL, pixflags, 20, 0.4, 5);
+	cv::Mat pixflags1(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
+	img->findOutliers(dispL, dispR,pixflags1);
 	
-	
+	double minv1, maxv1;
+	cv::minMaxLoc(dispL, &minv1,&maxv1);
+	Mat dispL8 = Mat(dispL.size().height, dispL.size().width, CV_8UC1, Scalar::all(0));
+	dispL.convertTo( dispL8, CV_8UC1,255.0/(maxv1-minv1));
    /* for (int i = 0; i < image_left.rows; i++)
 	{
 		for (int j = 0; j < image_left.cols ; j++)
@@ -87,7 +89,9 @@ int main(int argc, char **argv)
 	}*/
 	
     imshow( "DispL", dispL8 );                   	
-    imshow( "DispR", dispR8 );                   	
+    imshow( "DispR", dispR8 );        
+    imwrite( "/home/bahar/dispLRef1.png", dispL8 );
+    imwrite( "/home/bahar/dispRRef1.png", dispR8 );           	
     waitKey(0);
    	char c = waitKey(10);
     if (c == ' ')  
