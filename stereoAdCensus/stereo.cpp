@@ -14,6 +14,14 @@ image *img;
 
 int main(int argc, char **argv)
 {
+	float focal = 3740;				//pixel
+	float baseline = 160;			//milimeter	
+	
+	/*cv::Mat p1= (Mat_<float>(3,1) << 1,1,0);
+	cv::Mat q1= (Mat_<float>(3,1) << 2,3,1);
+	cv::Mat res1;
+	gemm(p1,q1, 1, 0, 0, res1, GEMM_2_T);
+	cout<< "p1= " << p1 << '\t' << " q1= " << q1 << '\t' << " res1= " << res1 << endl;*/
 	
 	//Read input images into Matrices
 	Mat image_left = imread(argv[1], CV_LOAD_IMAGE_COLOR);
@@ -21,7 +29,7 @@ int main(int argc, char **argv)
    	//Mat image_left = Mat(6,6, CV_8U, Scalar::all(0));
    //Mat image_right = Mat(6,6, CV_8U, Scalar::all(0));
    	Size s = image_left.size();
-   	int minDisp=0, maxDisp=15;
+   	int minDisp=0, maxDisp=16;
     img = new image(image_left,image_right, minDisp, maxDisp);
     //img->read_image();
 	//cout << numeric_limits<double>::max()<<endl;
@@ -68,12 +76,14 @@ int main(int argc, char **argv)
 	img->scanline(1.0,3.0,15, dispL, costL);
 	std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
 	cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
-	img->findOutliers(dispL, dispR,pixflags);
+	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
 	cv::Mat f;
 	//img->fMatrix(pixflags,dispL,f, 16, 1, 0.99);
 	img->regionVoting(dispL, pixflags, 20, 0.4, 5);
-	cv::Mat pixflags1(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
-	img->findOutliers(dispL, dispR,pixflags1);
+	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
+	Mat border;
+	img->border(dispL, costL, border);
+	
 	
 	double minv1, maxv1;
 	cv::minMaxLoc(dispL, &minv1,&maxv1);
@@ -89,9 +99,10 @@ int main(int argc, char **argv)
 	}*/
 	
     imshow( "DispL", dispL8 );                   	
-    imshow( "DispR", dispR8 );        
-    imwrite( "/home/bahar/dispLRef1.png", dispL8 );
-    imwrite( "/home/bahar/dispRRef1.png", dispR8 );           	
+    imshow( "DispR", dispR8 );  
+    imshow( "gradient", border );
+    imwrite( "/home/bahar/dispL.png", dispL8 );
+    imwrite( "/home/bahar/dispR.png", dispR8 );           	
     waitKey(0);
    	char c = waitKey(10);
     if (c == ' ')  

@@ -375,7 +375,6 @@ void image::line_segment(double colLim1, double colLim2, double distLim1, double
 						double col_diff1 = colDiffer(img_leftRGB, p,y,p,q);
 						double col_diff2 = colDiffer(img_leftRGB,p,y,p,y-1);						//the end point and its predecessor
 						dist= std::abs(y-q);
-						
 						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){
 							 supReg.at<int>(p,q,1)=dist-1;
 							 arm_found=true;
@@ -397,7 +396,7 @@ void image::line_segment(double colLim1, double colLim2, double distLim1, double
 						double col_diff1 = colDiffer(img_leftRGB,x,q,p,q);
 						double col_diff2 = colDiffer(img_leftRGB,x,q,x+1,q);
 						dist= std::abs(x-p);
-						
+						 
 						if(!(col_diff1<colLim1 && col_diff2<colLim1) || !(dist<distLim1) || (dist<distLim1 && dist>distLim2 && !(col_diff1<colLim2))){
 							  supReg.at<int>(p,q,2)=dist-1;
 							  arm_found = true;
@@ -854,15 +853,22 @@ void image::fMatrix(cv::Mat pixflag, cv::Mat dispL, cv::Mat& FM, int N, double p
 	cout << "fundamental matrix: " << FM << endl;
 }
 
+
 /* Detecting and labeling outliers */
-int image::findOutliers(cv::Mat dispL, cv::Mat dispR,cv::Mat& pixflag){
+int image::findOutliers(cv::Mat dispL, cv::Mat dispR,cv::Mat& pixflag, float f, float B){
 	int n=0;
+	//cv::Mat Ql= (Mat_<float>(4,4) << 1,0,0, -(img_leftRGB.cols/2),0,1,0,-(img_leftRGB.rows/2),0,0,0,f,0,0, -1/B, 0);
+	//cv::Mat Qr= (Mat_<float>(4,4) << 1,0,0, -(img_leftRGB.cols/2),0,1,0,-(img_leftRGB.rows/2),0,0,0,f,0,0, -1/B, 0);
+	cv::Mat Ql= (Mat_<float>(4,4) << 1,0,0, -(img_leftRGB.cols/2),0,1,0,-(img_leftRGB.rows/2),0,0,0,f,0,0, -1/B, -1);
+	cv::Mat Qr= (Mat_<float>(4,4) << 1,0,0, -((img_leftRGB.cols/2)+B),0,1,0,-(img_leftRGB.rows/2),0,0,0,f,0,0, -1/B, -1);
+	cv::Mat T= (Mat_<float>(4,4) << 1,0,0, B,0,1,0,0,0,0,1,0,0,0, 0, 1);
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
 			//cout<< "dispL: " << dispL.at<float>(p,q) << " dispR: " << dispR.at<float>(p,q-(int)dispL.at<float>(p,q)) << endl;
 			if(dispL.at<float>(p,q) != dispR.at<float>(p,q-(int)dispL.at<float>(p,q))){
 				//cout<< "dispL: " << dispL.at<float>(p,q) << " dispR: " << dispR.at<float>(p,q-(int)dispL.at<float>(p,q)) << endl;
 				n++;
+			//	labelOut(Ql,Qr,T, (float)p, (float)q, dispL.at<float>(p,q), dispR.at<float>(p,q-(int)dispL.at<float>(p,q)));
 				pixflag.at<int>(p,q)=1;
 				//cout << dispR.at<float>(p,q-(int)dispL.at<float>(p,q)) << endl;
 			}
@@ -870,13 +876,60 @@ int image::findOutliers(cv::Mat dispL, cv::Mat dispR,cv::Mat& pixflag){
 		}
 	}
 	cout<< n << " outlier!" << endl;
+	
 }
 
+void image::labelOut(cv::Mat Ql, cv::Mat Qr, cv::Mat T, float pl,float ql, float dl, float dr){
+	cv::Mat p1= (Mat_<float>(4,1) << ql,pl,dl,1);
+	cv::Mat q1= (Mat_<float>(4,1) << ql-dl, pl, dr, 1);
+	cv::Mat p2= (Mat_<float>(4,1) << (ql-dl)+dr, pl, dr, 1);
+	cv::Mat res1,res2, res3,res4;
+	gemm(p1,Ql, 1, 0, 0, res1, GEMM_1_T + GEMM_2_T);
+	gemm(res1,T, 1, 0, 0, res2, 0);
+	gemm(res2, Qr,1, 0, 0, res3, 0);
+	gemm(res3,q1, 1, 0, 0, res4, 0);
+	cout << "res4: " << res4 << endl;
+	cv::Mat zero = Mat::zeros(1,1,CV_32F);
+	cv::Mat diff = res4 != zero;
+	// Equal if no elements disagree
+	bool equal = cv::countNonZero(diff) == 0;
+	if(equal){
+		cout << res4 << " Mismatch" << endl;
+	}
+	//else cout << "Occluded" << endl;
+}
+
+void image::border(cv::Mat disp, cv::Mat fCost,cv::Mat& grad){
+	//cv::Mat Gx = (Mat_<float>(3,3) << 1,0,-1, 2,0,-2, 1,0,-1);
+	//cv::Mat Gy = (Mat_<float>(3,3) << 1,2,1, 0,0,0, -1,-2,-1);
+	int scale = 5;
+	int delta = 0;
+	int ddepth = CV_16S;
+	Mat grad_x, grad_y;
+	Mat abs_grad_x, abs_grad_y;
+
+	/// Gradient X
+	//Scharr( src_gray, grad_x, ddepth, 1, 0, scale, delta, BORDER_DEFAULT );
+	Sobel( disp, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT );
+	convertScaleAbs( grad_x, abs_grad_x );
+
+	/// Gradient Y
+	//Scharr( src_gray, grad_y, ddepth, 0, 1, scale, delta, BORDER_DEFAULT );
+	Sobel( disp, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT );
+	convertScaleAbs( grad_y, abs_grad_y );
+
+	/// Total Gradient (approximate)
+	addWeighted( abs_grad_x, 1, abs_grad_y, 1, 0, grad );
+
+}
+
+
 /* Iterative region voting */
-void image::regionVoting(cv::Mat& dispL, cv::Mat pixflag, int TS, double TH,int iter){
+void image::regionVoting(cv::Mat& dispL, cv::Mat& pixflag, int TS, double TH,int iter){
 	int n=0;
-	Mat hist(dispMax+1,1,CV_32SC1, Scalar::all(0));
+	Mat hist(dispMax-dispMin+1,1,CV_32SC1, Scalar::all(0));
 	int reliables=0;				//Number of reliable pixels
+	
 	while(n<iter){
 		for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 			for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
@@ -890,19 +943,18 @@ void image::regionVoting(cv::Mat& dispL, cv::Mat pixflag, int TS, double TH,int 
 						for(int y=p-up;y<=p+down; y++){
 							int left= supReg.at<int>(y,q,0);
 							int right= supReg.at<int>(y,q,1);
-							//cout << "y: " << y << " q: " << q << " left: " << left << " Right: " << right << endl;
+							//cout <<  y << " , " << q <<  " left: " << left << " right: " << right << endl;
 							for(int x=q-left; x<=q+right; x++){
-								//cout << "q-left " << q-left << endl; 
-								if(x!=q || y!=p){							//Don't involve the pixel of interest in calculation
+								//if(x!=q || y!=p){							//Don't involve the pixel of interest in calculation -> NOT necessary the next 'if' excludes it by itself
 									if(pixflag.at<int>(y,x)==0){				//Reliable pixel
 										reliables++;
 										hist.at<int>((int)dispL.at<float>(y,x)) +=1;
 									}
 									//cout << "reliable: " << reliables << endl;
-								}
+								//}
 							}
 						}
-						int newd= mostVote(hist);
+						int newd= mostVote(hist) + dispMin;
 						//cout << "hist: " << hist << '\t' << " most vote: " << newd << endl;
 						if(reliables > TS && ( (double)(hist.at<int>(newd,0)/reliables) > TH)) {
 							//cout <<  p << " , " << q << " original disp: " << dispL.at<float>(p,q) << "  updated disp: " << newd << endl;
@@ -910,7 +962,7 @@ void image::regionVoting(cv::Mat& dispL, cv::Mat pixflag, int TS, double TH,int 
 							pixflag.at<int>(p,q) == 0;
 						}
 				}
-			}
+			} 
 		}
 		n++;
 	}

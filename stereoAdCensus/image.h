@@ -46,11 +46,13 @@ void find_disparity(cv::Mat, cv::Mat&, cv::Mat&);
 void finalCost(cv::Mat , cv::Mat , cv::Mat , cv::Mat , cv::Mat );
 double findMax(cv::Mat);
 void subpxEnhance(cv::Mat, cv::Mat&);
-int findOutliers(cv::Mat, cv::Mat, cv::Mat&);
+int findOutliers(cv::Mat, cv::Mat, cv::Mat&, float, float);
 void fMatrix(cv::Mat, cv::Mat, cv::Mat&,int, double, double);
 void reset();
-void regionVoting(cv::Mat&, cv::Mat, int, double, int);
+void regionVoting(cv::Mat&, cv::Mat&, int, double, int);
 int mostVote(cv::Mat);
+void labelOut(cv::Mat, cv::Mat, cv::Mat, float,float , float, float);
+void border(cv::Mat , cv::Mat, cv::Mat&);
 //DEBUG
 char *itob(uint64_t);
 };
