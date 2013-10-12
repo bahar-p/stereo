@@ -902,20 +902,20 @@ void image::labelOut(cv::Mat Ql, cv::Mat Qr, cv::Mat T, float pl,float ql, float
 void image::border(cv::Mat disp, cv::Mat fCost,cv::Mat& grad){
 	//cv::Mat Gx = (Mat_<float>(3,3) << 1,0,-1, 2,0,-2, 1,0,-1);
 	//cv::Mat Gy = (Mat_<float>(3,3) << 1,2,1, 0,0,0, -1,-2,-1);
-	int scale = 5;
+	int scale = 1;
 	int delta = 0;
 	int ddepth = CV_16S;
 	Mat grad_x, grad_y;
 	Mat abs_grad_x, abs_grad_y;
 
 	/// Gradient X
-	//Scharr( src_gray, grad_x, ddepth, 1, 0, scale, delta, BORDER_DEFAULT );
-	Sobel( disp, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT );
+	Scharr( disp, grad_x, ddepth, 1, 0, scale, delta, BORDER_DEFAULT );
+	//Sobel( disp, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT );
 	convertScaleAbs( grad_x, abs_grad_x );
 
 	/// Gradient Y
-	//Scharr( src_gray, grad_y, ddepth, 0, 1, scale, delta, BORDER_DEFAULT );
-	Sobel( disp, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT );
+	Scharr( disp, grad_y, ddepth, 0, 1, scale, delta, BORDER_DEFAULT );
+	//Sobel( disp, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT );
 	convertScaleAbs( grad_y, abs_grad_y );
 
 	/// Total Gradient (approximate)
