@@ -674,7 +674,7 @@ double image::colDiffer(cv::Mat in, int x1, int y1, int x2, int y2){
 }
 
 /* Scanline optimization from 4 direction: LRUD */
-void image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost, bool dispR){
+Mat image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost, bool dispR){
 	double minLeft=0.0;
 	double minRight=0.0;
 	double minUp=0.0;
@@ -761,6 +761,7 @@ void image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost, boo
 	
 	finalCost(left_cost,right_cost,down_cost,up_cost, final_cost);
 	find_disparity(final_cost, disp, cost);
+	return final_cost;
 	//subpxEnhance(final_cost,disp);
 	
 }
@@ -857,10 +858,8 @@ void image::fMatrix(cv::Mat pixflag, cv::Mat dispL, cv::Mat& FM, int N, double p
 /* Detecting and labeling outliers */
 int image::findOutliers(cv::Mat dispL, cv::Mat dispR,cv::Mat& pixflag, float f, float B){
 	int n=0;
-	//cv::Mat Ql= (Mat_<float>(4,4) << 1,0,0, -(img_leftRGB.cols/2),0,1,0,-(img_leftRGB.rows/2),0,0,0,f,0,0, -1/B, 0);
-	//cv::Mat Qr= (Mat_<float>(4,4) << 1,0,0, -(img_leftRGB.cols/2),0,1,0,-(img_leftRGB.rows/2),0,0,0,f,0,0, -1/B, 0);
-	cv::Mat Ql= (Mat_<float>(4,4) << 1,0,0, -(img_leftRGB.cols/2),0,1,0,-(img_leftRGB.rows/2),0,0,0,f,0,0, -1/B, -1);
-	cv::Mat Qr= (Mat_<float>(4,4) << 1,0,0, -((img_leftRGB.cols/2)+B),0,1,0,-(img_leftRGB.rows/2),0,0,0,f,0,0, -1/B, -1);
+	cv::Mat Ql= (Mat_<float>(4,4) << 1,0,0, -(img_leftRGB.cols/2),0,1,0,-(img_leftRGB.rows/2),0,0,0,f,0,0, -1/B, 0);
+	    cv::Mat Qr= (Mat_<float>(4,4) << 1,0,0, -(img_leftRGB.cols/2),0,1,0,-(img_leftRGB.rows/2),0,0,0,f,0,0, -1/B, 0);
 	cv::Mat T= (Mat_<float>(4,4) << 1,0,0, B,0,1,0,0,0,0,1,0,0,0, 0, 1);
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
@@ -868,9 +867,12 @@ int image::findOutliers(cv::Mat dispL, cv::Mat dispR,cv::Mat& pixflag, float f, 
 			if(dispL.at<float>(p,q) != dispR.at<float>(p,q-(int)dispL.at<float>(p,q))){
 				//cout<< "dispL: " << dispL.at<float>(p,q) << " dispR: " << dispR.at<float>(p,q-(int)dispL.at<float>(p,q)) << endl;
 				n++;
-			//	labelOut(Ql,Qr,T, (float)p, (float)q, dispL.at<float>(p,q), dispR.at<float>(p,q-(int)dispL.at<float>(p,q)));
-				pixflag.at<int>(p,q)=1;
+				int occluded = labelOut(Ql, (float)p, (float)q, dispL.at<float>(p,q), dispR.at<float>(p,q-(int)dispL.at<float>(p,q)));
+				if(occluded == 1){
+					pixflag.at<int>(p,q)=1;				//Occluded
 				//cout << dispR.at<float>(p,q-(int)dispL.at<float>(p,q)) << endl;
+				}
+				else pixflag.at<int>(p,q)=-1;			//Mistmatch
 			}
 			
 		}
@@ -879,27 +881,130 @@ int image::findOutliers(cv::Mat dispL, cv::Mat dispR,cv::Mat& pixflag, float f, 
 	
 }
 
-void image::labelOut(cv::Mat Ql, cv::Mat Qr, cv::Mat T, float pl,float ql, float dl, float dr){
+int image::labelOut(cv::Mat Ql, float pl,float ql, float dl, float dr){
 	cv::Mat p1= (Mat_<float>(4,1) << ql,pl,dl,1);
 	cv::Mat q1= (Mat_<float>(4,1) << ql-dl, pl, dr, 1);
 	cv::Mat p2= (Mat_<float>(4,1) << (ql-dl)+dr, pl, dr, 1);
 	cv::Mat res1,res2, res3,res4;
 	gemm(p1,Ql, 1, 0, 0, res1, GEMM_1_T + GEMM_2_T);
-	gemm(res1,T, 1, 0, 0, res2, 0);
-	gemm(res2, Qr,1, 0, 0, res3, 0);
-	gemm(res3,q1, 1, 0, 0, res4, 0);
-	cout << "res4: " << res4 << endl;
-	cv::Mat zero = Mat::zeros(1,1,CV_32F);
-	cv::Mat diff = res4 != zero;
-	// Equal if no elements disagree
-	bool equal = cv::countNonZero(diff) == 0;
-	if(equal){
-		cout << res4 << " Mismatch" << endl;
+	//gemm(res1,T, 1, 0, 0, res2, 0);
+	//gemm(res2, Qr,1, 0, 0, res3, 0);
+	gemm(Ql,p2, 1, 0, 0, res2, 0);
+	gemm(res1,res2, 1, 0, 0, res3, 0);
+	
+	gemm(Ql,p1, 1, 0, 0, res4, 0);
+	float mgt1 = (float) sqrt((res2.at<float>(0)*res2.at<float>(0))+ (res2.at<float>(1)*res2.at<float>(1)) 
+				+ (res2.at<float>(2)*res2.at<float>(2))+ (res2.at<float>(3)*res2.at<float>(3)));
+	float mgt2 = (float) sqrt((res4.at<float>(0)*res4.at<float>(0))+ (res4.at<float>(1)*res4.at<float>(1)) 
+				+ (res4.at<float>(2)*res4.at<float>(2))+ (res4.at<float>(3)*res4.at<float>(3)));
+	
+	float RE1 = res3.at<float>(0);
+	float RE2 = mgt1 * mgt2;
+	//cout << "res4: " << res4 << " res3: " << res3 << " mgt1: " <<mgt1 << " mgt2: " << mgt2 << " multi: " << RE2 << " " << RE1<< endl;
+	//cout << " abs: " << abs(RE1-RE2) << endl;
+	if(abs(RE1-RE2) < 2){											//Threshold? (Float calculation difference?)
+		//cout << " Mismatch" << endl;
+		return 0;
 	}
+	else {
+		//cout << " Occluded!" << endl;
+		return 1;
+	}
+	
+	//cv::Mat zero = Mat::zeros(1,1,CV_32F);
+	//cv::Mat diff = res4 != zero;
+	// Equal if no elements disagree
+	//bool equal = cv::countNonZero(diff) == 0;
+	/*if(equal){
+		cout << res4 << " Mismatch" << endl;
+	}*/
 	//else cout << "Occluded" << endl;
 }
 
-void image::border(cv::Mat disp, cv::Mat fCost,cv::Mat& grad){
+void image::interpolate(cv::Mat img, cv::Mat& disp, cv::Mat pixflag){
+	
+	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
+		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
+			
+			if(pixflag.at<int>(p,q)==1){ 				//Occluded
+				float min_disp = 10000000;
+				float min1, min2;
+				for(int j=-2; j<3; j++){
+					
+					min1 = std::min(((p-2 < subRH || q+j > img_leftRGB.cols-subRW-1 || q+j < subRW || pixflag.at<int>(p-2,q+j)!=0) ? 20000000 : disp.at<float>(p-2,q+j)), 
+									((p+2 > img_leftRGB.rows-subRH-1 || q+j > img_leftRGB.cols-subRW-1 || q+j < subRW || pixflag.at<int>(p+2,q+j)!=0) ? 20000000 : disp.at<float>(p+2,q+j)));
+					if(min1 < min_disp){
+						min_disp = min1;
+					}
+				}
+				for (int i=-1; i<2; i++){
+					min1 = std::min(((p+i < subRH || p+i > img_leftRGB.rows-subRH-1 || q-2 < subRW || pixflag.at<int>(p+i,q-2)!=0) ? 20000000 : disp.at<float>(p+i,q-2)),
+									((p+i < subRH || p+i > img_leftRGB.rows-subRH-1 || q+2 > img_leftRGB.cols-subRW-1 || pixflag.at<int>(p+i,q+2)!=0) ? 20000000 : disp.at<float>(p+i, q+2)));
+					if(min1 < min_disp){
+						min_disp = min1;
+					}
+				}
+				if(min_disp == 10000000 || min_disp == 20000000) cout << "Very large disp! " << endl;
+				else disp.at<float>(p,q) = min_disp;							//lowest disparity from 16 nearest reliable pixels
+			}
+			else if(pixflag.at<int>(p,q)== -1){ 				//Mismatch
+				int x,y, tempx, tempy;
+				Mat gimg;
+				int min_diff = 10000000;
+				int temp_diff;
+				int diff1, diff2;
+				unsigned char I2, I3;
+				cvtColor(img, gimg, CV_BGR2GRAY);
+				unsigned char I1 = gimg.at<uchar>(p,q);
+				for(int j=-2; j<3; j++){
+					I2 =  gimg.at<uchar>(p-2,q+j);
+					I3 =  gimg.at<uchar>(p+2,q+j);
+					diff1 = (p-2 < subRH || q+j < subRW || q+j > img_leftRGB.cols-subRW-1 || pixflag.at<int>(p-2,q+j)!=0) ? 20000000 : abs((int)I1 - I2);
+					diff2 = (p+2 > img_leftRGB.rows-subRH-1 || q+j < subRW || q+j > img_leftRGB.cols-subRW-1 || pixflag.at<int>(p+2,q+j)!=0) ? 20000000 : abs((int)I1 - I3);
+					if(diff1 < diff2){
+						temp_diff = diff1;
+						tempx = q+j;
+						tempy = p-2;
+					} else {
+						temp_diff = diff2;
+						tempx = q+j;
+						tempy = p+2;
+					}
+					if(temp_diff < min_diff ){
+						min_diff = temp_diff;
+						x = tempx;
+						y = tempy;
+					}
+				}
+				for (int i=-1; i<2; i++){
+					I2 = gimg.at<uchar>(p+i,q-2);
+					I3 = gimg.at<uchar>(p+i,q+2);
+					diff1 = (q-2 < subRW || p+i < subRH || p+i > img_leftRGB.rows-subRH-1 || pixflag.at<int>(p+i,q-2)!=0) ? 20000000 : abs((int)I1 - I2);
+					diff2 = (q+2 > img_leftRGB.cols-subRW-1 || p+i < subRH || p+i > img_leftRGB.rows-subRH-1 || pixflag.at<int>(p+i,q+2)!=0) ? 20000000 : abs((int)I1 - I3);
+					if(diff1 < diff2){
+						temp_diff = diff1;
+						tempx = q-2;
+						tempy = p+i;
+					} else {
+						temp_diff = diff2;
+						tempx = q+2;
+						tempy = p+i;
+					}
+					if(temp_diff < min_diff){
+						min_diff = temp_diff;
+						x = tempx;
+						y = tempy;
+					}
+				}
+				if(min_diff == 20000000 || min_diff == 10000000) cout << "Very large intensity difference! " << endl;
+				else disp.at<float>(p,q) = disp.at<float>(y,x);
+			}
+			
+		}
+	}
+}
+
+void image::border(cv::Mat disp, cv::Mat& grad){
 	//cv::Mat Gx = (Mat_<float>(3,3) << 1,0,-1, 2,0,-2, 1,0,-1);
 	//cv::Mat Gy = (Mat_<float>(3,3) << 1,2,1, 0,0,0, -1,-2,-1);
 	int scale = 1;
@@ -920,7 +1025,43 @@ void image::border(cv::Mat disp, cv::Mat fCost,cv::Mat& grad){
 
 	/// Total Gradient (approximate)
 	addWeighted( abs_grad_x, 1, abs_grad_y, 1, 0, grad );
+	
+}
 
+void image::discAdjust(cv::Mat& disp, cv::Mat fcost, cv::Mat mask){
+	//std::list<Point> pt;
+	int n=0;
+	for(int p=subRH+1 ; p<img_leftRGB.rows-subRH-1 ; p++){					
+		for(int q= subRW+1 ; q<img_leftRGB.cols-subRW-1 ; q++){
+			n=0;
+			if(mask.at<int>(p,q) != 0){
+				
+				if(mask.at<int>(p,q-1) ==0){
+					n++;
+					//cout << " Left Not On Edge " << endl;
+					//Point p1= Point(q-1,p);
+					//pt.push_back(p1);
+				}
+				if(mask.at<int>(p,q+1) == 0){
+					n++;
+				}
+				//cout << "size: " << pt.size() << endl;
+				if(n==2){
+					cout << " 2 points found!" << endl;
+				
+					if(fcost.at<double>(p,q-1,(int)disp.at<float>(p,q-1)) < fcost.at<double>(p,q,(int)disp.at<float>(p,q))){
+						disp.at<float>(p,q) = disp.at<float>(p,q-1);
+					}
+					if(fcost.at<double>(p,q+1,(int)disp.at<float>(p,q+1)) < fcost.at<double>(p,q,(int)disp.at<float>(p,q))){
+						disp.at<float>(p,q) = disp.at<float>(p,q+1);
+					}
+					
+				}
+				
+			}
+		}
+	}
+	
 }
 
 

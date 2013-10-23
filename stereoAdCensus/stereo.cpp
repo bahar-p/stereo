@@ -73,7 +73,7 @@ int main(int argc, char **argv)
 	
 	Mat dispL=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	Mat costL=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
-	img->scanline(1.0,3.0,15, dispL, costL);
+	Mat fcost = img->scanline(1.0,3.0,15, dispL, costL);
 	std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
 	cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
@@ -81,9 +81,10 @@ int main(int argc, char **argv)
 	//img->fMatrix(pixflags,dispL,f, 16, 1, 0.99);
 	img->regionVoting(dispL, pixflags, 20, 0.4, 5);
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
+	img->interpolate(image_left, dispL, pixflags);
 	Mat border;
-	img->border(dispL, costL, border);
-	
+	img->border(dispL, border);
+	img->discAdjust(dispL, fcost, border);
 	
 	double minv1, maxv1;
 	cv::minMaxLoc(dispL, &minv1,&maxv1);
@@ -101,8 +102,8 @@ int main(int argc, char **argv)
     imshow( "DispL", dispL8 );                   	
     imshow( "DispR", dispR8 );  
     imshow( "gradient", border );
-    imwrite( "/home/bahar/dispL.png", dispL8 );
-    imwrite( "/home/bahar/dispR.png", dispR8 );           	
+    imwrite( "/home/bahar/dispLinterpdiscAdjust.png", dispL8 );
+    //imwrite( "/home/bahar/dispR.png", dispR8 );           	
     waitKey(0);
    	char c = waitKey(10);
     if (c == ' ')  

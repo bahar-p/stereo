@@ -4,6 +4,7 @@
 #include <math.h>
 #include <iostream>
 #include <string>
+#include <list>
 
 using namespace std;
 using namespace cv;
@@ -36,7 +37,7 @@ double colDiffer (cv::Mat, int, int, int, int);
 void aggregateCost( );
 double costOpt(cv::Mat, int, int, int, double, char, double, double, double, bool dispr=false);
 double MinPathCost(cv::Mat, int, int);
-void scanline(double, double, double, Mat&, Mat&,bool dispr=false);
+Mat scanline(double, double, double, Mat&, Mat&,bool dispr=false);
 std::pair<double,double> calc_param(int, int, int, int, int, int ,int , int, double, double, double);
 void IImage(cv::Mat, cv::Mat, char);
 void finalSum(cv::Mat , cv::Mat, char, int a=0);
@@ -51,8 +52,10 @@ void fMatrix(cv::Mat, cv::Mat, cv::Mat&,int, double, double);
 void reset();
 void regionVoting(cv::Mat&, cv::Mat&, int, double, int);
 int mostVote(cv::Mat);
-void labelOut(cv::Mat, cv::Mat, cv::Mat, float,float , float, float);
-void border(cv::Mat , cv::Mat, cv::Mat&);
+int labelOut(cv::Mat, float,float , float, float);
+void border(cv::Mat, cv::Mat&);
+void discAdjust(cv::Mat&, cv::Mat, cv::Mat);
+void interpolate(cv::Mat, cv::Mat&, cv::Mat);
 //DEBUG
 char *itob(uint64_t);
 };
