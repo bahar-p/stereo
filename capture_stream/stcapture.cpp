@@ -79,8 +79,9 @@ int main(int argc, char **argv)
 
 
 void takeImage(){
-	CvCapture* captureL = cvCaptureFromCAM(2); //left
-	CvCapture* captureR = cvCaptureFromCAM(0); //right
+	CvCapture* captureL = cvCaptureFromCAM(1); //right
+	CvCapture* captureR = cvCaptureFromCAM(0); //mid
+	CvCapture* captureM = cvCaptureFromCAM(2); //mid
 	//CvCapture* captureUp = cvCaptureFromCAM(2); //right
 	
 	int img_num=30;
@@ -92,14 +93,14 @@ void takeImage(){
 		stringstream ss;
 		ss << i;
 		filenameL[i]=ss.str();
-		filenameL[i]+="up.jpg";
+		filenameL[i]+="right.jpg";
 		filenameR[i]=ss.str();
-		filenameR[i]+="right.jpg";
+		filenameR[i]+="mid.jpg";
 		//filenameU[i]=ss.str();
 		//filenameU[i]+="up.jpg";
 	}
 	
-	if ( !captureL || !captureR ) {
+	if ( !captureL || !captureR || !captureM) {
      fprintf( stderr, "ERROR: capture is NULL \n" );
      getchar();
     // return -1;
@@ -112,7 +113,7 @@ void takeImage(){
      // Get one frame
      IplImage* frameL = cvQueryFrame( captureL );
      IplImage* frameR = cvQueryFrame( captureR );
-     //IplImage* frameU = cvQueryFrame( captureUp );
+     IplImage* frameM = cvQueryFrame( captureM );
      if ( !frameL || !frameR) {
        fprintf( stderr, "ERROR: frame is null...\n" );
        getchar();
@@ -128,6 +129,7 @@ void takeImage(){
 	}
 	cvShowImage( "windowL", frameL );
 	cvShowImage( "windowR", frameR );
+	cvShowImage( "windowM", frameM );
 	//cvShowImage( "windowU", frameU );
 	
      // Do not release the frame!
@@ -138,6 +140,7 @@ void takeImage(){
    // Release the capture device housekeeping
    cvReleaseCapture( &captureL );
    cvReleaseCapture( &captureR );
+   cvReleaseCapture( &captureM );
    //cvReleaseCapture( &captureUp );
    cvDestroyAllWindows();
 }
@@ -161,8 +164,8 @@ int takeVideo(){
 			scanf("%s",calibFileR);
 			readCalibfile(calibFileR, &cameraMatrixR, &distCoeffsR);*/
    
-   VideoCapture cap1(0); // open the video camera no. 0 (Right)
-   VideoCapture cap2(1); // open the video camera no. 1 (Left)
+   VideoCapture cap1(3); // open the video camera no. 0 (right)
+   VideoCapture cap2(0); // open the video camera no. 1 (mid)
 
     if (!cap1.isOpened() || !cap2.isOpened())  // if not success, exit program
     {
@@ -177,7 +180,7 @@ int takeVideo(){
    cout << "Frame Size = " << dWidth << "x" << dHeight << endl;
    Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
 
-	VideoWriter oVideoWriterL (path + "/CamLeft.mpg", CV_FOURCC('P','I','M','1'), 20, frameSize, true); //initialize the VideoWriter object 
+	VideoWriter oVideoWriterL (path + "/CamMid.mpg", CV_FOURCC('P','I','M','1'), 20, frameSize, true); //initialize the VideoWriter object 
 	VideoWriter oVideoWriterR (path + "/CamRight.mpg", CV_FOURCC('P','I','M','1'), 20, frameSize, true); //initialize the VideoWriter object 
 	
 	
@@ -229,7 +232,7 @@ int takeVideo(){
 		
 		
 		imshow("camLeft", frameL); 		//show the frame
-		imshow("camRight", frameR); 	//show the frame
+		imshow("camMid", frameR); 	//show the frame
 		
 		
 		//Store the video input in forms of .mpg files from both cameras

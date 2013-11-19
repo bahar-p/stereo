@@ -1,0 +1,21 @@
+OBJS = imageGpu.o stereoGpu.o
+CC = /usr/local/cuda-5.0/bin/nvcc
+CUDAPATH = /usr/local/cuda-5.0
+NVCCFLAGS = -I$(CUDAPATH)/include -arch=sm_20
+CFLAGS = -c
+LIB = 
+LFLAGS = -L$(CUDAPATH)/lib
+BUILDPATH = ../build
+OPENCVINC = `pkg-config --cflags opencv`
+OPENCVLIB = `pkg-config --libs opencv`
+
+all: mainGpu
+mainGpu: $(OBJS)
+	$(CC) $(OBJS) -o $(BUILDPATH)/mainGpu $(OPENCVLIB) $(LFLAGS)
+stereoGpu.o: stereoGpu.cu imageGpu.h
+	$(CC) $(OPENCVINC) $(NVCCFLAGS) $(CFLAGS) stereoGpu.cu
+imageGpu.o: imageGpu.cu imageGpu.h
+	$(CC) $(OPENCVINC) $(NVCCFLAGS) $(CFLAGS) imageGpu.cu
+
+clean:
+	rm -rf *.o *~

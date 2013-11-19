@@ -944,7 +944,7 @@ void image::interpolate(cv::Mat img, cv::Mat& disp, cv::Mat pixflag){
 						min_disp = min1;
 					}
 				}
-				if(min_disp == 10000000 || min_disp == 20000000) cout << "Very large disp! " << endl;
+				if(min_disp == 10000000 || min_disp == 20000000) ; //cout << "Very large disp! " << endl;
 				else disp.at<float>(p,q) = min_disp;							//lowest disparity from 16 nearest reliable pixels
 			}
 			else if(pixflag.at<int>(p,q)== -1){ 				//Mismatch
@@ -996,7 +996,7 @@ void image::interpolate(cv::Mat img, cv::Mat& disp, cv::Mat pixflag){
 						y = tempy;
 					}
 				}
-				if(min_diff == 20000000 || min_diff == 10000000) cout << "Very large intensity difference! " << endl;
+				if(min_diff == 20000000 || min_diff == 10000000) ;//cout << "Very large intensity difference! " << endl;
 				else disp.at<float>(p,q) = disp.at<float>(y,x);
 			}
 			
@@ -1095,12 +1095,12 @@ void image::regionVoting(cv::Mat& dispL, cv::Mat& pixflag, int TS, double TH,int
 								//}
 							}
 						}
-						int newd= mostVote(hist) + dispMin;
+						int newd= mostVote(hist);
 						//cout << "hist: " << hist << '\t' << " most vote: " << newd << endl;
-						if(reliables > TS && ( (double)(hist.at<int>(newd,0)/reliables) > TH)) {
-							//cout <<  p << " , " << q << " original disp: " << dispL.at<float>(p,q) << "  updated disp: " << newd << endl;
-							dispL.at<float>(p,q) = (float) newd;
-							pixflag.at<int>(p,q) == 0;
+						if(reliables > TS && ( ((double)hist.at<int>(newd,0)/reliables) > TH)) {
+							//cout <<  p << " , " << q << " original disp: " << dispL.at<float>(p,q) << "  updated disp: " << (float) newd +  dispMin<< endl;
+							dispL.at<float>(p,q) = (float) newd + dispMin;
+							pixflag.at<int>(p,q) = 0;
 						}
 				}
 			} 
@@ -1325,15 +1325,15 @@ void image::subpxEnhance(cv::Mat fcost, cv::Mat& idisp){
 		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
 				int d = idisp.at<float>(p,q)-dispMin;
 				//std::cout << "float d: " << idisp.at<float>(p,q)<< " int d: " << d << std::endl;
-				if(d>dispMin && d < dispMax-2){
-					double val = (fcost.at<double>(p,q,d+1) - fcost.at<double>(p,q,d-1))/(2*(fcost.at<double>(p,q,d+1)+ \
+				if(d>0 && d < dispMax-dispMin){
+					double val = (fcost.at<double>(p,q,d+1) - fcost.at<double>(p,q,d-1))/(2*(fcost.at<double>(p,q,d+1)+
 					fcost.at<double>(p,q,d-1) - 2*fcost.at<double>(p,q,d)));
-					//std::cout << "val: " << val <<std::endl;
+				//	std::cout << "old disp: " << idisp.at<float>(p,q) <<std::endl;
 					idisp.at<float>(p,q) = idisp.at<float>(p,q) - (float)val;
-					
+				//	std::cout << "new disp: " << idisp.at<float>(p,q) <<std::endl;
 				}
 			}
 	}
-	//cv::medianBlur(idisp, idisp, 3);
+	cv::medianBlur(idisp, idisp, 3);
 	//cv::GaussianBlur(idisp, idisp, cv::Size(3,3), 3,3, cv::BORDER_DEFAULT);
 }

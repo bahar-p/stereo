@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>
+#include <fstream>
 #include "cv.h"
 #include "highgui.h"
 #include <GL/glut.h>
@@ -49,7 +50,11 @@ VideoCapture glcap1, glcap2;
 	int preFilterCap = 31;
 	int uniqueness = 10;
 	int speckleWS = 100;
-	int speckleRange =32;
+	int speckleRange =2;
+	/*int preFilterCap = 31;
+	int uniqueness = 10;
+	int speckleWS = 0;
+	int speckleRange =1;*/
 
 int win_w = 800, win_h=800;
 Mat Image3d;
@@ -80,7 +85,7 @@ void frames(int id){
 	Mat map[2][2];
 
 	initUndistortRectifyMap(cameraMatrix[0], distCoeffs[0], R1, P1, frameSize, CV_16SC2, map[0][0], map[0][1]); //left
-    initUndistortRectifyMap(cameraMatrix[1], distCoeffs[1], R2, P2, frameSize, CV_16SC2, map[1][0], map[1][1]); //right
+	initUndistortRectifyMap(cameraMatrix[1], distCoeffs[1], R2, P2, frameSize, CV_16SC2, map[1][0], map[1][1]); //right
     
     //int nextframe=0;
 	for (frameNum=0; frameNum<frs; frameNum++) {
@@ -98,7 +103,12 @@ void frames(int id){
 		
 		Mat GframeL, GframeR, uframeL, uframeR, newframeL;
 		
+		Mat dispr,lr, rr;
 		Mat disp(dHeight,dWidth,CV_8U);
+		//Rotate
+		int len = std::max(frameL.cols, frameL.rows);
+		cv::Point2f pt(len/2., len/2.);
+		
 		//remap and show the rectified videos
 		cvtColor(frameL, GframeL, CV_BGR2GRAY);
 		cvtColor(frameR, GframeR, CV_BGR2GRAY);
@@ -106,15 +116,26 @@ void frames(int id){
 		remap(frameL, newframeL, map[0][0], map[0][1], CV_INTER_LINEAR);
 		remap(GframeR, uframeR, map[1][0], map[1][1], CV_INTER_LINEAR);
 		
+		//Rotate
+		cv::Mat r = cv::getRotationMatrix2D(pt, -90, 1.0);
+		cv::warpAffine(uframeL, lr, r, cv::Size(len, len));
+		cv::warpAffine(uframeR, rr, r, cv::Size(len, len));
+		imshow("rotatel", lr); 		//show the frame
+		imshow("rotater", rr); 		//show the frame
+		
 		imshow("camLeft", uframeL); 		//show the frame
 		imshow("camRight", uframeR); 	//show the frame
 		
 		//Apply SGBM and produce disparity map
 		StereoSGBM sgbm(mindisp, maxdisp, SADWindow, 8*P, 32*P, dispMaxdiff,
-                        preFilterCap, uniqueness, speckleWS, speckleRange, false);
-		sgbm(uframeL,uframeR,disp);
+                        preFilterCap, uniqueness, speckleWS, speckleRange, true);
+		sgbm(lr,rr,dispr);
 		//cout << "VIDEOPROCESS: before: rendered: " << rendered << "filled: " << filled << endl;
-	
+		
+		//Rotate back
+		r = cv::getRotationMatrix2D(pt, 90, 1);
+		cv::warpAffine(dispr, disp, r, cv::Size(len, len));
+		
 		std::unique_lock<std::mutex> lock(mtx);
 		cvar.wait(lock, []{return rendered;});
 		
@@ -122,7 +143,8 @@ void frames(int id){
 		Image3d = Mat(disp.size().height, disp.size().width, CV_32FC3,Scalar::all(0));
 		reprojectImageTo3D(disp,Image3d, Q, true,CV_32F);
 		
-        disp.convertTo(disp8, CV_8U, 255/(maxdisp*16.));        
+        disp.convertTo(disp8, CV_8U, 255/(maxdisp*16.));
+        
 		imshow("disparity", disp8);
 		//imwrite( "/home/bahar/FrameDisp5.png", disp8 );
 		if (waitKey(10) == 27) 				//wait for 'esc' key press for 10ms. If 'esc' key is pressed, break loop
@@ -281,15 +303,16 @@ void draw(int id){
 
 int main(int argc, char **argv)
 {
-	if (argc <=1 ){
-		cout<< "usage: ./disparit extrinsic_file instrinsic_file ";
+	if (argc != 3){
+		cout<< "usage: ./disparity extrinsic_file intrinsic_file ";
 		return 0;
 	}
-	
+	//if( argc == 2) kittiCalib(argv[1]);
 	readCalibfile(argv[1], argv[2]);
+	
 	// Load stereo video //
 	char dir[100];
-	printf("Enter right camera file path: ");
+	printf("\nEnter right camera file path: ");
 	scanf("%s",dir);
 	string path = string(dir);
 	cout << path << endl;
@@ -297,7 +320,7 @@ int main(int argc, char **argv)
 	VideoCapture cap1(path); // open the video camera no. 0 (Right)
 	glcap1 = cap1;
 	
-	printf("Enter left camera file path: ");
+	printf("\nEnter left camera file path: ");
 	scanf("%s",dir);
 	path = string(dir);
 	cout << path << endl;
@@ -307,7 +330,7 @@ int main(int argc, char **argv)
 	
 	if (!cap1.isOpened() || !cap2.isOpened())  // if not success, exit program
 	{
-		cout << "ERROR: Cannot open the video file" << endl;
+		cout << "\nERROR: Cannot open the video file" << endl;
 		return -1;
 	}
 
@@ -320,67 +343,6 @@ int main(int argc, char **argv)
 	camProcess.join();
 	graphics.join();
 	
-	/*
-	double dWidth = cap1.get(CV_CAP_PROP_FRAME_WIDTH); 			//get the width of frames of the video
-	double dHeight = cap1.get(CV_CAP_PROP_FRAME_HEIGHT); 		//get the height of frames of the video
-	cout << "Frame Size = " << dWidth << "x" << dHeight << endl;
-	Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
-   
-   // Apply undistortion to frames //
-	Mat map[2][2];
-
-	initUndistortRectifyMap(cameraMatrix[0], distCoeffs[0], R1, P1, frameSize, CV_16SC2, map[0][0], map[0][1]); //left
-    initUndistortRectifyMap(cameraMatrix[1], distCoeffs[1], R2, P2, frameSize, CV_16SC2, map[1][0], map[1][1]); //right
-	
-
-	// Disparity parameters //
-	int mindisp=0, maxdisp=64, SADWindow=9,dispMaxdiff=2;
-	int P= 3*SADWindow;
-	int preFilterCap = 31;
-	int uniqueness = 10;
-	int speckleWS = 100;
-	int speckleRange =32;
-	
-	while (1) {
-		Mat frameL, frameR;
-		bool rightRead = cap1.read(frameR);
-		bool leftRead = cap2.read(frameL);
-		
-		if (!leftRead || !rightRead) //if not success, break loop
-		{
-			 cout << "ERROR: Cannot read a frame from video file" << endl;
-			 break;
-		}
-		
-		
-		Mat GframeL, GframeR, uframeL, uframeR;
-		Mat disp(dHeight,dWidth,CV_8U);
-		//remap and show the rectified videos
-		cvtColor(frameL, GframeL, CV_BGR2GRAY);
-		cvtColor(frameR, GframeR, CV_BGR2GRAY);
-		remap(GframeL, uframeL, map[0][0], map[0][1], CV_INTER_LINEAR);
-		remap(GframeR, uframeR, map[1][0], map[1][1], CV_INTER_LINEAR);
-		
-		
-		imshow("camLeft", uframeL); 		//show the frame
-		imshow("camRight", uframeR); 	//show the frame
-		
-		//Apply SGBM and produce disparity map
-		StereoSGBM sgbm(mindisp, maxdisp, SADWindow, 8*P, 32*P, dispMaxdiff,
-                        preFilterCap, uniqueness, speckleWS, speckleRange, false);
-
-		sgbm(uframeL,uframeR,disp);
-		Mat disp8;
-        disp.convertTo(disp8, CV_8U, 255/(maxdisp*16.));
-		imshow("disparity", disp8);
-		
-		if (waitKey(10) == 27) 				//wait for 'esc' key press for 10ms. If 'esc' key is pressed, break loop
-		{
-			cout << "esc key is pressed by user" << endl;
-			break; 
-		}
-		
-	}*/
 	return 0;
 }
 
@@ -402,7 +364,7 @@ void readCalibfile (string extr, string intr){
 	fsi["D2"] >> distCoeffs[1];
 	cout << "camera matrix: " << cameraMatrix[0] << endl
 	<< "distortion coefficient: " << distCoeffs[1] << endl
-	<< "R1: " << R1 << endl << "Q: " << Q << endl; 
+	<< "R1: " << R1 << endl << "P1: " << P1 << endl; 
 	fse.release();
 	fsi.release();
 	

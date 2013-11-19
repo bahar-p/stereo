@@ -29,7 +29,7 @@ int main(int argc, char **argv)
    	//Mat image_left = Mat(6,6, CV_8U, Scalar::all(0));
    //Mat image_right = Mat(6,6, CV_8U, Scalar::all(0));
    	Size s = image_left.size();
-   	int minDisp=0, maxDisp=16;
+   	int minDisp=0, maxDisp=18;
     img = new image(image_left,image_right, minDisp, maxDisp);
     //img->read_image();
 	//cout << numeric_limits<double>::max()<<endl;
@@ -60,8 +60,6 @@ int main(int argc, char **argv)
 	cv::minMaxLoc(dispR, &minv,&maxv);
 	Mat dispR8 = Mat(dispR.size().height, dispR.size().width, CV_8UC1, Scalar::all(0));
 	dispR.convertTo( dispR8, CV_8UC1,255.0/(maxv-minv));
-	
-	
 	 
 	tStart = clock();
 	img->reset();
@@ -79,17 +77,20 @@ int main(int argc, char **argv)
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
 	cv::Mat f;
 	//img->fMatrix(pixflags,dispL,f, 16, 1, 0.99);
+	
 	img->regionVoting(dispL, pixflags, 20, 0.4, 5);
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
 	img->interpolate(image_left, dispL, pixflags);
 	Mat border;
 	img->border(dispL, border);
 	img->discAdjust(dispL, fcost, border);
+	img->subpxEnhance(fcost,dispL);
 	
 	double minv1, maxv1;
 	cv::minMaxLoc(dispL, &minv1,&maxv1);
-	Mat dispL8 = Mat(dispL.size().height, dispL.size().width, CV_8UC1, Scalar::all(0));
-	dispL.convertTo( dispL8, CV_8UC1,255.0/(maxv1-minv1));
+	//Mat dispL8 = Mat(dispL.size().height, dispL.size().width, CV_8UC1, Scalar::all(0));
+	Mat dispL8;
+	dispL.convertTo( dispL8, CV_8UC1,255.0/maxDisp);
    /* for (int i = 0; i < image_left.rows; i++)
 	{
 		for (int j = 0; j < image_left.cols ; j++)
@@ -101,8 +102,8 @@ int main(int argc, char **argv)
 	
     imshow( "DispL", dispL8 );                   	
     imshow( "DispR", dispR8 );  
-    imshow( "gradient", border );
-    imwrite( "/home/bahar/dispLinterpdiscAdjust.png", dispL8 );
+  //  imshow( "gradient", border );
+   // imwrite( "/home/bahar/dispL.png", dispL8 );
     //imwrite( "/home/bahar/dispR.png", dispR8 );           	
     waitKey(0);
    	char c = waitKey(10);
