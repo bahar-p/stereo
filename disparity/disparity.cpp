@@ -103,11 +103,11 @@ void frames(int id){
 		
 		Mat GframeL, GframeR, uframeL, uframeR, newframeL;
 		
-		Mat dispr,lr, rr;
+	//	Mat dispr,lr, rr;
 		Mat disp(dHeight,dWidth,CV_8U);
 		//Rotate
-		int len = std::max(frameL.cols, frameL.rows);
-		cv::Point2f pt(len/2., len/2.);
+	//	int len = std::max(frameL.cols, frameL.rows);
+	//	cv::Point2f pt(len/2., len/2.);
 		
 		//remap and show the rectified videos
 		cvtColor(frameL, GframeL, CV_BGR2GRAY);
@@ -117,11 +117,11 @@ void frames(int id){
 		remap(GframeR, uframeR, map[1][0], map[1][1], CV_INTER_LINEAR);
 		
 		//Rotate
-		cv::Mat r = cv::getRotationMatrix2D(pt, -90, 1.0);
-		cv::warpAffine(uframeL, lr, r, cv::Size(len, len));
-		cv::warpAffine(uframeR, rr, r, cv::Size(len, len));
-		imshow("rotatel", lr); 		//show the frame
-		imshow("rotater", rr); 		//show the frame
+	//	cv::Mat r = cv::getRotationMatrix2D(pt, -90, 1.0);
+	//	cv::warpAffine(uframeL, lr, r, cv::Size(len, len));
+	//	cv::warpAffine(uframeR, rr, r, cv::Size(len, len));
+	//	imshow("rotatel", lr); 		//show the frame
+	//	imshow("rotater", rr); 		//show the frame
 		
 		imshow("camLeft", uframeL); 		//show the frame
 		imshow("camRight", uframeR); 	//show the frame
@@ -129,12 +129,12 @@ void frames(int id){
 		//Apply SGBM and produce disparity map
 		StereoSGBM sgbm(mindisp, maxdisp, SADWindow, 8*P, 32*P, dispMaxdiff,
                         preFilterCap, uniqueness, speckleWS, speckleRange, true);
-		sgbm(lr,rr,dispr);
+		sgbm(uframeL,uframeR,disp);
 		//cout << "VIDEOPROCESS: before: rendered: " << rendered << "filled: " << filled << endl;
 		
 		//Rotate back
-		r = cv::getRotationMatrix2D(pt, 90, 1);
-		cv::warpAffine(dispr, disp, r, cv::Size(len, len));
+		//r = cv::getRotationMatrix2D(pt, 90, 1);
+		//cv::warpAffine(dispr, disp, r, cv::Size(len, len));
 		
 		std::unique_lock<std::mutex> lock(mtx);
 		cvar.wait(lock, []{return rendered;});
@@ -143,7 +143,7 @@ void frames(int id){
 		Image3d = Mat(disp.size().height, disp.size().width, CV_32FC3,Scalar::all(0));
 		reprojectImageTo3D(disp,Image3d, Q, true,CV_32F);
 		
-        disp.convertTo(disp8, CV_8U, 255/(maxdisp*16.));
+       		 disp.convertTo(disp8, CV_8U, 255/(maxdisp*16.));
         
 		imshow("disparity", disp8);
 		//imwrite( "/home/bahar/FrameDisp5.png", disp8 );

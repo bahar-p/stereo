@@ -40,11 +40,12 @@ using namespace cv;
 
 #define PI 3.14159265
 
-void readCalibfile(string, string);
+//void readCalibfile(string, string);
 void kittiCalib(string);
 Mat cameraMatrix[2], distCoeffs[2];
 Mat T,R,R1,R2,P1,P2,Q;
-VideoCapture glcap1, glcap2;
+Mat leftimg,rightimg,p1,p2;
+int dWidth,dHeight;
 // Disparity parameters //
 	int mindisp=0, maxdisp=128, SADWindow=9,dispMaxdiff=2;
 	int P= 3*SADWindow;
@@ -52,14 +53,9 @@ VideoCapture glcap1, glcap2;
 	int uniqueness = 10;
 	int speckleWS = 100;
 	int speckleRange =2;
-	/*int preFilterCap = 31;
-	int uniqueness = 10;
-	int speckleWS = 0;
-	int speckleRange =1;*/
 
 int win_w = 800, win_h=800;
 Mat Image3d;
-int imgRow, imgCol;
 std::mutex mtx;
 std::condition_variable cvar;
 bool filled;
@@ -69,46 +65,24 @@ double LR_angle=271, UD_angle=5, ZOOM=3000.0;
 int dragging, drag_x_origin, drag_y_origin;
 bool PAUSE;
 int frameNum;
-
-void frames(int id){
+Size frameSize;
+void frames(int id) {
 	
 	Mat disp8;
-	double dWidth = glcap1.get(CV_CAP_PROP_FRAME_WIDTH); 			//get the width of frames of the video
-	double dHeight = glcap1.get(CV_CAP_PROP_FRAME_HEIGHT); 		//get the height of frames of the video
-	double fps = glcap1.get(CV_CAP_PROP_FPS);
-	int frs = glcap1.get(CV_CAP_PROP_FRAME_COUNT);
+	dWidth = leftimg.cols; 			//get the width of frames of the video
+	dHeight = leftimg.rows; 		//get the height of frames of the video
 	//int frs=5;
-	cout << "frs: " << frs << " Frame Size = " << dWidth << "x" << dHeight << endl;
-	Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
-	imgRow = dHeight;
-	imgCol = dWidth;
    // Apply undistortion to frames //
-	Mat map[2][2];
+//	Mat map[2][2];
 
-	initUndistortRectifyMap(P1, NULL, NULL, P1, frameSize, CV_16SC2, map[0][0], map[0][1]); //left
-	initUndistortRectifyMap(P2, NULL, NULL, P2, frameSize, CV_16SC2, map[1][0], map[1][1]); //right
-    
-    //int nextframe=0;
-	for (frameNum=0; frameNum<frs; frameNum++) {
-		filled=false;
+/*	initUndistortRectifyMap(cameraMatrix[0], distCoeffs[0], NULL, P1, frameSize, CV_16SC2, map[0][0], map[0][1]); //left
+	initUndistortRectifyMap(cameraMatrix[1], distCoeffs[1], NULL, P2, frameSize, CV_16SC2, map[1][0], map[1][1]); //right	
+		
 		Mat frameL, frameR;
-		bool rightRead = glcap1.read(frameR);
-		bool leftRead = glcap2.read(frameL);
-		
-		if (!leftRead || !rightRead) //if not success, break loop
-		{
-			 cout << "ERROR: Cannot read a frame from video file" << endl;
-			 break;
-		}
-		
-		
+		frameL=leftimg;
+		frameR=rightimg;
 		Mat GframeL, GframeR, uframeL, uframeR, newframeL;
 		
-		Mat dispr,lr, rr;
-		Mat disp(dHeight,dWidth,CV_8U);
-		//Rotate
-		int len = std::max(frameL.cols, frameL.rows);
-		cv::Point2f pt(len/2., len/2.);
 		
 		//remap and show the rectified videos
 		cvtColor(frameL, GframeL, CV_BGR2GRAY);
@@ -117,50 +91,38 @@ void frames(int id){
 		remap(frameL, newframeL, map[0][0], map[0][1], CV_INTER_LINEAR);
 		remap(GframeR, uframeR, map[1][0], map[1][1], CV_INTER_LINEAR);
 		
-		//Rotate
-		cv::Mat r = cv::getRotationMatrix2D(pt, -90, 1.0);
-		cv::warpAffine(uframeL, lr, r, cv::Size(len, len));
-		cv::warpAffine(uframeR, rr, r, cv::Size(len, len));
-		imshow("rotatel", lr); 		//show the frame
-		imshow("rotater", rr); 		//show the frame
 		
 		imshow("camLeft", uframeL); 		//show the frame
 		imshow("camRight", uframeR); 	//show the frame
-		
+*/		
 		//Apply SGBM and produce disparity map
+		Mat disp(dHeight,dWidth,CV_8U);
 		StereoSGBM sgbm(mindisp, maxdisp, SADWindow, 8*P, 32*P, dispMaxdiff,
                         preFilterCap, uniqueness, speckleWS, speckleRange, true);
-		sgbm(lr,rr,dispr);
+		sgbm(leftimg,rightimg,disp);
 		//cout << "VIDEOPROCESS: before: rendered: " << rendered << "filled: " << filled << endl;
 		
-		//Rotate back
-		r = cv::getRotationMatrix2D(pt, 90, 1);
-		cv::warpAffine(dispr, disp, r, cv::Size(len, len));
-		
-		std::unique_lock<std::mutex> lock(mtx);
-		cvar.wait(lock, []{return rendered;});
+		//std::unique_lock<std::mutex> lock(mtx);
+		//cvar.wait(lock, []{return rendered;});
 		
 		//cout << "VIDEOPROCESS: after: rendered: " << rendered << "filled: " << filled << endl;
-		Image3d = Mat(disp.size().height, disp.size().width, CV_32FC3,Scalar::all(0));
-		reprojectImageTo3D(disp,Image3d, Q, true,CV_32F);
+	//	Image3d = Mat(disp.size().height, disp.size().width, CV_32FC3,Scalar::all(0));
+	//	reprojectImageTo3D(disp,Image3d, Q, true,CV_32F);
 		
-        disp.convertTo(disp8, CV_8U, 255/(maxdisp*16.));
+        	disp.convertTo(disp8, CV_8U, 255/(maxdisp*16.));
         
+		imshow("left" , leftimg);
+		imshow("right" , rightimg);
 		imshow("disparity", disp8);
+		waitKey(0);
 		//imwrite( "/home/bahar/FrameDisp5.png", disp8 );
 		if (waitKey(10) == 27) 				//wait for 'esc' key press for 10ms. If 'esc' key is pressed, break loop
 		{
 			cout << "esc key is pressed by user" << endl;
-			break; 
+			return;
 		}
-		filled=true;
-		glLeftf = newframeL;
-		cvar.notify_one();
-	}
-	
-	cout<< "framenum: " << frameNum << endl;
-	
 }
+
 void init(){
 	glClearColor(0.0, 0.0 , 0.0, 0.0);
 	glViewport(0,0,win_w,win_h);
@@ -199,8 +161,8 @@ void display(){
 	
 	glBegin(GL_POINTS);
 	
-	for (int j = 0; j < imgRow ; j++){
-		for (int i= 0; i < imgCol; i++){
+	for (int j = 0; j < dHeight ; j++){
+		for (int i= 0; i < dWidth; i++){
 			
 			if (Image3d.at<Vec3f>(j,i)[2]>0) { 
 				glColor3ub(glLeftf.at<Vec3b>(j,i)[2],glLeftf.at<Vec3b>(j,i)[1],glLeftf.at<Vec3b>(j,i)[0]);
@@ -304,44 +266,63 @@ void draw(int id){
 
 int main(int argc, char **argv)
 {
-	if (argc !=2){
-		cout<< "usage: ./disparity calibFile";
+	if (argc !=4){
+		cout<< "usage: ./disparity calibFile leftimg rightimg";
 		return 0;
 	}
+
+	p1= Mat(3,4,CV_64F);
+	p2 = Mat(3,4,CV_64F);
 	kittiCalib(argv[1]);
 	
+	leftimg = imread(argv[2],0);
+	rightimg = imread(argv[3],0);
+	cout << "Read both images successfully" << endl;
+	if(!leftimg.data || !rightimg.data){
+		cerr << " No valid image" << endl;
+		return -1;
+
+	}
+	
+	/*
 	// Load stereo video //
-	char dir[100];
+	char* dir;
 	printf("\nEnter right camera file path: ");
 	scanf("%s",dir);
 	string path = string(dir);
 	cout << path << endl;
-	//string path = "../Day01/Office01R.mpg";
-	VideoCapture cap1(path); // open the video camera no. 0 (Right)
-	glcap1 = cap1;
+	leftimg = imread(dir,CV_LOAD_IMAGE_GRAYSCALE);
+	//VideoCapture cap1(path); // open the video camera no. 0 (Right)
+	//glcap1 = cap1;
+
+	if(!leftimg.data){
+		cout << "NO image data!" <<endl;
+		return -1;
+	}
+	frameSize=leftimg.size();
 	
 	printf("\nEnter left camera file path: ");
 	scanf("%s",dir);
 	path = string(dir);
 	cout << path << endl;
-	//path = "../Day01/Office01L.mpg";
-	VideoCapture cap2(path); // open the video camera no. 1 (Left)
-	glcap2 = cap2;
 	
-	if (!cap1.isOpened() || !cap2.isOpened())  // if not success, exit program
-	{
-		cout << "\nERROR: Cannot open the video file" << endl;
+	rightimg = imread(dir,CV_LOAD_IMAGE_GRAYSCALE);
+	if(!rightimg.data){
+		cout << "NO image data!" <<endl;
 		return -1;
-	}
+	}*/
 
-	glutInit(&argc, argv);
-	//Image3d = Mat(480, 640, CV_32FC3, Scalar::all(0));
+	//namedWindow( "left", CV_WINDOW_AUTOSIZE );
+	//VideoCapture cap2(path); // open the video camera no. 1 (Left)
+	//glcap2 = cap2;
+	
+//	glutInit(&argc, argv);
 	
 	std::thread camProcess(frames, 1);
-	std::thread graphics(draw, 2);
+	//std::thread graphics(draw, 2);
 	
 	camProcess.join();
-	graphics.join();
+	//graphics.join();
 	
 	return 0;
 }
@@ -351,7 +332,6 @@ void kittiCalib(string calib){
 	string l1,l2;
 	ifstream infile;
 	infile.open (calib);
-	Mat p1(3,4,CV_32F);
 	infile.ignore(4, ' ');
 	getline(infile,l1);
 	char * line1 =(char *) l1.c_str();
@@ -361,9 +341,6 @@ void kittiCalib(string calib){
 	while(p!=NULL){	
 		cout << p << endl;
 		stringstream ss(p);
-		//float f=0;
-		//ss>>f;
-		//cout << "f: " << f <<endl;
 		ss >> p1.at<float>(i,j);
 		j++;
 		if(j==2){
@@ -373,8 +350,10 @@ void kittiCalib(string calib){
 		p = strtok(NULL, " ");
 	}
 	cout << "P1: " << p1 << endl;
+	Mat roi1 = p1(Rect(0,0,3,3));
+	cameraMatrix[0] = roi1;
 
-	Mat p2(3,4,CV_32F);
+
 	infile.ignore(4, ' ');
 	getline(infile,l2);
 	char * line2 =(char *) l2.c_str();
@@ -384,9 +363,6 @@ void kittiCalib(string calib){
 	while(p!=NULL){	
 		cout << p << endl;
 		stringstream ss2(p);
-		//float f=0;
-		//ss>>f;
-		//cout << "f: " << f <<endl;
 		ss2 >> p2.at<float>(i,j);
 		j++;
 		if(j==2){
@@ -396,11 +372,24 @@ void kittiCalib(string calib){
 		p = strtok(NULL, " ");
 	}
 	cout << "P2: " << p2 << endl;	
+	Mat roi2 = p2(Rect(0,0,3,3));
+	cameraMatrix[1] = roi2;
+	cout << "closing the file" << endl;	
 	infile.close();
-	//Mat R1 = (Mat_<float>(3,3) << 1,0,0,0,1,0,0,0,1);
-	//Mat R2= R1;
+	cout << "file closed" << endl;
+	/*float tx = p2.at<float>(0,3) / p2.at<float>(0,0);
+	cout << "tx: " << tx << endl;
+	Mat R = (Mat_<float>(3,3) << 1,0,0,0,1,0,0,0,1);
+	Mat T = (Mat_<float>(3,1) << tx,0,0 );
+	distCoeffs[0] = Mat(1,8, CV_32F, Scalar::all(0));
+	distCoeffs[1]= distCoeffs[0];
+	Mat P11, P22;
+	cout << "returning from kitticalib...." << endl;
+	stereoRectify(cameraMatrix[0],distCoeffs[0],cameraMatrix[1],distCoeffs[1],frameSize, R,T,R1,R2,P11, P22,Q);
+	cout << "R1: " << R1 << " R2: " << R2 << " " << " P11: " << P11 << " P22: " << P22 << endl; */
 }
 
+/*
 void readCalibfile (string extr, string intr){
 	
 	FileStorage fse(extr, FileStorage::READ);
@@ -423,6 +412,4 @@ void readCalibfile (string extr, string intr){
 	fse.release();
 	fsi.release();
 	
-}
-
-
+}*/
