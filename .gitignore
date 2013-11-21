@@ -5,3 +5,5 @@
 *.lib
 build/
 *.*~
+*.swp
+*.swo
