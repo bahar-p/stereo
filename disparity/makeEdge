@@ -1,0 +1,19 @@
+CC = g++
+CFLAGS = -c
+LIB = 
+LFLAGS = 
+BUILDPATH = ../build
+GLFLAGS = -lGL -lglut -lGLU -lm
+OPENCVINC = `pkg-config --cflags opencv`
+OPENCVLIB = `pkg-config --libs opencv`
+
+all: edge
+
+edge: edge.o
+	$(CC) -std=c++0x edge.o -o $(BUILDPATH)/edge $(OPENCVLIB) $(GLFLAGS)
+
+edge.o: edge.cpp
+	$(CC) -std=c++0x $(CFLAGS) $(GLFLAGS) $(OPENCVINC) edge.cpp
+
+clean:
+	rm -rf *.o *~

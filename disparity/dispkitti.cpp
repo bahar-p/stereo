@@ -68,6 +68,8 @@ int frameNum;
 Size frameSize;
 void frames(int id) {
 	
+	Mat cimgL;
+	cout << leftimg.type() << endl;
 	Mat disp8;
 	dWidth = leftimg.cols; 			//get the width of frames of the video
 	dHeight = leftimg.rows; 		//get the height of frames of the video
@@ -114,6 +116,7 @@ void frames(int id) {
 		imshow("left" , leftimg);
 		imshow("right" , rightimg);
 		imshow("disparity", disp8);
+		imshow("cimgL", cimgL);
 		waitKey(0);
 		//imwrite( "/home/bahar/FrameDisp5.png", disp8 );
 		if (waitKey(10) == 27) 				//wait for 'esc' key press for 10ms. If 'esc' key is pressed, break loop
