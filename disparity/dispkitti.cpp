@@ -69,12 +69,15 @@ Size frameSize;
 void frames(int id) {
 	
 	Mat cimgL;
-	cout << leftimg.type() << endl;
+	cout << leftimg.type() << " " << leftimg.depth() << " " << leftimg.channels() <<  endl;
 	Mat disp8;
 	dWidth = leftimg.cols; 			//get the width of frames of the video
 	dHeight = leftimg.rows; 		//get the height of frames of the video
-	//int frs=5;
-   // Apply undistortion to frames //
+
+
+	//cout << leftimg << endl;
+
+	// Apply undistortion to frames //
 //	Mat map[2][2];
 
 /*	initUndistortRectifyMap(cameraMatrix[0], distCoeffs[0], NULL, P1, frameSize, CV_16SC2, map[0][0], map[0][1]); //left
@@ -116,7 +119,6 @@ void frames(int id) {
 		imshow("left" , leftimg);
 		imshow("right" , rightimg);
 		imshow("disparity", disp8);
-		imshow("cimgL", cimgL);
 		waitKey(0);
 		//imwrite( "/home/bahar/FrameDisp5.png", disp8 );
 		if (waitKey(10) == 27) 				//wait for 'esc' key press for 10ms. If 'esc' key is pressed, break loop
