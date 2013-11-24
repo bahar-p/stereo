@@ -66,7 +66,7 @@ int main(int argc, char* argv[]){
 	for(int i=0;i<src.rows;i++){
 		for(int j=0; j<src.cols; j++){
 			if(grad.at<uchar>(i,j) > 200){
-				fmask.at<uchar>(i,j) = grad.at<uchar>(i,j);
+				fmask.at<uchar>(i,j) = 255;
 			}
 		}
 	}
