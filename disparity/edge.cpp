@@ -72,10 +72,12 @@ int main(int argc, char* argv[]){
 	}
 	//ERODE
 	erode(fmask,fmask, Mat(), Point(-1,-1), 1);
-	dilate(fmask,fmask, Mat(), Point(-1,-1),1);
-	if(argc==3){ 
-		bitwise_or(gt,fmask, mask);
-		imshow( window_name, mask );
+	dilate(fmask,fmask, Mat(), Point(-1,-1),2);
+	
+	if(argc==3){
+		bitwise_and(gt,fmask, mask);
+		imshow( "AND mask", mask );
+		imshow( window_name, grad );
 		imshow( "Ground Truth", gt );
 		imshow( "mask2", fmask  );
 		imwrite("/home/bahar/Dataset/masked/mask.png" , fmask);
