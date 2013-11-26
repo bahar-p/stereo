@@ -1,0 +1,19 @@
+CC = g++
+CFLAGS = -c
+LIB = 
+LFLAGS = 
+BUILDPATH = ../build
+GLFLAGS = -lGL -lglut -lGLU -lm
+OPENCVINC = `pkg-config --cflags opencv`
+OPENCVLIB = `pkg-config --libs opencv`
+
+all: dilate
+
+dilate: dilate.o
+	$(CC) -std=c++0x dilate.o -o $(BUILDPATH)/dilate $(OPENCVLIB) $(GLFLAGS)
+
+dilate.o: dilate.cpp
+	$(CC) -std=c++0x $(CFLAGS) $(GLFLAGS) $(OPENCVINC) dilate.cpp
+
+clean:
+	rm -rf *.o *~
