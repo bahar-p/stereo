@@ -39,7 +39,7 @@ void CannyThreshold(int, void*)
 int main(int argc, char* argv[]){
 	
 	/// Load an image
-	src = imread( argv[1] );
+	src = imread( argv[1],0 );
 	
 	if( !src.data ) { return -1; }
 
