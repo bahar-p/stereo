@@ -13,7 +13,7 @@ Mat dst, detected_edges;
 int edgeThresh = 1;
 int lowThreshold;
 int const max_lowThreshold = 100;
-int ratio = 3;
+int ratio;
 int kernel_size = 3;
 char* window_name = (char*) "Edge Map";
 
@@ -32,15 +32,18 @@ void CannyThreshold(int, void*)
 	/// Using Canny's output as a mask, we display our result
 	dst = Scalar::all(0);
 	      
-	src.copyTo( dst, detected_edges);
+	dilate(detected_edges,detected_edges, Mat(), Point(-1,-1), 2);
+	src.copyTo( dst, detected_edges);	//Mask the src based on the detected edges
+//	dst.convertTo(dst, -1,3,0);		
 	imshow( window_name, dst );
+	imshow( "detected_edges mask", detected_edges );
 }
 
 int main(int argc, char* argv[]){
 	
 	/// Load an image
 	src = imread( argv[1],0 );
-	
+	ratio = atoi(argv[2]); 
 	if( !src.data ) { return -1; }
 
 	/// Create a matrix of the same type and size as src (for dst)
@@ -65,5 +68,7 @@ int main(int argc, char* argv[]){
 	/// Wait until user exit program by pressing a key
 	waitKey(0);
 
+	imwrite("/home/bahar/Dataset/masks/mask.png" , detected_edges);
+	imwrite("/home/bahar/Dataset/maskedgt/maskgt.png" , dst);
 	return 0;
 }
