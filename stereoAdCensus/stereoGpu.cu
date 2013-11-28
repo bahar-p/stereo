@@ -53,7 +53,7 @@ int main(int argc, char **argv)
 	float *d_out;
 
 	h_out = (float *)malloc(bytes);
-
+	surface<void,cudaSurfaceType3D> surfRef;
 	// initial value
 	for (int k = 0; k <depth; k++) {
 		for (int j = 0; j < height; j++) {
@@ -84,7 +84,6 @@ int main(int argc, char **argv)
 	const dim3 dimBlock(6,6,6);
 	const dim3 dimGrid((width + dimBlock.x-1)/ dimBlock.x, (height + dimBlock.y-1)/dimBlock.y, (depth + dimBlock.z-1 )/dimBlock.z);
 
-	surface<void,cudaSurfaceType3D> surfRef;
 	costAD<<<dimGrid,dimBlock>>>(d_left, d_right,surfRef, minDisp, maxDisp, subRW, subRH);
 
 	cudaMemcpy3DParms params = {0};
