@@ -52,7 +52,11 @@ int main(int argc, char **argv)
 	float *h_out;
 	float *d_out;
 
-	h_out = (float *)malloc(bytes);
+	result = (cudaMallocHost((void**) &h_out, bytes ));
+	if(result != cudaSuccess) {
+		fprintf(stderr, "MallocHost - failed to allocate device accessible host memory - %s\n", cudaGetErrorString(result));
+		return 3;
+	}
 //	surface<void,cudaSurfaceType3D> surfRef;
 	// initial value
 	for (int k = 0; k <depth; k++) {
@@ -85,6 +89,9 @@ int main(int argc, char **argv)
 	const dim3 dimGrid((width + dimBlock.x-1)/ dimBlock.x, (height + dimBlock.y-1)/dimBlock.y, (depth + dimBlock.z-1 )/dimBlock.z);
 
 	costAD<<<dimGrid,dimBlock>>>(d_left, d_right,surfRef, minDisp, maxDisp, subRW, subRH);
+	
+	cudaThreadSynchronize();
+	cout << "Done with kernel function" << endl;
 
 	cudaMemcpy3DParms params = {0};
 	memset(&params, 0, sizeof(params));
@@ -109,7 +116,6 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	cudaThreadSynchronize();
 	for (int k = 0; k <depth; k++) {
 		for (int j = 0; j < height; j++) {
 			for (int i = 0; i < width; i++) {

@@ -103,17 +103,19 @@ Mat imageGpu::get_image(int left){
 __global__ void costAD(gpu::PtrStepSz<uchar3> d_left, gpu::PtrStepSz<uchar3> d_right,surface<void,cudaSurfaceType3D> surfRef, int dmin, int dmax, int rw, int rh)
 {
 	
-	int x = blockIdx.x*blockDim.x+threadIdx.x;
-	int y = blockIdx.y*blockDim.y+threadIdx.y;
-	int z = blockIdx.z*blockDim.z+threadIdx.z;
+	int q = blockIdx.x*blockDim.x+threadIdx.x;
+	int p = blockIdx.y*blockDim.y+threadIdx.y;
+	int d = blockIdx.z*blockDim.z+threadIdx.z;
 
-	if(x >= d_left.cols || y >= d_left.rows || z >= dmax-dmin+1) return;
+
+	if(q >= d_left.cols || p >= d_left.rows || d >= dmax-dmin+1) return;
 	
 //	if(dispR==false){
-		if(x-z-dmin > rw-1){
-			float data =(float) (fabs((double)d_left(y,x).x - (double)d_right(y,x-z-dmin).x) + fabs((double)d_left(y,x).y - (double)d_right(y,x-z-dmin).y) + 
-					(double) fabs(d_left(y,x).z - (double) d_right(y,x-z-dmin).z))/3.0;
-			surf3Dwrite(data,surfRef,x*4,y,z,cudaBoundaryModeTrap);
+		if(q-d-dmin > rw-1){
+			uchar3 v = d_left(p,q);
+			float data =(float) (fabs((double)d_left(p,q).x - (double)d_right(p,q-d-dmin).x) + fabs((double)d_left(p,q).y - (double)d_right(p,q-d-dmin).y) + 
+					(double) fabs(d_left(p,q).z - (double) d_right(p,q-d-dmin).z))/3.0;
+			surf3Dwrite(data,surfRef,q*4,p,d,cudaBoundaryModeTrap);
 			 /* d_DSI.at<double>(p,q,d)= (fabs(d_leftRGB.at<cv::Vec3b>(p,q).val[0] - d_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[0]) + 
 						(fabs(d_leftRGB.at<cv::Vec3b>(p,q).val[1] - d_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[1])) +
 						(fabs(d_leftRGB.at<cv::Vec3b>(p,q).val[2] - d_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[2]))/3.0; */
