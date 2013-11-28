@@ -119,6 +119,7 @@ void frames(int id) {
 		imshow("left" , leftmsk);
 		imshow("right" , rightmsk);
 		imshow("disparity", disp8);
+		imwrite("/home/bahar/Dataset/mydisp/disp.png" , disp8);
 		waitKey(0);
 		//imwrite( "/home/bahar/FrameDisp5.png", disp8 );
 		if (waitKey(10) == 27) 				//wait for 'esc' key press for 10ms. If 'esc' key is pressed, break loop
