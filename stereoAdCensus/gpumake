@@ -1,7 +1,7 @@
 OBJS = imageGpu.o stereoGpu.o
 CC = /usr/local/cuda-5.0/bin/nvcc
 CUDAPATH = /usr/local/cuda-5.0
-NVCCFLAGS = -I$(CUDAPATH)/include -arch=sm_20
+NVCCFLAGS = -I$(CUDAPATH)/include -arch sm_20
 CFLAGS = -c
 LIB = 
 LFLAGS = -L$(CUDAPATH)/lib

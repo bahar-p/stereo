@@ -1,3 +1,5 @@
+#include "cv.h"
+#include "highgui.h"
 #include <stdio.h>
 #include <math.h>
 #include <iostream>
@@ -12,8 +14,8 @@ using namespace cv;
 using namespace cv::gpu;
 
 
-surface<void, cudaSurfaceType3D> surfRef; 
 __global__ void costAD(gpu::PtrStepSz<uchar3>, gpu::PtrStepSz<uchar3>,int , int , int , int );
+//surface<void, cudaSurfaceType3D> surfRef; 
 
 class imageGpu
 {

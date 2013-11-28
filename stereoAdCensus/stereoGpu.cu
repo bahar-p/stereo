@@ -1,3 +1,5 @@
+#include "cv.h"
+#include "highgui.h"
 #include <stdio.h>
 #include <math.h>
 #include <iostream>
@@ -82,10 +84,9 @@ int main(int argc, char **argv)
 	const dim3 dimBlock(6,6,6);
 	const dim3 dimGrid((width + dimBlock.x-1)/ dimBlock.x, (height + dimBlock.y-1)/dimBlock.y, (depth + dimBlock.z-1 )/dimBlock.z);
 
-	costAD<<<dimGrid,dimBlock>>>(d_left, d_right, minDisp, maxDisp, subRW, subRH);
+	surface<void,cudaSurfaceType3D> surfRef;
+	costAD<<<dimGrid,dimBlock>>>(d_left, d_right,surfRef, minDisp, maxDisp, subRW, subRH);
 
-	cudaThreadSynchronize();
-	
 	cudaMemcpy3DParms params = {0};
 	memset(&params, 0, sizeof(params));
 	params.dstPtr.pitch = sizeof(float) * width;
@@ -109,6 +110,7 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
+	cudaThreadSynchronize();
 	for (int k = 0; k <depth; k++) {
 		for (int j = 0; j < height; j++) {
 			for (int i = 0; i < width; i++) {

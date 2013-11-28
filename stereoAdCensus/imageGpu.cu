@@ -1,3 +1,5 @@
+#include "imageGpu.h"
+#include "cuda.h"
 #include "cuda_runtime.h"
 #include <opencv2/gpu/gpu.hpp>
 
@@ -98,12 +100,12 @@ Mat imageGpu::get_image(int left){
 }
 
 /* Calculating the average intesity difference for each pixel and its correspondence */
-__global__ void costAD(gpu::PtrStepSz<uchar3> d_left, gpu::PtrStepSz<uchar3> d_right, int dmin, int dmax, int rw, int rh)
+__global__ void costAD(gpu::PtrStepSz<uchar3> d_left, gpu::PtrStepSz<uchar3> d_right,surface<void,cudaSurfaceType3D> surfRef, int dmin, int dmax, int rw, int rh)
 {
 	
-	unsigned int x = blockIdx.x*blockDim.x+threadIdx.x;
-	unsigned int y = blockIdx.y*blockDim.y+threadIdx.y;
-	unsigned int z = blockIdx.z*blockDim.z+threadIdx.z;
+	int x = blockIdx.x*blockDim.x+threadIdx.x;
+	int y = blockIdx.y*blockDim.y+threadIdx.y;
+	int z = blockIdx.z*blockDim.z+threadIdx.z;
 
 	if(x >= d_left.cols || y >= d_left.rows || z >= dmax-dmin+1) return;
 	
@@ -112,7 +114,7 @@ __global__ void costAD(gpu::PtrStepSz<uchar3> d_left, gpu::PtrStepSz<uchar3> d_r
 			float data =(float) (fabs((double)d_left(y,x).x - (double)d_right(y,x-z-dmin).x) + fabs((double)d_left(y,x).y - (double)d_right(y,x-z-dmin).y) + 
 					(double) fabs(d_left(y,x).z - (double) d_right(y,x-z-dmin).z))/3.0;
 			surf3Dwrite(data,surfRef,x*4,y,z,cudaBoundaryModeTrap);
-			/* d_DSI.at<double>(p,q,d)= (fabs(d_leftRGB.at<cv::Vec3b>(p,q).val[0] - d_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[0]) + 
+			 /* d_DSI.at<double>(p,q,d)= (fabs(d_leftRGB.at<cv::Vec3b>(p,q).val[0] - d_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[0]) + 
 						(fabs(d_leftRGB.at<cv::Vec3b>(p,q).val[1] - d_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[1])) +
 						(fabs(d_leftRGB.at<cv::Vec3b>(p,q).val[2] - d_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[2]))/3.0; */
 		}
