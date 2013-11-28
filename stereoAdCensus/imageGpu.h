@@ -13,9 +13,9 @@ using namespace std;
 using namespace cv;
 using namespace cv::gpu;
 
+surface<void, cudaSurfaceType3D> surfRef; 
 
 __global__ void costAD(gpu::PtrStepSz<uchar3>, gpu::PtrStepSz<uchar3>,surface<void, cudaSurfaceType3D>, int , int , int , int );
-//surface<void, cudaSurfaceType3D> surfRef; 
 
 class imageGpu
 {

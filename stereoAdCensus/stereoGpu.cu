@@ -53,7 +53,7 @@ int main(int argc, char **argv)
 	float *d_out;
 
 	h_out = (float *)malloc(bytes);
-	surface<void,cudaSurfaceType3D> surfRef;
+//	surface<void,cudaSurfaceType3D> surfRef;
 	// initial value
 	for (int k = 0; k <depth; k++) {
 		for (int j = 0; j < height; j++) {
