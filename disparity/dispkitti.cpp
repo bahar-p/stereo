@@ -391,9 +391,10 @@ void kittiCalib(string calib){
 	cout << "closing the file" << endl;	
 	infile.close();
 	cout << "file closed" << endl;
-	/*float tx = p2.at<float>(0,3) / p2.at<float>(0,0);
-	cout << "tx: " << tx << endl;
-	Mat R = (Mat_<float>(3,3) << 1,0,0,0,1,0,0,0,1);
+	float f = p2.at<float>(0,0);
+	float tx = p2.at<float>(0,3) / f;
+	cout << "Translation: " << tx << " Focal length: " << f <<  endl;
+	/*Mat R = (Mat_<float>(3,3) << 1,0,0,0,1,0,0,0,1);
 	Mat T = (Mat_<float>(3,1) << tx,0,0 );
 	distCoeffs[0] = Mat(1,8, CV_32F, Scalar::all(0));
 	distCoeffs[1]= distCoeffs[0];

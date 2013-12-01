@@ -14,24 +14,26 @@ image *img;
 
 int main(int argc, char **argv)
 {
-	float focal = 3740;				//pixel
-	float baseline = 160;			//milimeter	
 	
 	/*cv::Mat p1= (Mat_<float>(3,1) << 1,1,0);
 	cv::Mat q1= (Mat_<float>(3,1) << 2,3,1);
 	cv::Mat res1;
 	gemm(p1,q1, 1, 0, 0, res1, GEMM_2_T);
 	cout<< "p1= " << p1 << '\t' << " q1= " << q1 << '\t' << " res1= " << res1 << endl;*/
-	
+
+	if(argc != 5 ) {
+		cout << "Usage: ./main leftImg rightImg focal_l baseline" << endl;
+		return -1;
+	}
 	//Read input images into Matrices
 	Mat image_left = imread(argv[1], CV_LOAD_IMAGE_COLOR);
    	Mat image_right = imread(argv[2], CV_LOAD_IMAGE_COLOR);
-   	//Mat image_left = Mat(6,6, CV_8U, Scalar::all(0));
-   //Mat image_right = Mat(6,6, CV_8U, Scalar::all(0));
+	float focal = atof(argv[3]);
+	float baseline = atof (argv[4]);
    	Size s = image_left.size();
    	int minDisp=0, maxDisp=18;
-    img = new image(image_left,image_right, minDisp, maxDisp);
-    //img->read_image();
+	img = new image(image_left,image_right, minDisp, maxDisp);
+	//img->read_image();
 	//cout << numeric_limits<double>::max()<<endl;
 	//cout << numeric_limits<double>::digits10<<endl;
 	//cout << numeric_limits<double>::max()<<endl;       	
@@ -76,7 +78,6 @@ int main(int argc, char **argv)
 	cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
 	cv::Mat f;
-	//img->fMatrix(pixflags,dispL,f, 16, 1, 0.99);
 	
 	img->regionVoting(dispL, pixflags, 20, 0.4, 5);
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
@@ -88,7 +89,6 @@ int main(int argc, char **argv)
 	
 	double minv1, maxv1;
 	cv::minMaxLoc(dispL, &minv1,&maxv1);
-	//Mat dispL8 = Mat(dispL.size().height, dispL.size().width, CV_8UC1, Scalar::all(0));
 	Mat dispL8;
 	dispL.convertTo( dispL8, CV_8UC1,255.0/maxDisp);
    /* for (int i = 0; i < image_left.rows; i++)
