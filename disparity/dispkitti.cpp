@@ -44,10 +44,10 @@ using namespace cv;
 void kittiCalib(string);
 Mat cameraMatrix[2], distCoeffs[2];
 Mat T,R,R1,R2,P1,P2,Q;
-Mat leftimg,rightimg,p1,p2,leftmsk, rightmsk;
+Mat leftimg,rightimg,p1,p2, maskgt;
 int dWidth,dHeight;
 // Disparity parameters //
-	int mindisp=0, maxdisp=128, SADWindow=9,dispMaxdiff=2;
+	int mindisp=0, maxdisp=160, SADWindow=9,dispMaxdiff=2;
 	int P= 3*SADWindow;
 	int preFilterCap = 31;
 	int uniqueness = 10;
@@ -104,7 +104,7 @@ void frames(int id) {
 		Mat disp(dHeight,dWidth,CV_8U);
 		StereoSGBM sgbm(mindisp, maxdisp, SADWindow, 8*P, 32*P, dispMaxdiff,
                         preFilterCap, uniqueness, speckleWS, speckleRange, true);
-		sgbm(leftmsk,rightmsk,disp);
+		sgbm(leftimg,rightimg,disp);
 		//cout << "VIDEOPROCESS: before: rendered: " << rendered << "filled: " << filled << endl;
 		
 		//std::unique_lock<std::mutex> lock(mtx);
@@ -116,10 +116,15 @@ void frames(int id) {
 		
         	disp.convertTo(disp8, CV_8U, 255/(maxdisp*16.));
         
-		imshow("left" , leftmsk);
-		imshow("right" , rightmsk);
-		imshow("disparity", disp8);
+		Mat dmasked;
+		disp8.copyTo(dmasked, maskgt);
+		//rightimg.copyTo(rightmsk, maskR);
+		
+		imshow("maskgt" , maskgt);
+		imshow("disparity", dmasked);
+		imshow("disp8", disp8);
 		imwrite("/home/bahar/Dataset/mydisp/disp.png" , disp8);
+		imwrite("/home/bahar/Dataset/mydisp/dmasked.png" , dmasked);
 		waitKey(0);
 		//imwrite( "/home/bahar/FrameDisp5.png", disp8 );
 		if (waitKey(10) == 27) 				//wait for 'esc' key press for 10ms. If 'esc' key is pressed, break loop
@@ -272,8 +277,8 @@ void draw(int id){
 
 int main(int argc, char **argv)
 {
-	if (argc !=6){
-		cout<< "usage: ./disparity calibFile leftimg rightimg leftMask rightMask";
+	if (argc !=5){
+		cout<< "usage: ./disparity calibFile leftimg rightimg Mask";
 		return 0;
 	}
 
@@ -283,11 +288,8 @@ int main(int argc, char **argv)
 	
 	leftimg = imread(argv[2],0);
 	rightimg = imread(argv[3],0);
-	Mat maskL = imread(argv[4],0);
-	Mat maskR = imread(argv[5],0);
+	maskgt = imread(argv[4],0);
 	
-	leftimg.copyTo(leftmsk, maskL);
-	rightimg.copyTo(rightmsk, maskR);
 
 
 	cout << "Read both images successfully" << endl;
