@@ -278,7 +278,7 @@ void draw(int id){
 int main(int argc, char **argv)
 {
 	if (argc !=5){
-		cout<< "usage: ./disparity calibFile leftimg rightimg Mask";
+		cout<< "usage: ./disparity calibFile leftimg rightimg Mask" << endl;
 		return 0;
 	}
 
@@ -355,9 +355,11 @@ void kittiCalib(string calib){
 	while(p!=NULL){	
 		cout << p << endl;
 		stringstream ss(p);
-		ss >> p1.at<float>(i,j);
+	//	cout << "f: " << f << endl;
+		ss >> p1.at<double>(i,j);
+	//	cout << "p1: " << p1.at<float>(i,j) << endl;
 		j++;
-		if(j==2){
+		if(j==4){
 			i++;
 			j=0;
 		}
@@ -377,9 +379,9 @@ void kittiCalib(string calib){
 	while(p!=NULL){	
 		cout << p << endl;
 		stringstream ss2(p);
-		ss2 >> p2.at<float>(i,j);
+		ss2 >> p2.at<double>(i,j);
 		j++;
-		if(j==2){
+		if(j==4){
 			i++;
 			j=0;
 		}
@@ -391,9 +393,10 @@ void kittiCalib(string calib){
 	cout << "closing the file" << endl;	
 	infile.close();
 	cout << "file closed" << endl;
-	float f = p2.at<float>(0,0);
-	float tx = p2.at<float>(0,3) / f;
-	cout << "Translation: " << tx << " Focal length: " << f <<  endl;
+	double f = p2.at<double>(0,0);
+	double tf = p2.at<double>(0,3);
+	double tx = tf / f;
+	cout << " Translation: " << tx << " Focal length: " << f <<  endl;
 	/*Mat R = (Mat_<float>(3,3) << 1,0,0,0,1,0,0,0,1);
 	Mat T = (Mat_<float>(3,1) << tx,0,0 );
 	distCoeffs[0] = Mat(1,8, CV_32F, Scalar::all(0));

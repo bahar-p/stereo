@@ -1047,7 +1047,7 @@ void image::discAdjust(cv::Mat& disp, cv::Mat fcost, cv::Mat mask){
 				}
 				//cout << "size: " << pt.size() << endl;
 				if(n==2){
-					cout << " 2 points found!" << endl;
+					//cout << " 2 points found!" << endl;
 				
 					if(fcost.at<double>(p,q-1,(int)disp.at<float>(p,q-1)) < fcost.at<double>(p,q,(int)disp.at<float>(p,q))){
 						disp.at<float>(p,q) = disp.at<float>(p,q-1);
