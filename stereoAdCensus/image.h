@@ -22,7 +22,7 @@ unsigned*** census_hamming;
 cv::Mat img_leftRGB, img_rightRGB;
 int dispMin, dispMax;
 int img_rows, img_cols;
-
+int channels;
 public:
 image(cv::Mat, cv::Mat, int , int);
 void read_image();

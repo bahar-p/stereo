@@ -10,13 +10,13 @@ image::image(Mat image_leftRGB, Mat image_rightRGB, int dMin, int dMax){
 	dispMin = dMin;
 	dispMax = dMax;
 	Size s = img_leftRGB.size();
-	
+	channels = img_leftRGB.channels();
+	cout << "channels: " << channels << endl;
 	int sz[] = {s.height, s.width, dispMax-dispMin+1};
 	//std::cout << "Maximum value for double: " << std::numeric_limits<double>::max() << '\n';
 	//std::cout << "Maximum value for long double: " << std::numeric_limits<long double>::max() << '\n';
 	//std::cout << "height: " << s.height << " , " <<  img_leftRGB.rows<< '\n';
 	//std::cout << "width: " << s.width << " , " <<  img_leftRGB.cols<< '\n';
-
 	
 	//Initialization of different cost space
 	
@@ -180,17 +180,24 @@ Mat image::get_image(int left){
 /* Calculating the average intesity difference for each pixel and its correspondence */
 void image::costAD(bool dispR){
 	int d,p,q;
-	
+	double val =0;
+
 	for(d=0;d<dispMax-dispMin+1;d++){
 		for(p=subRH;p<img_leftRGB.rows-subRH;p++){					//Rows = height
 			for(q=subRW;q<img_leftRGB.cols-subRW;q++){				//cols = width
 			
 			//Left disparity
+				val = 0;
 				if(!dispR){
 					if(q-d-dispMin>subRW-1){
-						DSI.at<double>(p,q,d)= (double)((abs(img_leftRGB.at<cv::Vec3b>(p,q).val[0] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[0])) + 
+						for (int i=0; i<channels; i++){
+							val += (double)(abs(img_leftRGB.at<cv::Vec3b>(p,q).val[i] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[i]));
+						}
+						DSI.at<double>(p,q,d) = val/channels;
+
+						/*DSI.at<double>(p,q,d)= (double)((abs(img_leftRGB.at<cv::Vec3b>(p,q).val[0] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[0])) + 
 						(abs(img_leftRGB.at<cv::Vec3b>(p,q).val[1] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[1])) +
-						(abs(img_leftRGB.at<cv::Vec3b>(p,q).val[2] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[2])))/3;
+						(abs(img_leftRGB.at<cv::Vec3b>(p,q).val[2] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[2])))/3;*/
 
 						/*printf ("b: %f\t, g: %u\t, r: %u\t, bR: %u\t, gR: %u\t , rR: %u\t" , (double)img_leftRGB.at<cv::Vec3b>(p,q).val[0], img_leftRGB.at<cv::Vec3b>(p,q).val[1],
 						img_leftRGB.at<cv::Vec3b>(p,q).val[2], img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[0],
@@ -200,14 +207,20 @@ void image::costAD(bool dispR){
 				else{
 					//Right disparity
 					if(q+d+dispMin<img_leftRGB.cols-subRW){
-						DSI.at<double>(p,q,d)= (double)((abs(img_leftRGB.at<cv::Vec3b>(p,q+d+dispMin).val[0] - img_rightRGB.at<cv::Vec3b>(p,q).val[0])) + 
+						for(int i=0; i<channels; i++){
+							val += (double)(abs(img_leftRGB.at<cv::Vec3b>(p,q+d+dispMin).val[i] - img_rightRGB.at<cv::Vec3b>(p,q).val[i]));
+						}
+						DSI.at<double>(p,q,d) = val/channels;
+
+						/*DSI.at<double>(p,q,d)=(double)((abs(img_leftRGB.at<cv::Vec3b>(p,q+d+dispMin).val[0] - img_rightRGB.at<cv::Vec3b>(p,q).val[0])) + 
 						(abs(img_leftRGB.at<cv::Vec3b>(p,q+d+dispMin).val[1] - img_rightRGB.at<cv::Vec3b>(p,q).val[1])) +
-						(abs(img_leftRGB.at<cv::Vec3b>(p,q+d+dispMin).val[2] - img_rightRGB.at<cv::Vec3b>(p,q).val[2])))/3;
+						(abs(img_leftRGB.at<cv::Vec3b>(p,q+d+dispMin).val[2] - img_rightRGB.at<cv::Vec3b>(p,q).val[2])))/3;*/
 					}
 				}
 			}
 		}
 	}
+	//cout << "DSI: " << DSI.at<double>(100,100,10) << endl;
 }
 
 /* Encoding each pixel local structure */
@@ -216,8 +229,14 @@ void image::costCensus(int winX, int winY, int left){
 	uint64_t bit=0;
 	int shifts;
 	cv::Mat left_gray, right_gray;
-	cvtColor(img_leftRGB,left_gray,CV_BGR2GRAY);
-	cvtColor(img_rightRGB,right_gray,CV_BGR2GRAY);
+	if(channels == 3){
+		cvtColor(img_leftRGB,left_gray,CV_BGR2GRAY);
+		cvtColor(img_rightRGB,right_gray,CV_BGR2GRAY);
+	} else {
+		left_gray = img_leftRGB;
+		right_gray = img_rightRGB;
+
+	}
 	for(int x = winX/2; x<img_leftRGB.rows - winX/2; x++){
 		for(int y = winY/2; y<img_leftRGB.cols - winY/2 ; y++){
 			//printf("x: %d\t , y: %d\t" , x,y);
@@ -613,7 +632,7 @@ void image::IImage(cv::Mat in, cv::Mat out, char dir){
 
 /* Calculating final cost at each stage based on calculated integral image and the local support region for each pixel */
 void image::finalSum(cv::Mat in, cv::Mat out, char dir, int count){
-switch (dir){
+	switch (dir){
 		case 'H':
 			for(int d=0; d<dispMax-dispMin+1; d++){
 				for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
@@ -666,9 +685,20 @@ switch (dir){
 
 /* Calculate color difference */
 double image::colDiffer(cv::Mat in, int x1, int y1, int x2, int y2){
-	
-	double color = (double) std::max(std::max(abs(in.at<cv::Vec3b>(x1,y1)[0]-in.at<cv::Vec3b>(x2,y2)[0]), abs(in.at<cv::Vec3b>(x1,y1)[1]-in.at<cv::Vec3b>(x2,y2)[1])), 
+	double color = 0;
+	if (channels == 1){
+		color = (double) abs(in.at<cv::Vec3b>(x1,y1)[0]-in.at<cv::Vec3b>(x2,y2)[0]);
+	}
+	else if (channels == 2){
+		color = (double) std::max(abs(in.at<cv::Vec3b>(x1,y1)[0]-in.at<cv::Vec3b>(x2,y2)[0]), abs(in.at<cv::Vec3b>(x1,y1)[1]-in.at<cv::Vec3b>(x2,y2)[1]));
+	}
+	else if(channels == 3) {
+		color = (double) std::max(std::max(abs(in.at<cv::Vec3b>(x1,y1)[0]-in.at<cv::Vec3b>(x2,y2)[0]), abs(in.at<cv::Vec3b>(x1,y1)[1]-in.at<cv::Vec3b>(x2,y2)[1])), 
 					abs(in.at<cv::Vec3b>(x1,y1)[2]-in.at<cv::Vec3b>(x2,y2)[2]));
+	}
+	else {
+		cerr << "Unhandled case for number of channels more than 3..." << endl;
+	}
 					
 	return color;
 }
@@ -954,7 +984,11 @@ void image::interpolate(cv::Mat img, cv::Mat& disp, cv::Mat pixflag){
 				int temp_diff;
 				int diff1, diff2;
 				unsigned char I2, I3;
-				cvtColor(img, gimg, CV_BGR2GRAY);
+				if( channels == 3){
+					cvtColor(img, gimg, CV_BGR2GRAY);
+				} else {
+					gimg = img;
+				}
 				unsigned char I1 = gimg.at<uchar>(p,q);
 				for(int j=-2; j<3; j++){
 					I2 =  gimg.at<uchar>(p-2,q+j);

@@ -26,12 +26,12 @@ int main(int argc, char **argv)
 		return -1;
 	}
 	//Read input images into Matrices
-	Mat image_left = imread(argv[1], CV_LOAD_IMAGE_COLOR);
-   	Mat image_right = imread(argv[2], CV_LOAD_IMAGE_COLOR);
+	Mat image_left = imread(argv[1], 0);
+   	Mat image_right = imread(argv[2], 0);
 	float focal = atof(argv[3]);
-	float baseline = atof (argv[4]);
+	float baseline = atof(argv[4]);
    	Size s = image_left.size();
-   	int minDisp=0, maxDisp=18;
+   	int minDisp=0, maxDisp= 20;
 	img = new image(image_left,image_right, minDisp, maxDisp);
 	//img->read_image();
 	//cout << numeric_limits<double>::max()<<endl;
@@ -79,18 +79,19 @@ int main(int argc, char **argv)
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
 	cv::Mat f;
 	
-	img->regionVoting(dispL, pixflags, 20, 0.4, 5);
+	/*img->regionVoting(dispL, pixflags, 20, 0.4, 5);
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
 	img->interpolate(image_left, dispL, pixflags);
 	Mat border;
 	img->border(dispL, border);
 	img->discAdjust(dispL, fcost, border);
 	img->subpxEnhance(fcost,dispL);
-	
+	*/
 	double minv1, maxv1;
 	cv::minMaxLoc(dispL, &minv1,&maxv1);
 	Mat dispL8;
-	dispL.convertTo( dispL8, CV_8UC1,255.0/maxDisp);
+	//cout << "final disp channels: " << dispL.channels() << " depth: " << dispL.depth() << endl;
+	dispL.convertTo( dispL8, CV_8UC1,255.0/maxv1);
    /* for (int i = 0; i < image_left.rows; i++)
 	{
 		for (int j = 0; j < image_left.cols ; j++)
