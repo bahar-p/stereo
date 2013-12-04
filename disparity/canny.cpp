@@ -41,6 +41,10 @@ void CannyThreshold(int, void*)
 
 int main(int argc, char* argv[]){
 	
+	if(argc != 3){
+		cout << "Usage: ./canny image ratio " << endl;
+		return -1;
+	}
 	/// Load an image
 	src = imread( argv[1],0 );
 	ratio = atoi(argv[2]); 
