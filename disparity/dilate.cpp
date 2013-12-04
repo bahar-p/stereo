@@ -19,10 +19,13 @@ int main (int argc, char* argv[]){
 	itr = atoi(argv[2]);
 	cerr << "itr: " << itr << endl;
 
-	dilate(src, src, Mat(), Point(-1,-1),itr);
+	Mat dst1,dst2;
+	dilate(src, dst1, Mat(), Point(-1,-1),itr);
+	erode(dst1, dst2, Mat(), Point(-1,-1),itr);
 
-	imshow( "dilate" , src);
-	imwrite( "/home/bahar/Dataset/gtfilled/gt.png" , src );
+	imshow( "dilate" , dst1);
+	imshow( "erode" , dst2);
+	imwrite( "/home/bahar/Dataset/gtfilled/gt.png" , dst2);
 	waitKey(0);
 	return 0;
 }
