@@ -44,10 +44,11 @@ using namespace cv;
 void kittiCalib(string);
 Mat cameraMatrix[2], distCoeffs[2];
 Mat T,R,R1,R2,P1,P2,Q;
-Mat leftimg,rightimg,p1,p2, maskgt;
+Mat leftimg,rightimg,p1,p2, mask;
 int dWidth,dHeight;
+string fname;
 // Disparity parameters //
-	int mindisp=0, maxdisp=160, SADWindow=9,dispMaxdiff=2;
+	int mindisp=0, maxdisp, SADWindow=9,dispMaxdiff=2;
 	int P= 3*SADWindow;
 	int preFilterCap = 31;
 	int uniqueness = 10;
@@ -117,14 +118,16 @@ void frames(int id) {
         	disp.convertTo(disp8, CV_8U, 255/(maxdisp*16.));
         
 		Mat dmasked;
-		disp8.copyTo(dmasked, maskgt);
+		disp8.copyTo(dmasked, mask);
 		//rightimg.copyTo(rightmsk, maskR);
 		
-		imshow("maskgt" , maskgt);
+		imshow("mask" , mask);
 		imshow("disparity", dmasked);
 		imshow("disp8", disp8);
-		imwrite("/home/bahar/Dataset/mydisp/disp.png" , disp8);
-		imwrite("/home/bahar/Dataset/mydisp/dmasked.png" , dmasked);
+		string fpath1 = "/home/bahar/Dataset/mydisp/" + fname;
+		string fpath2 = "/home/bahar/Dataset/dispmasked/" + fname;
+		imwrite(fpath1 , disp8);
+		imwrite( fpath2 , dmasked);
 		waitKey(0);
 		//imwrite( "/home/bahar/FrameDisp5.png", disp8 );
 		if (waitKey(10) == 27) 				//wait for 'esc' key press for 10ms. If 'esc' key is pressed, break loop
@@ -277,8 +280,8 @@ void draw(int id){
 
 int main(int argc, char **argv)
 {
-	if (argc !=5){
-		cout<< "usage: ./disparity calibFile leftimg rightimg Mask" << endl;
+	if (argc != 7){
+		cout<< "usage: ./disparity calibFile leftimg rightimg maxdisp Mask filename" << endl;
 		return 0;
 	}
 
@@ -288,7 +291,11 @@ int main(int argc, char **argv)
 	
 	leftimg = imread(argv[2],0);
 	rightimg = imread(argv[3],0);
-	maskgt = imread(argv[4],0);
+	maxdisp = atoi(argv[4]);
+	mask = imread(argv[5],0);
+	stringstream ss;
+	ss << argv[6] << ".png";
+	fname = ss.str();
 	
 
 
