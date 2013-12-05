@@ -21,17 +21,19 @@ int main(int argc, char **argv)
 	gemm(p1,q1, 1, 0, 0, res1, GEMM_2_T);
 	cout<< "p1= " << p1 << '\t' << " q1= " << q1 << '\t' << " res1= " << res1 << endl;*/
 
-	if(argc != 5 ) {
-		cout << "Usage: ./main leftImg rightImg focal_l baseline" << endl;
+	double minv, maxv;
+   	int minDisp=0, maxDisp;
+	if(argc != 6 ) {
+		cout << "Usage: ./main leftImg rightImg maxDisp focal_l baseline" << endl;
 		return -1;
 	}
 	//Read input images into Matrices
 	Mat image_left = imread(argv[1], -1);
    	Mat image_right = imread(argv[2], -1);
-	float focal = atof(argv[3]);
-	float baseline = atof(argv[4]);
+	maxDisp = atoi(argv[3]);
+	float focal = atof(argv[4]);
+	float baseline = atof(argv[5]);
    	Size s = image_left.size();
-   	int minDisp=0, maxDisp= 20;
 	img = new image(image_left,image_right, minDisp, maxDisp);
 	//img->read_image();
 	//cout << numeric_limits<double>::max()<<endl;
@@ -46,7 +48,7 @@ int main(int argc, char **argv)
 	
 	clock_t tStart = clock();
 	bool Rdisp= true;
-	img->costAD(Rdisp);
+/*	img->costAD(Rdisp);
 	img -> costCensus(7,9,1);
 	img-> costCensus(7,9,0);
 	img->c_census(7,9,Rdisp);
@@ -58,11 +60,10 @@ int main(int argc, char **argv)
 	Mat costR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	img->scanline(1.0,3.0,15, dispR, costR,Rdisp);
 	std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
-	double minv, maxv;
 	cv::minMaxLoc(dispR, &minv,&maxv);
 	Mat dispR8 = Mat(dispR.size().height, dispR.size().width, CV_8UC1, Scalar::all(0));
 	dispR.convertTo( dispR8, CV_8UC1,255.0/(maxv-minv));
-	 
+*/	 
 	tStart = clock();
 	img->reset();
 	img->costAD();
@@ -71,13 +72,13 @@ int main(int argc, char **argv)
 	img->line_segment(20.,6.,34.,17.);
 	img->aggregateCost();
 	
-	Mat dispL=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
-	Mat costL=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
+	Mat dispL= cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
+	Mat costL= cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	Mat fcost = img->scanline(1.0,3.0,15, dispL, costL);
 	std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
-	cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
+	/*cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
-	cv::Mat f;
+	cv::Mat f;*/
 	
 	/*img->regionVoting(dispL, pixflags, 20, 0.4, 5);
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
@@ -92,7 +93,7 @@ int main(int argc, char **argv)
 	Mat dispL8;
 	cout << "maxv: " << maxv << endl;
 	//cout << "final disp channels: " << dispL.channels() << " depth: " << dispL.depth() << endl;
-	dispL.convertTo( dispL8, CV_8UC1,255.0/maxDisp);
+	dispL.convertTo( dispL8, CV_8UC1,255.0/80);
    /* for (int i = 0; i < image_left.rows; i++)
 	{
 		for (int j = 0; j < image_left.cols ; j++)
@@ -104,7 +105,7 @@ int main(int argc, char **argv)
 	
     imshow( "Img", image_left );                   	
     imshow( "DispL", dispL8 );                   	
-    imshow( "DispR", dispR8 );  
+//    imshow( "DispR", dispR8 );  
   //  imshow( "gradient", border );
    // imwrite( "/home/bahar/dispL.png", dispL8 );
     //imwrite( "/home/bahar/dispR.png", dispR8 );           	
