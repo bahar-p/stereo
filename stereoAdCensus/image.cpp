@@ -190,10 +190,18 @@ void image::costAD(bool dispR){
 				val = 0;
 				if(!dispR){
 					if(q-d-dispMin>subRW-1){
-						for (int i=0; i<channels; i++){
-							val += (double)(abs(img_leftRGB.at<cv::Vec3b>(p,q).val[i] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[i]));
+						if(channels==1){
+							DSI.at<double>(p,q,d) =(double) (abs(img_leftRGB.at<uchar>(p,q) - img_rightRGB.at<uchar>(p,q-d-dispMin)))/(double)channels;
 						}
-						DSI.at<double>(p,q,d) = val/channels;
+						else if (channels == 3 || channels == 4) {
+							DSI.at<double>(p,q,d)= (double)((abs(img_leftRGB.at<cv::Vec3b>(p,q).val[0] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[0])) + 
+							(abs(img_leftRGB.at<cv::Vec3b>(p,q).val[1] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[1])) +
+							(abs(img_leftRGB.at<cv::Vec3b>(p,q).val[2] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[2])))/3;
+						} 
+						else {
+							cerr << "Unhandled number of channels " << endl;
+
+						}
 
 						/*DSI.at<double>(p,q,d)= (double)((abs(img_leftRGB.at<cv::Vec3b>(p,q).val[0] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[0])) + 
 						(abs(img_leftRGB.at<cv::Vec3b>(p,q).val[1] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[1])) +
@@ -207,20 +215,24 @@ void image::costAD(bool dispR){
 				else{
 					//Right disparity
 					if(q+d+dispMin<img_leftRGB.cols-subRW){
-						for(int i=0; i<channels; i++){
-							val += (double)(abs(img_leftRGB.at<cv::Vec3b>(p,q+d+dispMin).val[i] - img_rightRGB.at<cv::Vec3b>(p,q).val[i]));
+						
+						if(channels==1){
+							DSI.at<double>(p,q,d) = (double) (abs(img_leftRGB.at<uchar>(p,q+d+dispMin)- img_rightRGB.at<uchar>(p,q)))/(double)channels;
 						}
-						DSI.at<double>(p,q,d) = val/channels;
-
-						/*DSI.at<double>(p,q,d)=(double)((abs(img_leftRGB.at<cv::Vec3b>(p,q+d+dispMin).val[0] - img_rightRGB.at<cv::Vec3b>(p,q).val[0])) + 
-						(abs(img_leftRGB.at<cv::Vec3b>(p,q+d+dispMin).val[1] - img_rightRGB.at<cv::Vec3b>(p,q).val[1])) +
-						(abs(img_leftRGB.at<cv::Vec3b>(p,q+d+dispMin).val[2] - img_rightRGB.at<cv::Vec3b>(p,q).val[2])))/3;*/
+						else if (channels == 3 || channels == 4){
+							DSI.at<double>(p,q,d)=(double)((abs(img_leftRGB.at<cv::Vec3b>(p,q+d+dispMin).val[0] - img_rightRGB.at<cv::Vec3b>(p,q).val[0])) + 
+							(abs(img_leftRGB.at<cv::Vec3b>(p,q+d+dispMin).val[1] - img_rightRGB.at<cv::Vec3b>(p,q).val[1])) +
+							(abs(img_leftRGB.at<cv::Vec3b>(p,q+d+dispMin).val[2] - img_rightRGB.at<cv::Vec3b>(p,q).val[2])))/3;
+						}
+						else {
+							cerr << "Unhandled number of channels " << endl;
+						}
 					}
 				}
 			}
 		}
 	}
-	//cout << "DSI: " << DSI.at<double>(100,100,10) << endl;
+	cout << "DSI: " << DSI.at<double>(100,100,10) << endl;
 }
 
 /* Encoding each pixel local structure */
@@ -229,7 +241,7 @@ void image::costCensus(int winX, int winY, int left){
 	uint64_t bit=0;
 	int shifts;
 	cv::Mat left_gray, right_gray;
-	if(channels == 3){
+	if(channels == 3 || channels == 4){
 		cvtColor(img_leftRGB,left_gray,CV_BGR2GRAY);
 		cvtColor(img_rightRGB,right_gray,CV_BGR2GRAY);
 	} else {
@@ -687,12 +699,12 @@ void image::finalSum(cv::Mat in, cv::Mat out, char dir, int count){
 double image::colDiffer(cv::Mat in, int x1, int y1, int x2, int y2){
 	double color = 0;
 	if (channels == 1){
-		color = (double) abs(in.at<cv::Vec3b>(x1,y1)[0]-in.at<cv::Vec3b>(x2,y2)[0]);
+		color = (double) abs(in.at<uchar>(x1,y1)-in.at<uchar>(x2,y2));
 	}
 	else if (channels == 2){
 		color = (double) std::max(abs(in.at<cv::Vec3b>(x1,y1)[0]-in.at<cv::Vec3b>(x2,y2)[0]), abs(in.at<cv::Vec3b>(x1,y1)[1]-in.at<cv::Vec3b>(x2,y2)[1]));
 	}
-	else if(channels == 3) {
+	else if(channels == 3 || channels == 4) {
 		color = (double) std::max(std::max(abs(in.at<cv::Vec3b>(x1,y1)[0]-in.at<cv::Vec3b>(x2,y2)[0]), abs(in.at<cv::Vec3b>(x1,y1)[1]-in.at<cv::Vec3b>(x2,y2)[1])), 
 					abs(in.at<cv::Vec3b>(x1,y1)[2]-in.at<cv::Vec3b>(x2,y2)[2]));
 	}
@@ -984,7 +996,7 @@ void image::interpolate(cv::Mat img, cv::Mat& disp, cv::Mat pixflag){
 				int temp_diff;
 				int diff1, diff2;
 				unsigned char I2, I3;
-				if( channels == 3){
+				if( channels == 3 || channels == 4){
 					cvtColor(img, gimg, CV_BGR2GRAY);
 				} else {
 					gimg = img;

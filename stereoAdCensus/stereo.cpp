@@ -26,8 +26,8 @@ int main(int argc, char **argv)
 		return -1;
 	}
 	//Read input images into Matrices
-	Mat image_left = imread(argv[1], 0);
-   	Mat image_right = imread(argv[2], 0);
+	Mat image_left = imread(argv[1], -1);
+   	Mat image_right = imread(argv[2], -1);
 	float focal = atof(argv[3]);
 	float baseline = atof(argv[4]);
    	Size s = image_left.size();
@@ -90,8 +90,9 @@ int main(int argc, char **argv)
 	double minv1, maxv1;
 	cv::minMaxLoc(dispL, &minv1,&maxv1);
 	Mat dispL8;
+	cout << "maxv: " << maxv << endl;
 	//cout << "final disp channels: " << dispL.channels() << " depth: " << dispL.depth() << endl;
-	dispL.convertTo( dispL8, CV_8UC1,255.0/maxv1);
+	dispL.convertTo( dispL8, CV_8UC1,255.0/maxDisp);
    /* for (int i = 0; i < image_left.rows; i++)
 	{
 		for (int j = 0; j < image_left.cols ; j++)
@@ -101,6 +102,7 @@ int main(int argc, char **argv)
 		
 	}*/
 	
+    imshow( "Img", image_left );                   	
     imshow( "DispL", dispL8 );                   	
     imshow( "DispR", dispR8 );  
   //  imshow( "gradient", border );
