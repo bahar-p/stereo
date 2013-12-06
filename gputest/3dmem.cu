@@ -26,12 +26,14 @@ int main(int argc, char **argv)
 	cv::Mat* h_in = new cv::Mat[drange];
 	cv::gpu::GpuMat* h_gpin = new cv::gpu::GpuMat[drange];
 	cv::gpu::GpuMat* d_gpin = new cv::gpu::GpuMat[drange];
+	cv::gpu::GpuMat* d_out = new cv::gpu::GpuMat[drange];
 
 //	h_in = (struct mtype*) malloc(drange*sizeof(struct mtype)); 
 	for(int i =0 ; i<drange ; i++){
 		h_in[i] = cv::Mat(height,width, CV_32F, cv::Scalar::all(1.0));
 		h_gpin[i] = cv::gpu::GpuMat(height, width, CV_32F);
 		d_gpin[i] = cv::gpu::GpuMat(height, width, CV_32F);
+		d_out[i] = cv::gpu::GpuMat(height, width, CV_32F);
 		//cv::gpu::GpuMat plane;
 		//plane.upload(h_in[i]);
 		h_gpin[i].upload(h_in[i]);
@@ -50,6 +52,12 @@ int main(int argc, char **argv)
 		fprintf(stderr, "Failed to copy array of gpumats from host to device- %s\n", cudaGetErrorString(result));
 		return 1;
 	}
+
+
+	result = cudaMemcpy(d_out, d_gpin, drange*sizeof(cv::Mat), cudaMemcpyDeviceToHost);
+	cv::Mat h_out;
+	d_out[0].download(h_out);
+	std::cout << "test: " << h_out << std::endl;
 
 /*
 	//surface<void, cudaSurfaceType3D> surfRef;
