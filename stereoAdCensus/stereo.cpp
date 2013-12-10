@@ -47,8 +47,8 @@ int main(int argc, char **argv)
 	printf("%s \n" , img->itob(a));*/
 	
 	clock_t tStart = clock();
-	bool Rdisp= true;
-/*	img->costAD(Rdisp);
+	/*bool Rdisp= true;
+	img->costAD(Rdisp);
 	img -> costCensus(7,9,1);
 	img-> costCensus(7,9,0);
 	img->c_census(7,9,Rdisp);
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 	cv::minMaxLoc(dispR, &minv,&maxv);
 	Mat dispR8 = Mat(dispR.size().height, dispR.size().width, CV_8UC1, Scalar::all(0));
 	dispR.convertTo( dispR8, CV_8UC1,255.0/(maxv-minv));
-*/	 
+	 */
 	tStart = clock();
 	img->reset();
 	img->costAD();
@@ -78,22 +78,25 @@ int main(int argc, char **argv)
 	std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
 	/*cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
-	cv::Mat f;*/
 	
-	/*img->regionVoting(dispL, pixflags, 20, 0.4, 5);
+	img->regionVoting(dispL, pixflags, 20, 0.4, 5);
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
 	img->interpolate(image_left, dispL, pixflags);
+	cerr << "out of interpol" << endl;
 	Mat border;
 	img->border(dispL, border);
+	cerr << "out of border" << endl;
 	img->discAdjust(dispL, fcost, border);
+	cerr << "out of discAdj" << endl;
 	img->subpxEnhance(fcost,dispL);
+	cerr << "out of subPx" << endl;
 	*/
 	double minv1, maxv1;
 	cv::minMaxLoc(dispL, &minv1,&maxv1);
 	Mat dispL8;
 	cout << "maxv: " << maxv << endl;
 	//cout << "final disp channels: " << dispL.channels() << " depth: " << dispL.depth() << endl;
-	dispL.convertTo( dispL8, CV_8UC1,255.0/80);
+	dispL.convertTo( dispL8, CV_8UC1,255.0/maxDisp);
    /* for (int i = 0; i < image_left.rows; i++)
 	{
 		for (int j = 0; j < image_left.cols ; j++)
