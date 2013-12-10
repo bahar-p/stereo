@@ -47,7 +47,7 @@ int main(int argc, char **argv)
 	printf("%s \n" , img->itob(a));*/
 	
 	clock_t tStart = clock();
-	/*bool Rdisp= true;
+	bool Rdisp= true;
 	img->costAD(Rdisp);
 	img -> costCensus(7,9,1);
 	img-> costCensus(7,9,0);
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 	cv::minMaxLoc(dispR, &minv,&maxv);
 	Mat dispR8 = Mat(dispR.size().height, dispR.size().width, CV_8UC1, Scalar::all(0));
 	dispR.convertTo( dispR8, CV_8UC1,255.0/(maxv-minv));
-	 */
+	
 	tStart = clock();
 	img->reset();
 	img->costAD();
@@ -76,7 +76,7 @@ int main(int argc, char **argv)
 	Mat costL= cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	Mat fcost = img->scanline(1.0,3.0,15, dispL, costL);
 	std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
-	/*cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
+	cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
 	
 	img->regionVoting(dispL, pixflags, 20, 0.4, 5);
@@ -90,7 +90,7 @@ int main(int argc, char **argv)
 	cerr << "out of discAdj" << endl;
 	img->subpxEnhance(fcost,dispL);
 	cerr << "out of subPx" << endl;
-	*/
+	
 	double minv1, maxv1;
 	cv::minMaxLoc(dispL, &minv1,&maxv1);
 	Mat dispL8;
