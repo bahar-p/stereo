@@ -1,4 +1,4 @@
-#include "image.h"
+#include "image.h" 
 
 using namespace std;
 using namespace cv;
@@ -171,14 +171,12 @@ cv::Mat image::costAD(bool dispR){
 	cerr << "costAD..." << endl;
 	int d,p,q;
 	double val =0;
-
 	int sz[] = {s.height, s.width, dispMax-dispMin+1};
 	cv::Mat DSI(3, sz, mytype,cv::Scalar::all(0));
 	for(d=0;d<dispMax-dispMin+1;d++){
 		for(p=subRH;p<img_leftRGB.rows-subRH;p++){					//Rows = height
-			for(q=subRW;q<img_leftRGB.cols-subRW;q++){				//cols = width
-			
-			//Left disparity
+			for(q=subRW;q<img_leftRGB.cols-subRW;q++){				//cols = width	
+				//Left disparity
 				val = 0;
 				if(!dispR){
 					if(q-d-dispMin>subRW-1){

@@ -77,12 +77,12 @@ int main(int argc, char **argv)
 	Mat costL= cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	Mat fcost = img->scanline(1.0,3.0,15, dispL, costL);
 	std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
-	cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
+/*	cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
 	
 	img->regionVoting(dispL, pixflags, 20, 0.4, 5);
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
-	img->interpolate(image_left, dispL, pixflags);
+	img->interpolate(image_left, dispL, pixflags);*/
 /*	cerr << "out of interpol" << endl;
 	Mat border;
 	img->border(dispL, border);
@@ -107,9 +107,10 @@ int main(int argc, char **argv)
 		
 	}*/
 	
-    imshow( "Img", image_left );                   	
+    imshow( "Img", image_left );                   
     imshow( "DispL", dispL8 );                   	
     imshow( "DispR", dispR8 );  
+    imwrite("/home/bahar/Dataset/adcensus/a.png", dispL8);
   //  imshow( "gradient", border );
    // imwrite( "/home/bahar/dispL.png", dispL8 );
     //imwrite( "/home/bahar/dispR.png", dispR8 );           	

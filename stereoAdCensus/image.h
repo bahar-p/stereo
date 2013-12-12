@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 #include <list>
-
+#include <omp.h>
 using namespace std;
 using namespace cv;
 
