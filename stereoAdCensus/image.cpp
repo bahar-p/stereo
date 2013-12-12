@@ -3,7 +3,6 @@
 using namespace std;
 using namespace cv;
 
-
 image::image(Mat image_leftRGB, Mat image_rightRGB, int dMin, int dMax){
 	img_leftRGB=image_leftRGB;
 	img_rightRGB=image_rightRGB;
@@ -46,8 +45,7 @@ image::image(Mat image_leftRGB, Mat image_rightRGB, int dMin, int dMax){
 			}
 		}
 	}
-	
-	
+		
 	//DEBUG
 	/*init_cost.at<double>(1,1)=1;
 	init_cost.at<double>(1,2)=3;
@@ -137,18 +135,7 @@ image::image(Mat image_leftRGB, Mat image_rightRGB, int dMin, int dMax){
 }
 
 void image::reset(){
-//	DSI=cv::Scalar::all(0);
-	//init_cost=cv::Scalar::all(0);
-	//aggr_cost=cv::Scalar::all(0);
-	//final_cost=cv::Scalar::all(0);
-	//left_cost=cv::Scalar::all(0);
-//	right_cost=cv::Scalar::all(0);
-//	up_cost=cv::Scalar::all(0);
-//	down_cost=cv::Scalar::all(0);
-	//HII= cv::Scalar::all(0);
-//	VII=cv::Scalar::all(0);
 	sumH= cv::Scalar::all(0);
-//	sumV=cv::Scalar::all(0);
 	supReg=cv::Scalar::all(0);
 	for(int p= 0 ; p<img_leftRGB.rows ; p++){
 		for(int q= 0 ; q<img_leftRGB.cols ; q++){
@@ -181,7 +168,7 @@ cv::Mat image::costAD(bool dispR){
 				if(!dispR){
 					if(q-d-dispMin>subRW-1){
 						if(channels==1){
-							DSI.at<double>(p,q,d) =(double) (abs(img_leftRGB.at<uchar>(p,q) - img_rightRGB.at<uchar>(p,q-d-dispMin)))/(double)channels;
+							DSI.at<double>(p,q,d) =(double) (abs(img_leftRGB.at<uchar>(p,q) - img_rightRGB.at<uchar>(p,q-d-dispMin)));
 						}
 						else if (channels == 3 || channels == 4) {
 							DSI.at<double>(p,q,d)= (double)((abs(img_leftRGB.at<cv::Vec3b>(p,q).val[0] - img_rightRGB.at<cv::Vec3b>(p,q-d-dispMin).val[0])) + 
@@ -207,7 +194,7 @@ cv::Mat image::costAD(bool dispR){
 					if(q+d+dispMin<img_leftRGB.cols-subRW){
 						
 						if(channels==1){
-							DSI.at<double>(p,q,d) = (double) (abs(img_leftRGB.at<uchar>(p,q+d+dispMin)- img_rightRGB.at<uchar>(p,q)))/(double)channels;
+							DSI.at<double>(p,q,d) = (double) (abs(img_leftRGB.at<uchar>(p,q+d+dispMin)- img_rightRGB.at<uchar>(p,q)));
 						}
 						else if (channels == 3 || channels == 4){
 							DSI.at<double>(p,q,d)=(double)((abs(img_leftRGB.at<cv::Vec3b>(p,q+d+dispMin).val[0] - img_rightRGB.at<cv::Vec3b>(p,q).val[0])) + 
@@ -1396,17 +1383,19 @@ void image::subpxEnhance(cv::Mat fcost, cv::Mat& idisp){
 	cerr << "subpxEnhance..." << endl;
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
-				int d = idisp.at<float>(p,q)-dispMin;
+				int d = (int)idisp.at<float>(p,q)-dispMin;
 				//std::cout << "float d: " << idisp.at<float>(p,q)<< " int d: " << d << std::endl;
 				if(d>0 && d < dispMax-dispMin){
-					double val = (fcost.at<double>(p,q,d+1) - fcost.at<double>(p,q,d-1))/(2*(fcost.at<double>(p,q,d+1)+
-					fcost.at<double>(p,q,d-1) - 2*fcost.at<double>(p,q,d)));
-				//	std::cout << "old disp: " << idisp.at<float>(p,q) <<std::endl;
-					idisp.at<float>(p,q) = idisp.at<float>(p,q) - (float)val;
-				//	std::cout << "new disp: " << idisp.at<float>(p,q) <<std::endl;
+					double val = (fcost.at<double>(p,q,d+1) - fcost.at<double>(p,q,d-1))/
+							(2*(fcost.at<double>(p,q,d+1) + fcost.at<double>(p,q,d-1) 
+							 - 2*fcost.at<double>(p,q,d)));
+			//		std::cout << "old disp: " << idisp.at<float>(p,q) <<std::endl;
+					idisp.at<float>(p,q) = ((idisp.at<float>(p,q) - (float)val) < 0 ? idisp.at<float>(p,q) : (idisp.at<float>(p,q) - (float)val))  + (float) dispMin;
+					if (idisp.at<float>(p,q) < 0 ) cout << "negative value! " << idisp.at<float>(p,q) << " " << (idisp.at<float>(p,q) + (float)val) << endl; 
+			//		std::cout << "new disp: " << idisp.at<float>(p,q) <<std::endl;
 				}
 			}
 	}
-//	cv::medianBlur(idisp, idisp, 3);
+	cv::medianBlur(idisp, idisp, 3);
 	//cv::GaussianBlur(idisp, idisp, cv::Size(3,3), 3,3, cv::BORDER_DEFAULT);
 }
