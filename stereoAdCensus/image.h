@@ -15,7 +15,7 @@ private:
 #define subRW 0
 #define subRH 0
 #define mytype CV_64FC1
-cv::Mat DSI,semi_cost, HII, VII, sumH, sumV, supReg;
+cv::Mat semi_cost, sumH,supReg;
 uint64_t** censusLeft;
 uint64_t** censusRight;
 unsigned*** census_hamming;
@@ -28,14 +28,14 @@ public:
 image(cv::Mat, cv::Mat, int , int);
 void read_image();
 cv::Mat get_image(int);
-void costAD(bool dispr=false);
+cv::Mat costAD(bool dispr=false);
 void costCensus(int, int, int);
 void hamdist(uint64_t**, uint64_t** , int , int,bool dispr=false );
 void c_census(int, int,bool dispr=false);
-void initCost(double , double);
+void initCost(cv::Mat&, double , double);
 void line_segment(double,double,double,double, bool dispr=false);
 double colDiffer (cv::Mat, int, int, int, int);
-void aggregateCost( );
+void aggregateCost(cv::Mat);
 double costOpt(cv::Mat, int, int, int, double, char, double, double, double, bool dispr=false);
 double MinPathCost(cv::Mat, int, int);
 Mat scanline(double, double, double, Mat&, Mat&,bool dispr=false);

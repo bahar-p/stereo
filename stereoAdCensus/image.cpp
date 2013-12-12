@@ -21,7 +21,7 @@ image::image(Mat image_leftRGB, Mat image_rightRGB, int dMin, int dMax){
 	
 	//color_left=cv::Mat(s, CV_8UC3, cv::Scalar::all(0));
 	//color_right=cv::Mat(s, CV_8UC3,cv::Scalar::all(0));
-	
+
 	census_hamming = (unsigned***)malloc(img_leftRGB.rows*sizeof(unsigned**));
 	censusLeft = (uint64_t**) malloc(img_leftRGB.rows*sizeof(uint64_t*));
 	censusRight = (uint64_t**) malloc(img_leftRGB.rows*sizeof(uint64_t*));
@@ -137,7 +137,7 @@ image::image(Mat image_leftRGB, Mat image_rightRGB, int dMin, int dMax){
 }
 
 void image::reset(){
-	DSI=cv::Scalar::all(0);
+//	DSI=cv::Scalar::all(0);
 	//init_cost=cv::Scalar::all(0);
 	//aggr_cost=cv::Scalar::all(0);
 	//final_cost=cv::Scalar::all(0);
@@ -145,10 +145,10 @@ void image::reset(){
 //	right_cost=cv::Scalar::all(0);
 //	up_cost=cv::Scalar::all(0);
 //	down_cost=cv::Scalar::all(0);
-	HII= cv::Scalar::all(0);
-	VII=cv::Scalar::all(0);
+	//HII= cv::Scalar::all(0);
+//	VII=cv::Scalar::all(0);
 	sumH= cv::Scalar::all(0);
-	sumV=cv::Scalar::all(0);
+//	sumV=cv::Scalar::all(0);
 	supReg=cv::Scalar::all(0);
 	for(int p= 0 ; p<img_leftRGB.rows ; p++){
 		for(int q= 0 ; q<img_leftRGB.cols ; q++){
@@ -167,12 +167,13 @@ Mat image::get_image(int left){
 }
 
 /* Calculating the average intesity difference for each pixel and its correspondence */
-void image::costAD(bool dispR){
+cv::Mat image::costAD(bool dispR){
+	cerr << "costAD..." << endl;
 	int d,p,q;
 	double val =0;
 
 	int sz[] = {s.height, s.width, dispMax-dispMin+1};
-	DSI=cv::Mat(3, sz, mytype,cv::Scalar::all(0));
+	cv::Mat DSI(3, sz, mytype,cv::Scalar::all(0));
 	for(d=0;d<dispMax-dispMin+1;d++){
 		for(p=subRH;p<img_leftRGB.rows-subRH;p++){					//Rows = height
 			for(q=subRW;q<img_leftRGB.cols-subRW;q++){				//cols = width
@@ -223,7 +224,8 @@ void image::costAD(bool dispR){
 			}
 		}
 	}
-	cout << "DSI: " << DSI.at<double>(100,100,10) << endl;
+	return DSI;
+//	cout << "DSI: " << DSI.at<double>(100,100,10) << endl;
 }
 
 /* Encoding each pixel local structure */
@@ -294,6 +296,7 @@ char * image::itob(uint64_t x)
 
 /* Calculating the hamming distance between each pixel and its correspondence census cost */
 void image::hamdist(uint64_t** censL, uint64_t** censR, int winX, int winY, bool dispR){
+	cerr << "hamdist..." << endl;
 	int d,p,q;
 	uint64_t val=0;
 	unsigned dist=0;
@@ -344,10 +347,10 @@ void image::c_census(int X, int Y, bool dispR){
 	
 }
 /* Calculating the initial cost: Census + AD */
-void image::initCost(double lam_AD, double lam_census){
+void image::initCost(cv::Mat& DSI, double lam_AD, double lam_census){
 	//int sz[] = {s.height, s.width, dispMax-dispMin+1};
 	//init_cost=cv::Mat(3, sz, mytype,cv::Scalar::all(0));
-	std::cout<< "AdCensus algorithm..." <<std::endl;
+	std::cerr << "initCost..." <<std::endl;
 	int p,q,d;
 	for(d=0;d<dispMax-dispMin+1;d++){
 		for(p= subRH ; p<img_leftRGB.rows-subRH ; p++){					//Rows = height
@@ -357,7 +360,6 @@ void image::initCost(double lam_AD, double lam_census){
 					abort();
 			}
 		}
-		
 	}
 	//std::cout<< "init_cost(100,200,10): " << init_cost.at<double>(100,200,10) << std::endl;
 	//printf("DSI: %f\t\t , census: %f\t\t , cost: %f\t\t\n ", DSI[0][0][0], (double)census_hamming[0][0][0],init_cost[0][0][0] );
@@ -365,6 +367,7 @@ void image::initCost(double lam_AD, double lam_census){
 
 /* Building the cross-based region for each pixel */
 void image::line_segment(double colLim1, double colLim2, double distLim1, double distLim2, bool dispR){
+	cerr << "line_segment..." << endl;
 	int p,q,x,y;
 	bool arm_found=false;
 	for(p= subRH ; p<img_leftRGB.rows-subRH; p++){					//Rows = height
@@ -546,52 +549,65 @@ void image::line_segment(double colLim1, double colLim2, double distLim1, double
 }
 
 /* Calculating aggregated cost */
-void image::aggregateCost(){
+void image::aggregateCost(cv::Mat icost){
+	cerr << "aggregateCost..." << endl;
 	int counter=1;
 	int iter=4;
 	int sz[] = {s.height, s.width, dispMax-dispMin+1};
-	HII=cv::Mat(3, sz , mytype, cv::Scalar::all(0));
-	VII=cv::Mat(3, sz, mytype, cv::Scalar::all(0));
+	//cv::Mat HII(3, sz , mytype, cv::Scalar::all(0));
+	//cv::Mat VII(3, sz, mytype, cv::Scalar::all(0));
 	sumH=cv::Mat(3, sz, mytype, cv::Scalar::all(0));
-	sumV=cv::Mat(3, sz, mytype, cv::Scalar::all(0));
+	//cv::Mat sumV(3, sz, mytype, cv::Scalar::all(0));
 	while(counter<iter+1){
 		switch(counter){
 			case 1:
 				std::cout<<"1"<<std::endl;
-				IImage(DSI, HII, 'H');
-				finalSum(HII, sumH, 'H', counter);
-				IImage(sumH, VII, 'V');
-				finalSum(VII, sumV,'V', counter);
+				IImage(icost, sumH, 'H');
+				icost = cv::Scalar::all(0);
+				finalSum(sumH, icost, 'H', counter);
+				sumH = cv::Scalar::all(0);
+				IImage(icost, sumH, 'V');
+				icost = cv::Scalar::all(0);
+				finalSum(sumH, icost,'V', counter);
 				//VII = cv::Scalar::all(0);
 				//std::cout<< "sumV(100,200,10): " << sumV.at<double>(100,200,10) << std::endl;
 			break;
 			case 2:
 				std::cout<<"2"<<std::endl;
-				IImage(sumV, VII, 'V');
-				finalSum(VII, sumV,'V', counter);
-				//VII = cv::Scalar::all(0);
-				IImage(sumV, HII, 'H');
-				finalSum(HII, sumH, 'H', counter);
+				sumH = cv::Scalar::all(0);
+				IImage(icost, sumH, 'V');
+				icost = cv::Scalar::all(0);
+				finalSum(sumH, icost,'V', counter);
+				sumH = cv::Scalar::all(0);
+				IImage(icost, sumH, 'H');
+				icost = cv::Scalar::all(0);
+				finalSum(sumH, icost, 'H', counter);
 				//HII = cv::Scalar::all(0);
 				//std::cout<< "sumH(100,200,10): " << sumH.at<double>(100,200,10) << std::endl;
 			break;
 			case 3:
 				std::cout<<"3"<<std::endl;
-				IImage(sumH, HII,'H');
-				finalSum(HII, sumH, 'H',counter);
-				//HII = cv::Scalar::all(0);
-				IImage(sumH, VII, 'V');
-				finalSum(VII,sumV,'V',counter);
+				sumH = cv::Scalar::all(0);
+				IImage(icost, sumH,'H');
+				icost = cv::Scalar::all(0);
+				finalSum(sumH, icost, 'H',counter);
+				sumH = cv::Scalar::all(0);
+				IImage(icost, sumH, 'V');
+				icost = cv::Scalar::all(0);
+				finalSum(sumH,icost,'V',counter);
 				//VII = cv::Scalar::all(0);
 				//std::cout<< "sumV(100,200,10): " << sumV.at<double>(100,200,10) << std::endl;
 			break;
 			case 4:
 				std::cout<< "4"<<std::endl;
-				IImage(sumV, VII, 'V');
-				finalSum(VII, sumV,'V',counter);
-				//VII = cv::Scalar::all(0);
-				IImage(sumV, HII, 'H');
-				finalSum(HII, sumH, 'H',counter);
+				sumH= cv::Scalar::all(0);
+				IImage(icost,sumH, 'V');
+				icost = cv::Scalar::all(0);
+				finalSum(sumH, icost,'V',counter);
+				sumH = cv::Scalar::all(0);
+				IImage(icost,sumH, 'H');
+				icost = cv::Scalar::all(0);
+				finalSum(sumH, icost, 'H',counter);
 				//HII = cv::Scalar::all(0);
 				//std::cout<< "sumH(100,200,10): " << sumH.at<double>(100,200,10) << std::endl;
 			break;
@@ -603,20 +619,22 @@ void image::aggregateCost(){
 	}
 
 	//aggr_cost=cv::Mat(3, sz, mytype, cv::Scalar::all(0));	
-
+	sumH = cv::Scalar::all(0);
+	sumH = icost;
 	//finalSum(sumH, aggr_cost, 'C',  counter-1);
 	//std::cout<< "aggr_cost(100,200,10): " << aggr_cost.at<double>(100,200,10) << std::endl;
 		
 }
 /* Calculating Integral Image */
 void image::IImage(cv::Mat in, cv::Mat& out, char dir){
+	cerr << "IImage..." << endl;
 	double max=0.0;
 	switch (dir){
 		case 'H':
 			for(int d=0; d<dispMax-dispMin+1; d++){
 				for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 					for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
-						out.at<double>(p,q,d) =in.at<double>(p,q,d) + out.at<double>(p,q-1,d);
+						out.at<double>(p,q,d) =in.at<double>(p,q,d) + (q-1 < subRW ? 0: out.at<double>(p,q-1,d));
 					}
 				}
 			}
@@ -627,7 +645,7 @@ void image::IImage(cv::Mat in, cv::Mat& out, char dir){
 			for(int d=0; d<dispMax-dispMin+1; d++){
 				for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
 					for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){	
-						out.at<double>(p,q,d)= in.at<double>(p,q,d) + out.at<double>(p-1,q,d);
+						out.at<double>(p,q,d)= in.at<double>(p,q,d) +( p -1 < subRH ? 0 : out.at<double>(p-1,q,d));
 						//printf("IImage: VII[%d][%d][%d]= %Lf \t\n", p, q, d, out[p][q][d]);
 					}
 				}
@@ -643,6 +661,7 @@ void image::IImage(cv::Mat in, cv::Mat& out, char dir){
 
 /* Calculating final cost at each stage based on calculated integral image and the local support region for each pixel */
 void image::finalSum(cv::Mat in, cv::Mat& out, char dir, int count){
+	cerr << "finalSum..." << endl;
 	switch (dir){
 		case 'H':
 			for(int d=0; d<dispMax-dispMin+1; d++){
@@ -650,7 +669,7 @@ void image::finalSum(cv::Mat in, cv::Mat& out, char dir, int count){
 					for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
 						int left= supReg.at<int>(p,q,0);				//left arm
 						int right= supReg.at<int>(p,q,1);				//right arm
-						out.at<double>(p,q,d) = in.at<double>(p,q+right,d)-in.at<double>(p,q-left-1,d);
+						out.at<double>(p,q,d) = in.at<double>(p,q+right,d)- (q-left-1 < subRW ? 0 : in.at<double>(p,q-left-1,d));
 					}
 				}
 			}
@@ -661,7 +680,7 @@ void image::finalSum(cv::Mat in, cv::Mat& out, char dir, int count){
 					for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){		
 						int up= supReg.at<int>(p,q,2);					//up arm
 						int down= supReg.at<int>(p,q,3);				//down arm
-						out.at<double>(p,q,d) = in.at<double>(p+down,q,d)-in.at<double>(p-up-1,q,d);
+						out.at<double>(p,q,d) = in.at<double>(p+down,q,d)-(p-up-1 < subRH ? 0 : in.at<double>(p-up-1,q,d));
 						
 					}
 				}
@@ -696,6 +715,7 @@ double image::colDiffer(cv::Mat in, int x1, int y1, int x2, int y2){
 
 /* Scanline optimization from 4 direction: LRUD */
 Mat image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost, bool dispR){	
+	cerr << "scanline..." << endl;
 	int sz[] = {s.height, s.width, dispMax-dispMin+1};
 	cv::Mat	semi_cost(3, sz, mytype, cv::Scalar::all(0));	
 	for(int d=0; d<dispMax-dispMin+1; d++){
@@ -826,6 +846,7 @@ double image::MinPathCost(cv::Mat in, int p, int q){
 
 /* Take the average of all the path cost */
 void image::finalCost(cv::Mat Lpath, cv::Mat Rpath, cv::Mat Upath, cv::Mat Dpath, cv::Mat& outCost){
+	cerr << "finalCost..." << endl;
 	int loc_x=0, loc_y=0, loc_d=0;
 	double max=0.0;
 	double min = 1.79769e+308;
@@ -855,6 +876,7 @@ void image::finalCost(cv::Mat Lpath, cv::Mat Rpath, cv::Mat Upath, cv::Mat Dpath
 
 /* Find the final disparity for each pixel based on WTA method */
 void image::find_disparity(cv::Mat in, cv::Mat& idisp ,cv::Mat& icost){
+	cerr << "find_disparity..." << endl;
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
 			//double tmpcost=1.79769e+308;
@@ -901,6 +923,7 @@ void image::fMatrix(cv::Mat pixflag, cv::Mat dispL, cv::Mat& FM, int N, double p
 
 /* Detecting and labeling outliers */
 int image::findOutliers(cv::Mat dispL, cv::Mat dispR,cv::Mat& pixflag, float f, float B){
+	cerr << "findOutliers..." << endl;
 	int n=0;
 	cv::Mat Ql= (Mat_<float>(4,4) << 1,0,0, -(img_leftRGB.cols/2),0,1,0,-(img_leftRGB.rows/2),0,0,0,f,0,0, -1/B, 0);
 	    cv::Mat Qr= (Mat_<float>(4,4) << 1,0,0, -(img_leftRGB.cols/2),0,1,0,-(img_leftRGB.rows/2),0,0,0,f,0,0, -1/B, 0);
@@ -966,7 +989,7 @@ int image::labelOut(cv::Mat Ql, float pl,float ql, float dl, float dr){
 }
 
 void image::interpolate(cv::Mat img, cv::Mat& disp, cv::Mat pixflag){
-	
+	cerr << "interpolate..." << endl;
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
 			
@@ -1053,6 +1076,7 @@ void image::interpolate(cv::Mat img, cv::Mat& disp, cv::Mat pixflag){
 }
 
 void image::border(cv::Mat disp, cv::Mat& grad){
+	cerr << "border..." << endl;
 	//cv::Mat Gx = (Mat_<float>(3,3) << 1,0,-1, 2,0,-2, 1,0,-1);
 	//cv::Mat Gy = (Mat_<float>(3,3) << 1,2,1, 0,0,0, -1,-2,-1);
 	int scale = 1;
@@ -1077,6 +1101,7 @@ void image::border(cv::Mat disp, cv::Mat& grad){
 }
 
 void image::discAdjust(cv::Mat& disp, cv::Mat fcost, cv::Mat mask){
+	cerr << "discAdjust..." << endl;
 	//std::list<Point> pt;
 	int n=0;
 	for(int p=subRH+1 ; p<img_leftRGB.rows-subRH-1 ; p++){					
@@ -1115,6 +1140,7 @@ void image::discAdjust(cv::Mat& disp, cv::Mat fcost, cv::Mat mask){
 
 /* Iterative region voting */
 void image::regionVoting(cv::Mat& dispL, cv::Mat& pixflag, int TS, double TH,int iter){
+	cerr << "regionVoting..." << endl;
 	int n=0;
 	Mat hist(dispMax-dispMin+1,1,CV_32SC1, Scalar::all(0));
 	int reliables=0;				//Number of reliable pixels
@@ -1369,6 +1395,7 @@ double image::findMax(cv::Mat in){
 
 
 void image::subpxEnhance(cv::Mat fcost, cv::Mat& idisp){
+	cerr << "subpxEnhance..." << endl;
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
 				int d = idisp.at<float>(p,q)-dispMin;
@@ -1382,6 +1409,6 @@ void image::subpxEnhance(cv::Mat fcost, cv::Mat& idisp){
 				}
 			}
 	}
-	cv::medianBlur(idisp, idisp, 3);
+//	cv::medianBlur(idisp, idisp, 3);
 	//cv::GaussianBlur(idisp, idisp, cv::Size(3,3), 3,3, cv::BORDER_DEFAULT);
 }
