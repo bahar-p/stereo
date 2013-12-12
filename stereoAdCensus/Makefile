@@ -1,6 +1,6 @@
 OBJS = image.o stereo.o
 CC = g++
-CFLAGS = -c
+CFLAGS = -c -fopenmp
 LIB = 
 LFLAGS = 
 BUILDPATH = ../build
@@ -9,7 +9,7 @@ OPENCVLIB = `pkg-config --libs opencv`
 
 all: main
 main: $(OBJS)
-	$(CC) $(OBJS) -o $(BUILDPATH)/main $(OPENCVLIB)
+	$(CC) -fopenmp $(OBJS) -o $(BUILDPATH)/main $(OPENCVLIB)
 stereo.o: stereo.cpp image.h
 	$(CC) $(CFLAGS) $(OPENCVINC) stereo.cpp
 image.o: image.cpp image.h
