@@ -78,7 +78,7 @@ int main(int argc, char **argv)
 		DSI[i].release();
 	Mat dispL= cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	Mat costL= cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
-	Mat fcost = img->scanline(1.0,3.0,15, dispL, costL);
+	cv::Mat* fcost = img->scanline(1.0,3.0,15, dispL, costL);
 	std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
 	cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
@@ -86,11 +86,11 @@ int main(int argc, char **argv)
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
 	img->interpolate(image_left, dispL, pixflags);
 	cerr << "out of interpol" << endl;
-	Mat border;
+/*	Mat border;
 	img->border(dispL, border);
 	cerr << "out of border" << endl;
 	img->discAdjust(dispL, fcost, border);
-	cerr << "out of discAdj" << endl;
+	cerr << "out of discAdj" << endl;*/
 	img->subpxEnhance(fcost,dispL);
 	cerr << "out of subPx" << endl;
 	

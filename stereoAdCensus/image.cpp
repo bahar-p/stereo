@@ -667,21 +667,26 @@ double image::colDiffer(cv::Mat in, int x1, int y1, int x2, int y2){
 }
 
 /* Scanline optimization from 4 direction: LRUD */
-Mat image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost, bool dispR){	
+cv::Mat* image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost, bool dispR){	
 	cerr << "scanline..." << endl;
-	int sz[] = {s.height, s.width, dispMax-dispMin+1};
-	cv::Mat	semi_cost(3, sz, mytype, cv::Scalar::all(0));	
-	for(int d=0; d<dispMax-dispMin+1; d++){
+//	int sz[] = {s.height, s.width, dispMax-dispMin+1};
+	int drange = dispMax-dispMin+1;
+	cv::Mat* final_cost = new cv::Mat[drange];
+	semi_cost = new cv::Mat[drange];
+	for(int i=0; i < dispMax-dispMin+1; i++){
+		semi_cost[i]= cv::Mat(s, mytype, cv::Scalar::all(0));	
+		final_cost[i] = cv::Mat(s,mytype, cv::Scalar::all(0));
+	}
+	for(int d=0; d< drange; d++){
 		for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 			for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
-				if(q==subRW) semi_cost.at<double>(p,subRW,d)=sumH[d].at<double>(p,subRW);
-				if(q==img_leftRGB.cols-subRW-1)	semi_cost.at<double>(p,q,d)=sumH[d].at<double>(p,q);
-				if(p==subRH) semi_cost.at<double>(p,q,d)=sumH[d].at<double>(p,q);
-				if (p==img_leftRGB.rows-subRH-1) semi_cost.at<double>(p,q,d)=sumH[d].at<double>(p,q);
+				if(q==subRW) semi_cost[d].at<double>(p,subRW)=sumH[d].at<double>(p,subRW);
+				if(q==img_leftRGB.cols-subRW-1)	semi_cost[d].at<double>(p,q)=sumH[d].at<double>(p,q);
+				if(p==subRH) semi_cost[d].at<double>(p,q)=sumH[d].at<double>(p,q);
+				if (p==img_leftRGB.rows-subRH-1) semi_cost[d].at<double>(p,q)=sumH[d].at<double>(p,q);
 			}
 		}
 	}
-	cv::Mat final_cost(3, sz, mytype, cv::Scalar::all(0));
 	double minLeft=0.0;
 	double minRight=0.0;
 	double minUp=0.0;
@@ -695,23 +700,25 @@ Mat image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost, bool
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q-d-dispMin>subRW){									// > 0 because in calculation of parameters P1 and P2 for Left path optimization, 
 																			//the intensity of the the previous pixel on the left is required, which causes an out of boundry error in case of (q-d-dispMin=0)
-						semi_cost.at<double>(p,q,d) = costOpt(semi_cost, p,q,d, minLeft, 'L', P1, P2, lim);	
-						final_cost.at<double>(p,q,d) += (semi_cost.at<double>(p,q,d)/4.0);
+						semi_cost[d].at<double>(p,q) = costOpt(semi_cost, p,q,d, minLeft, 'L', P1, P2, lim);	
+						final_cost[d].at<double>(p,q) += (semi_cost[d].at<double>(p,q)/4.0);
 					}	
 				}
 			} else {
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q+d+dispMin<img_leftRGB.cols-subRW){									// > 0 because in calculation of parameters P1 and P2 for Left path optimization, 
 																			//the intensity of the the previous pixel on the left is required, which causes an out of boundry error in case of (q-d-dispMin=0)
-						semi_cost.at<double>(p,q,d) = costOpt(semi_cost, p,q,d, minLeft, 'L', P1, P2, lim, dispR);
-						final_cost.at<double>(p,q,d) += (semi_cost.at<double>(p,q,d)/4.0);
+						semi_cost[d].at<double>(p,q) = costOpt(semi_cost, p,q,d, minLeft, 'L', P1, P2, lim, dispR);
+						final_cost[d].at<double>(p,q) += (semi_cost[d].at<double>(p,q)/4.0);
 					}	
 				}
 			}
 		}
 	}
 	
-	semi_cost = cv::Scalar::all(0);
+	for(int i=0; i < dispMax-dispMin+1; i++){
+		semi_cost[i] = cv::Scalar::all(0);
+	}
 	//Right path opt
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){				//Excluding boundaries
 		for(int q=img_leftRGB.cols-subRW-2 ; q>=subRW ; q--){				
@@ -720,20 +727,21 @@ Mat image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost, bool
 			if(!dispR){
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q-d-dispMin>subRW-1)
-						semi_cost.at<double>(p,q,d) = costOpt(semi_cost, p,q,d, minRight, 'R', P1, P2, lim);
-						final_cost.at<double>(p,q,d) += (semi_cost.at<double>(p,q,d)/4.0);
+						semi_cost[d].at<double>(p,q) = costOpt(semi_cost, p,q,d, minRight, 'R', P1, P2, lim);
+						final_cost[d].at<double>(p,q) += (semi_cost[d].at<double>(p,q)/4.0);
 				}
 			} else {
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q+d+dispMin<img_leftRGB.cols-subRW-1)
-						semi_cost.at<double>(p,q,d) = costOpt(semi_cost, p,q,d, minRight, 'R', P1, P2, lim,dispR);
-						final_cost.at<double>(p,q,d) += (semi_cost.at<double>(p,q,d)/4.0);
+						semi_cost[d].at<double>(p,q) = costOpt(semi_cost, p,q,d, minRight, 'R', P1, P2, lim,dispR);
+						final_cost[d].at<double>(p,q) += (semi_cost[d].at<double>(p,q)/4.0);
 				}
 			}
 		}
 	}
-	
-	semi_cost = cv::Scalar::all(0);
+	for(int i=0; i < dispMax-dispMin+1; i++){
+		semi_cost[i] = cv::Scalar::all(0);
+	}
 	//Up path opt
 	for(int q= subRW; q< img_leftRGB.cols-subRW ; q++){				//Excluding boundaries
 		for(int p= subRH+1 ; p<img_leftRGB.rows-subRH ; p++){					
@@ -742,20 +750,22 @@ Mat image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost, bool
 			if(!dispR){
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q-d-dispMin>subRW-1)
-						semi_cost.at<double>(p,q,d) = costOpt(semi_cost, p,q,d, minUp, 'U', P1, P2, lim);
-						final_cost.at<double>(p,q,d) += (semi_cost.at<double>(p,q,d)/4.0);
+						semi_cost[d].at<double>(p,q) = costOpt(semi_cost, p,q,d, minUp, 'U', P1, P2, lim);
+						final_cost[d].at<double>(p,q) += (semi_cost[d].at<double>(p,q)/4.0);
 				}
 			} else {
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q+d+dispMin<img_leftRGB.cols-subRW)
-						semi_cost.at<double>(p,q,d) = costOpt(semi_cost, p,q,d, minUp, 'U', P1, P2, lim, dispR);
-						final_cost.at<double>(p,q,d) += (semi_cost.at<double>(p,q,d)/4.0);
+						semi_cost[d].at<double>(p,q) = costOpt(semi_cost, p,q,d, minUp, 'U', P1, P2, lim, dispR);
+						final_cost[d].at<double>(p,q) += (semi_cost[d].at<double>(p,q)/4.0);
 				}					
 			}
 		}
 	}
 	
-	semi_cost = cv::Scalar::all(0);
+	for(int i=0; i < dispMax-dispMin+1; i++){
+		semi_cost[i] = cv::Scalar::all(0);
+	}
 	//Down Path cost
 	for(int q= subRW; q< img_leftRGB.cols-subRW ; q++){			//Excluding boundaries
 		for(int p= img_leftRGB.rows-subRH-2 ; p>=subRH ; p--){			
@@ -764,14 +774,14 @@ Mat image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost, bool
 			if(!dispR){
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q-d-dispMin>subRW-1)
-						semi_cost.at<double>(p,q,d) = costOpt(semi_cost, p,q,d, minDown, 'D', P1, P2, lim);
-						final_cost.at<double>(p,q,d) += (semi_cost.at<double>(p,q,d)/4.0);
+						semi_cost[d].at<double>(p,q) = costOpt(semi_cost, p,q,d, minDown, 'D', P1, P2, lim);
+						final_cost[d].at<double>(p,q) += (semi_cost[d].at<double>(p,q)/4.0);
 				}
 			} else {
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q+d+dispMin<img_leftRGB.cols-subRW)
-						semi_cost.at<double>(p,q,d) = costOpt(semi_cost, p,q,d, minDown, 'D', P1, P2, lim, dispR);
-						final_cost.at<double>(p,q,d) += (semi_cost.at<double>(p,q,d)/4.0);
+						semi_cost[d].at<double>(p,q) = costOpt(semi_cost, p,q,d, minDown, 'D', P1, P2, lim, dispR);
+						final_cost[d].at<double>(p,q) += (semi_cost[d].at<double>(p,q)/4.0);
 				}
 			}
 		}
@@ -784,12 +794,12 @@ Mat image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost, bool
 }
 
 /* Minimum path cost of pixel predecessor */
-double image::MinPathCost(cv::Mat in, int p, int q){
+double image::MinPathCost(cv::Mat* in, int p, int q){
 	//double min_cost=1.79769e+308;
-	double min_cost=in.at<double>(p,q,0);
+	double min_cost=in[0].at<double>(p,q);
 	for(int d=0; d<dispMax-dispMin+1; d++){
-		if(in.at<double>(p,q,d)<=min_cost){
-			min_cost = in.at<double>(p,q,d);
+		if(in[d].at<double>(p,q)<=min_cost){
+			min_cost = in[d].at<double>(p,q);
 		}
 		//printf("MinPathCost: cost[%d][%d][%d]: %Lf\t\n", p,q,d, in[p][q][d]);
 	}
@@ -828,16 +838,16 @@ void image::finalCost(cv::Mat Lpath, cv::Mat Rpath, cv::Mat Upath, cv::Mat Dpath
 
 
 /* Find the final disparity for each pixel based on WTA method */
-void image::find_disparity(cv::Mat in, cv::Mat& idisp ,cv::Mat& icost){
+void image::find_disparity(cv::Mat* in, cv::Mat& idisp ,cv::Mat& icost){
 	cerr << "find_disparity..." << endl;
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
 			//double tmpcost=1.79769e+308;
-			double tmpcost=in.at<double>(p,q,0);
+			double tmpcost=in[0].at<double>(p,q);
 			
 			for(int d=0; d<dispMax-dispMin+1; d++){
-				if(in.at<double>(p,q,d)<= tmpcost){
-					tmpcost=in.at<double>(p,q,d);
+				if(in[d].at<double>(p,q)<= tmpcost){
+					tmpcost=in[d].at<double>(p,q);
 					idisp.at<float>(p,q)=(float)d+dispMin;				//Check again later to make sure it's correct..
 					icost.at<float>(p,q)=tmpcost;
 				}
@@ -1150,7 +1160,7 @@ int image::mostVote(cv::Mat hist){
 
 
 /* Calculating ech path cost to a pixel of interest */
-double image::costOpt(cv::Mat in, int p, int q, int d, double preMin, char dir, double param1, double param2, double threshold,bool dispR){
+double image::costOpt(cv::Mat* in, int p, int q, int d, double preMin, char dir, double param1, double param2, double threshold,bool dispR){
 	double cost=0.0;
 	std::pair<double,double> P;
 	if(!dispR){
@@ -1158,13 +1168,13 @@ double image::costOpt(cv::Mat in, int p, int q, int d, double preMin, char dir, 
 			case 'L':
 				P = calc_param(p,q,p,q-1, p,q-d-dispMin,p,q-d-dispMin-1, threshold, param1, param2);
 				if(!dispValid(d-1) && dispValid(d+1)){
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p,q-1,d), in.at<double>(p,q-1,d+1)+P.first,preMin+P.second)- preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p,q-1), in[d+1].at<double>(p,q-1)+P.first,preMin+P.second)- preMin;
 				}
 				else if (dispValid(d-1) && !(dispValid(d+1))){
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p,q-1,d), in.at<double>(p,q-1,d-1)+P.first,preMin+P.second)- preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p,q-1), in[d-1].at<double>(p,q-1)+P.first,preMin+P.second)- preMin;
 				}
 				else {
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p,q-1,d), in.at<double>(p,q-1,d-1)+P.first, in.at<double>(p,q-1,d+1)+P.first,preMin+P.second) - preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p,q-1), in[d-1].at<double>(p,q-1)+P.first, in[d+1].at<double>(p,q-1)+P.first,preMin+P.second) - preMin;
 				}
 				/*if(p==4 && q==7 && d==5){
 					printf("CostOpt: aggr_cost[%d][%d][%d]= %Lf \t , minLeft:%Lf\t\n , pre_d: %Lf\t, pre_d-1: %Lf\t, param1: %f\t, param2: %f\t\n", p, q, d, 
@@ -1175,13 +1185,13 @@ double image::costOpt(cv::Mat in, int p, int q, int d, double preMin, char dir, 
 			case 'R':
 				P = calc_param(p,q,p,q+1, p,q-d-dispMin,p,q-d-dispMin+1, threshold, param1, param2);
 				if(!dispValid(d-1) && dispValid(d+1)){
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p,q+1,d), in.at<double>(p,q+1,d+1)+P.first,preMin+P.second)- preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p,q+1), in[d+1].at<double>(p,q+1)+P.first,preMin+P.second)- preMin;
 				}
 				else if (dispValid(d-1) && !(dispValid(d+1))){
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p,q+1,d), in.at<double>(p,q+1,d-1)+P.first,preMin+P.second)- preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p,q+1), in[d-1].at<double>(p,q+1)+P.first,preMin+P.second)- preMin;
 				}
 				else {
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p,q+1,d), in.at<double>(p,q+1,d-1)+P.first, in.at<double>(p,q+1,d+1)+P.first,preMin+P.second) - preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p,q+1), in[d-1].at<double>(p,q+1)+P.first, in[d+1].at<double>(p,q+1)+P.first,preMin+P.second) - preMin;
 				}
 			break;
 				
@@ -1189,26 +1199,26 @@ double image::costOpt(cv::Mat in, int p, int q, int d, double preMin, char dir, 
 			
 				P = calc_param(p,q,p-1,q, p,q-d-dispMin,p-1,q-d-dispMin, threshold, param1, param2);
 				if(!dispValid(d-1) && dispValid(d+1)){
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p-1,q,d), in.at<double>(p-1,q,d+1)+P.first,preMin+P.second)- preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p-1,q), in[d+1].at<double>(p-1,q)+P.first,preMin+P.second)- preMin;
 				}
 				else if (dispValid(d-1) && !(dispValid(d+1))){
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p-1,q,d), in.at<double>(p-1,q,d-1)+P.first,preMin+P.second)- preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p-1,q), in[d-1].at<double>(p-1,q)+P.first,preMin+P.second)- preMin;
 				}
 				else {
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p-1,q,d), in.at<double>(p-1,q,d-1)+P.first, in.at<double>(p-1,q,d+1)+P.first,preMin+P.second) - preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p-1,q), in[d-1].at<double>(p-1,q)+P.first, in[d+1].at<double>(p-1,q)+P.first,preMin+P.second) - preMin;
 				}
 			break;
 			
 			case 'D':
 				P = calc_param(p,q,p+1,q, p,q-d-dispMin,p+1,q-d-dispMin, threshold, param1, param2);
 				if(!dispValid(d-1) && dispValid(d+1)){
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p+1,q,d), in.at<double>(p+1,q,d+1)+P.first,preMin+P.second)- preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p+1,q), in[d+1].at<double>(p+1,q)+P.first,preMin+P.second)- preMin;
 				}
 				else if (dispValid(d-1) && !(dispValid(d+1))){
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p+1,q,d), in.at<double>(p+1,q,d-1)+P.first,preMin+P.second)- preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p+1,q), in[d-1].at<double>(p+1,q)+P.first,preMin+P.second)- preMin;
 				}
 				else {
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p+1,q,d), in.at<double>(p+1,q,d-1)+P.first, in.at<double>(p+1,q,d+1)+P.first,preMin+P.second) - preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p+1,q), in[d-1].at<double>(p+1,q)+P.first, in[d+1].at<double>(p+1,q)+P.first,preMin+P.second) - preMin;
 				}
 			break;
 			
@@ -1221,13 +1231,13 @@ double image::costOpt(cv::Mat in, int p, int q, int d, double preMin, char dir, 
 			case 'L':
 				P = calc_param(p,q+d+dispMin,p,q+d+dispMin-1, p,q,p,q-1, threshold, param1, param2);
 				if(!dispValid(d-1) && dispValid(d+1)){
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p,q-1,d), in.at<double>(p,q-1,d+1)+P.first,preMin+P.second)- preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p,q-1,d), in[d+1].at<double>(p,q-1)+P.first,preMin+P.second)- preMin;
 				}
 				else if (dispValid(d-1) && !(dispValid(d+1))){
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p,q-1,d), in.at<double>(p,q-1,d-1)+P.first,preMin+P.second)- preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p,q-1), in[d-1].at<double>(p,q-1)+P.first,preMin+P.second)- preMin;
 				}
 				else {
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p,q-1,d), in.at<double>(p,q-1,d-1)+P.first, in.at<double>(p,q-1,d+1)+P.first,preMin+P.second) - preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p,q-1), in[d-1].at<double>(p,q-1)+P.first, in[d+1].at<double>(p,q-1)+P.first,preMin+P.second) - preMin;
 				}
 				/*if(p==4 && q==7 && d==5){
 					printf("CostOpt: aggr_cost[%d][%d][%d]= %Lf \t , minLeft:%Lf\t\n , pre_d: %Lf\t, pre_d-1: %Lf\t, param1: %f\t, param2: %f\t\n", p, q, d, 
@@ -1238,13 +1248,13 @@ double image::costOpt(cv::Mat in, int p, int q, int d, double preMin, char dir, 
 			case 'R':
 				P = calc_param(p,q+d+dispMin,p,q+d+dispMin+1, p,q,p,q+1, threshold, param1, param2);
 				if(!dispValid(d-1) && dispValid(d+1)){
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p,q+1,d), in.at<double>(p,q+1,d+1)+P.first,preMin+P.second)- preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p,q+1), in[d+1].at<double>(p,q+1)+P.first,preMin+P.second)- preMin;
 				}
 				else if (dispValid(d-1) && !(dispValid(d+1))){
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p,q+1,d), in.at<double>(p,q+1,d-1)+P.first,preMin+P.second)- preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p,q+1), in[d-1].at<double>(p,q+1)+P.first,preMin+P.second)- preMin;
 				}
 				else {
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p,q+1,d), in.at<double>(p,q+1,d-1)+P.first, in.at<double>(p,q+1,d+1)+P.first,preMin+P.second) - preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p,q+1), in[d-1].at<double>(p,q+1)+P.first, in[d+1].at<double>(p,q+1)+P.first,preMin+P.second) - preMin;
 				}
 			break;
 				
@@ -1252,26 +1262,26 @@ double image::costOpt(cv::Mat in, int p, int q, int d, double preMin, char dir, 
 			
 				P = calc_param(p,q+d+dispMin,p-1,q+d+dispMin, p,q,p-1,q, threshold, param1, param2);
 				if(!dispValid(d-1) && dispValid(d+1)){
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p-1,q,d), in.at<double>(p-1,q,d+1)+P.first,preMin+P.second)- preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p-1,q), in[d+1].at<double>(p-1,q)+P.first,preMin+P.second)- preMin;
 				}
 				else if (dispValid(d-1) && !(dispValid(d+1))){
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p-1,q,d), in.at<double>(p-1,q,d-1)+P.first,preMin+P.second)- preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p-1,q), in[d-1].at<double>(p-1,q)+P.first,preMin+P.second)- preMin;
 				}
 				else {
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p-1,q,d), in.at<double>(p-1,q,d-1)+P.first, in.at<double>(p-1,q,d+1)+P.first,preMin+P.second) - preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p-1,q), in[d-1].at<double>(p-1,q)+P.first, in[d+1].at<double>(p-1,q)+P.first,preMin+P.second) - preMin;
 				}
 			break;
 			
 			case 'D':
 				P = calc_param(p,q+d+dispMin,p+1,q+d+dispMin, p,q,p+1,q, threshold, param1, param2);
 				if(!dispValid(d-1) && dispValid(d+1)){
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p+1,q,d), in.at<double>(p+1,q,d+1)+P.first,preMin+P.second)- preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p+1,q), in[d+1].at<double>(p+1,q)+P.first,preMin+P.second)- preMin;
 				}
 				else if (dispValid(d-1) && !(dispValid(d+1))){
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p+1,q,d), in.at<double>(p+1,q,d-1)+P.first,preMin+P.second)- preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p+1,q), in[d-1].at<double>(p+1,q)+P.first,preMin+P.second)- preMin;
 				}
 				else {
-					cost=sumH[d].at<double>(p,q)+minimum(in.at<double>(p+1,q,d), in.at<double>(p+1,q,d-1)+P.first, in.at<double>(p+1,q,d+1)+P.first,preMin+P.second) - preMin;
+					cost=sumH[d].at<double>(p,q)+minimum(in[d].at<double>(p+1,q), in[d-1].at<double>(p+1,q)+P.first, in[d+1].at<double>(p+1,q)+P.first,preMin+P.second) - preMin;
 				}
 			break;
 			
@@ -1347,21 +1357,21 @@ double image::findMax(cv::Mat* in){
 }
 
 
-void image::subpxEnhance(cv::Mat fcost, cv::Mat& idisp){
+void image::subpxEnhance(cv::Mat* fcost, cv::Mat& idisp){
 	cerr << "subpxEnhance..." << endl;
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
 				int d = idisp.at<float>(p,q)-dispMin;
 				//std::cout << "float d: " << idisp.at<float>(p,q)<< " int d: " << d << std::endl;
 				if(d>0 && d < dispMax-dispMin){
-					double val = (fcost.at<double>(p,q,d+1) - fcost.at<double>(p,q,d-1))/(2*(fcost.at<double>(p,q,d+1)+
-					fcost.at<double>(p,q,d-1) - 2*fcost.at<double>(p,q,d)));
+					double val = (fcost[d+1].at<double>(p,q) - fcost[d-1].at<double>(p,q))/(2*(fcost[d+1].at<double>(p,q)+
+					fcost[d-1].at<double>(p,q) - 2*fcost[d].at<double>(p,q)));
 				//	std::cout << "old disp: " << idisp.at<float>(p,q) <<std::endl;
 					idisp.at<float>(p,q) = idisp.at<float>(p,q) - (float)val;
 				//	std::cout << "new disp: " << idisp.at<float>(p,q) <<std::endl;
 				}
 			}
 	}
-	cv::medianBlur(idisp, idisp, 3);
+	//cv::medianBlur(idisp, idisp, 3);
 	//cv::GaussianBlur(idisp, idisp, cv::Size(3,3), 3,3, cv::BORDER_DEFAULT);
 }
