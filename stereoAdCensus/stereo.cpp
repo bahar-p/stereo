@@ -48,11 +48,13 @@ int main(int argc, char **argv)
 	
 	clock_t tStart = clock();
 	bool Rdisp= true;
-	cv::Mat DSI = img->costAD(Rdisp);
+	cv::Mat* DSI = img->costAD(Rdisp);
 	img -> costCensus(7,9,1);
 	img-> costCensus(7,9,0);
 	img->c_census(7,9,Rdisp);
+	//cout << "DSI[1]: " << DSI[1](cv::Rect(50,50,5,5)) << endl;
 	img->initCost(DSI, 10,30);
+	//cout << "DSI[1]: " << DSI[1](cv::Rect(50,50,5,5)) << endl;
 	img->line_segment(20.,6.,34.,17.,Rdisp);
 	img->aggregateCost(DSI);
 	
@@ -66,24 +68,24 @@ int main(int argc, char **argv)
 	
 	tStart = clock();
 	img->reset();
-	DSI = cv::Scalar::all(0);
+//	DSI = cv::Scalar::all(0);
 	DSI = img->costAD();
 	img->c_census(7,9);
 	img->initCost(DSI, 10,30);
 	img->line_segment(20.,6.,34.,17.);
 	img->aggregateCost(DSI);
-	DSI.release();
+	for(int i=0;i< maxDisp-minDisp+1 ; i++)
+		DSI[i].release();
 	Mat dispL= cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	Mat costL= cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	Mat fcost = img->scanline(1.0,3.0,15, dispL, costL);
 	std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
-/*	cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
+	cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
-	
 	img->regionVoting(dispL, pixflags, 20, 0.4, 5);
 	img->findOutliers(dispL, dispR,pixflags,focal, baseline);
-	img->interpolate(image_left, dispL, pixflags);*/
-/*	cerr << "out of interpol" << endl;
+	img->interpolate(image_left, dispL, pixflags);
+	cerr << "out of interpol" << endl;
 	Mat border;
 	img->border(dispL, border);
 	cerr << "out of border" << endl;
@@ -91,7 +93,7 @@ int main(int argc, char **argv)
 	cerr << "out of discAdj" << endl;
 	img->subpxEnhance(fcost,dispL);
 	cerr << "out of subPx" << endl;
-*/	
+	
 	double minv1, maxv1;
 	cv::minMaxLoc(dispL, &minv1,&maxv1);
 	Mat dispL8;

@@ -15,7 +15,8 @@ private:
 #define subRW 0
 #define subRH 0
 #define mytype CV_64FC1
-cv::Mat semi_cost, sumH,supReg;
+cv::Mat semi_cost,supReg;
+cv::Mat* sumH;
 uint64_t** censusLeft;
 uint64_t** censusRight;
 unsigned*** census_hamming;
@@ -28,25 +29,25 @@ public:
 image(cv::Mat, cv::Mat, int , int);
 void read_image();
 cv::Mat get_image(int);
-cv::Mat costAD(bool dispr=false);
+cv::Mat* costAD(bool dispr=false);
 void costCensus(int, int, int);
 void hamdist(uint64_t**, uint64_t** , int , int,bool dispr=false );
 void c_census(int, int,bool dispr=false);
-void initCost(cv::Mat&, double , double);
+void initCost(cv::Mat*, double , double);
 void line_segment(double,double,double,double, bool dispr=false);
 double colDiffer (cv::Mat, int, int, int, int);
-void aggregateCost(cv::Mat);
+void aggregateCost(cv::Mat*);
 double costOpt(cv::Mat, int, int, int, double, char, double, double, double, bool dispr=false);
 double MinPathCost(cv::Mat, int, int);
 Mat scanline(double, double, double, Mat&, Mat&,bool dispr=false);
 std::pair<double,double> calc_param(int, int, int, int, int, int ,int , int, double, double, double);
-void IImage(cv::Mat, cv::Mat&, char);
-void finalSum(cv::Mat , cv::Mat&, char, int a=0);
+void IImage(cv::Mat*, cv::Mat*, char);
+void finalSum(cv::Mat* , cv::Mat*, char, int a=0);
 double minimum(double, double, double, double val=-100);
 bool dispValid(int);
 void find_disparity(cv::Mat, cv::Mat&, cv::Mat&);
 void finalCost(cv::Mat , cv::Mat , cv::Mat , cv::Mat , cv::Mat& );
-double findMax(cv::Mat);
+double findMax(cv::Mat*);
 void subpxEnhance(cv::Mat, cv::Mat&);
 int findOutliers(cv::Mat, cv::Mat, cv::Mat&, float, float);
 void fMatrix(cv::Mat, cv::Mat, cv::Mat&,int, double, double);
