@@ -680,10 +680,7 @@ cv::Mat* image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost,
 	for(int d=0; d< drange; d++){
 		for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 			for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
-				if(q==subRW) semi_cost[d].at<double>(p,subRW)=sumH[d].at<double>(p,subRW);
-				if(q==img_leftRGB.cols-subRW-1)	semi_cost[d].at<double>(p,q)=sumH[d].at<double>(p,q);
-				if(p==subRH) semi_cost[d].at<double>(p,q)=sumH[d].at<double>(p,q);
-				if (p==img_leftRGB.rows-subRH-1) semi_cost[d].at<double>(p,q)=sumH[d].at<double>(p,q);
+				if(q==subRW || q==img_leftRGB.cols-subRW-1 || p==subRH || p==img_leftRGB.rows-subRH-1) semi_cost[d].at<double>(p,q)=sumH[d].at<double>(p,q);
 			}
 		}
 	}
@@ -1063,15 +1060,14 @@ void image::border(cv::Mat disp, cv::Mat& grad){
 	
 }
 
-void image::discAdjust(cv::Mat& disp, cv::Mat fcost, cv::Mat mask){
+void image::discAdjust(cv::Mat& disp, cv::Mat* fcost, cv::Mat mask){
 	cerr << "discAdjust..." << endl;
 	//std::list<Point> pt;
 	int n=0;
 	for(int p=subRH+1 ; p<img_leftRGB.rows-subRH-1 ; p++){					
 		for(int q= subRW+1 ; q<img_leftRGB.cols-subRW-1 ; q++){
 			n=0;
-			if(mask.at<int>(p,q) != 0){
-				
+			if(mask.at<int>(p,q) != 0){	
 				if(mask.at<int>(p,q-1) ==0){
 					n++;
 					//cout << " Left Not On Edge " << endl;
@@ -1085,10 +1081,10 @@ void image::discAdjust(cv::Mat& disp, cv::Mat fcost, cv::Mat mask){
 				if(n==2){
 					//cout << " 2 points found!" << endl;
 				
-					if(fcost.at<double>(p,q-1,(int)disp.at<float>(p,q-1)) < fcost.at<double>(p,q,(int)disp.at<float>(p,q))){
+					if(fcost[(int)disp.at<float>(p,q-1)].at<double>(p,q-1) < fcost[(int)disp.at<float>(p,q)].at<double>(p,q)){
 						disp.at<float>(p,q) = disp.at<float>(p,q-1);
 					}
-					if(fcost.at<double>(p,q+1,(int)disp.at<float>(p,q+1)) < fcost.at<double>(p,q,(int)disp.at<float>(p,q))){
+					if(fcost[(int)disp.at<float>(p,q+1)].at<double>(p,q+1) < fcost[(int)disp.at<float>(p,q)].at<double>(p,q)){
 						disp.at<float>(p,q) = disp.at<float>(p,q+1);
 					}
 					
@@ -1372,6 +1368,6 @@ void image::subpxEnhance(cv::Mat* fcost, cv::Mat& idisp){
 				}
 			}
 	}
-	//cv::medianBlur(idisp, idisp, 3);
+	cv::medianBlur(idisp, idisp, 3);
 	//cv::GaussianBlur(idisp, idisp, cv::Size(3,3), 3,3, cv::BORDER_DEFAULT);
 }

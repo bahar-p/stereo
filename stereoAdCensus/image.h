@@ -56,7 +56,7 @@ void regionVoting(cv::Mat&, cv::Mat&, int, double, int);
 int mostVote(cv::Mat);
 int labelOut(cv::Mat, float,float , float, float);
 void border(cv::Mat, cv::Mat&);
-void discAdjust(cv::Mat&, cv::Mat, cv::Mat);
+void discAdjust(cv::Mat&, cv::Mat*, cv::Mat);
 void interpolate(cv::Mat, cv::Mat&, cv::Mat);
 //DEBUG
 char *itob(uint64_t);
