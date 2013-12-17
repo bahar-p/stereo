@@ -1,6 +1,8 @@
 #include "cv.h"
 #include "highgui.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <libgen.h>
 #include <math.h>
 #include <iostream>
 #include <string>
@@ -18,16 +20,23 @@ int main(int argc, char **argv)
    	int minDisp=0, maxDisp;
 	int LR = 0;
 	if(argc < 6 ) {
-		cout << "Usage: ./main leftImg rightImg maxDisp focal_l baseline LRCheck" << endl;
+		cout << "Usage: ./main leftImg rightImg maxDisp focal_l baseline ?mask? ?LRCheck?" << endl;
 		return -1;
 	}
+	Mat mask;
 	//Read input images into Matrices
 	Mat image_left = imread(argv[1], -1);
    	Mat image_right = imread(argv[2], -1);
+	char* fullpath = argv[1];
+	char* bname = basename(fullpath);
+	char* x = strtok(bname, ".");
+	const std::string fname(reinterpret_cast<char*>(bname));
+	//cout << "filename: " << x << " sName: " << sName  << endl;
 	maxDisp = atoi(argv[3]);
 	float focal = atof(argv[4]);
 	float baseline = atof(argv[5]);
-	if(argc==7) LR = atoi(argv[6]);
+	if(argc==7) mask = imread(argv[6],0);
+	if(argc==8) LR = atoi(argv[7]);
 	Size s = image_left.size();
 	img = new image(image_left,image_right, minDisp, maxDisp);
 	cv::Mat dispR8;
@@ -91,11 +100,17 @@ int main(int argc, char **argv)
 	dispL.convertTo( dispL8, CV_8UC1,255.0/maxDisp);
 	imshow( "Img", image_left );                   
 	imshow( "DispL", dispL8 );                   	
-	if(LR) imshow( "DispR", dispR8 );  
-	imwrite("/home/bahar/Dataset/adcensus/a.png", dispL8);
-	//imshow( "gradient", border );
-	//imwrite( "/home/bahar/dispL.png", dispL8 );
-	//imwrite( "/home/bahar/dispR.png", dispR8 );           	
+	if(LR) imshow( "DispR", dispR8 ); 
+	string fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/" + fname + ".png";
+	imwrite(fpath1 , dispL8);
+	if(argc>6) {
+		cout << "masking.."<< endl;
+		Mat d_masked;
+		string fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/" + fname + ".png";
+		dispL8.copyTo(d_masked, mask);
+		imshow( "DispMasked", d_masked );                   	
+		imwrite(fpath2, d_masked);
+	}
 	waitKey(0);
    	char c = waitKey(10);
 	if (c == ' ')  
