@@ -1363,7 +1363,9 @@ void image::subpxEnhance(cv::Mat* fcost, cv::Mat& idisp){
 					double val = (fcost[d+1].at<double>(p,q) - fcost[d-1].at<double>(p,q))/(2*(fcost[d+1].at<double>(p,q)+
 					fcost[d-1].at<double>(p,q) - 2*fcost[d].at<double>(p,q)));
 				//	std::cout << "old disp: " << idisp.at<float>(p,q) <<std::endl;
-					idisp.at<float>(p,q) = idisp.at<float>(p,q) - (float)val;
+					float val1 = (idisp.at<float>(p,q) - (float)val); 
+					idisp.at<float>(p,q) = (val1+dispMin < 0 ? idisp.at<float>(p,q) : val1);
+					if(idisp.at<float>(p,q) < 0) cerr << "negative value" << endl;
 				//	std::cout << "new disp: " << idisp.at<float>(p,q) <<std::endl;
 				}
 			}
