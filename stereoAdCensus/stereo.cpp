@@ -91,11 +91,11 @@ int main(int argc, char **argv)
 	}	
 	img->subpxEnhance(fcost,dispL);
 	//cerr << "out of subPx" << endl;
-	std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
+	std::cout << "Exec_time: " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
 	double minv1, maxv1;
 	cv::minMaxLoc(dispL, &minv1,&maxv1);
 	Mat dispL8;
-	cout << "maxv: " << maxv1 << endl;
+	//cout << "maxv: " << maxv1 << endl;
 	//cout << "final disp channels: " << dispL.channels() << " depth: " << dispL.depth() << endl;
 	dispL.convertTo( dispL8, CV_8UC1,255.0/maxDisp);
 	imshow( "Img", image_left );                   
@@ -104,7 +104,7 @@ int main(int argc, char **argv)
 	string fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/" + fname + ".png";
 	imwrite(fpath1 , dispL8);
 	if(argc>6) {
-		cout << "masking.."<< endl;
+		//cout << "masking.."<< endl;
 		Mat d_masked;
 		string fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/" + fname + ".png";
 		dispL8.copyTo(d_masked, mask);
