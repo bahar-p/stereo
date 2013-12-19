@@ -77,18 +77,16 @@ int main(int argc, char **argv)
 		return -1;
 	}
 	
-	cout << leftimg.type() << " " << leftimg.depth() << " " << leftimg.channels() <<  endl;
+	//cout << leftimg.type() << " " << leftimg.depth() << " " << leftimg.channels() <<  endl;
 	Mat disp8;
 	dWidth = leftimg.cols; 			//get the width of frames of the video
 	dHeight = leftimg.rows; 		//get the height of frames of the video
 
 	clock_t tStart = clock();
 	Mat disp(dHeight,dWidth, CV_8U, Scalar::all(0));
-	cout << "call to sgbm" <<endl;
 	StereoSGBM sgbm(mindisp, maxdisp, SADWindow, 8*P, 32*P, dispMaxdiff,
                         preFilterCap, uniqueness, speckleWS, speckleRange, true);
 	sgbm(leftimg,rightimg,disp);
-	cout << "end of sgbm" <<endl;
 	cout << "SGBM Execution_time: " << (double) (clock() - tStart) / (double)CLOCKS_PER_SEC << " secs " << endl;
 	disp.convertTo(disp8, CV_8U, 255/(maxdisp*16.)); 
 	Mat dmasked;
@@ -123,11 +121,11 @@ void kittiCalib(string calib){
 	infile.ignore(4, ' ');
 	getline(infile,l1);
 	char * line1 =(char *) l1.c_str();
-	cout << line1 << endl;
+	//cout << line1 << endl;
 	char* p = strtok(line1, " ");
 	int i=0, j=0;
 	while(p!=NULL){	
-		cout << p << endl;
+		//cout << p << endl;
 		stringstream ss(p);
 	//	cout << "f: " << f << endl;
 		ss >> p1.at<double>(i,j);
@@ -139,7 +137,7 @@ void kittiCalib(string calib){
 		}
 		p = strtok(NULL, " ");
 	}
-	cout << "P1: " << p1 << endl;
+	//cout << "P1: " << p1 << endl;
 	Mat roi1 = p1(Rect(0,0,3,3));
 	cameraMatrix[0] = roi1;
 
@@ -147,11 +145,11 @@ void kittiCalib(string calib){
 	infile.ignore(4, ' ');
 	getline(infile,l2);
 	char * line2 =(char *) l2.c_str();
-	cout << line2 << endl;
+	//cout << line2 << endl;
 	p = strtok(line2, " ");
 	i=0; j=0;
 	while(p!=NULL){	
-		cout << p << endl;
+		//cout << p << endl;
 		stringstream ss2(p);
 		ss2 >> p2.at<double>(i,j);
 		j++;
@@ -161,12 +159,10 @@ void kittiCalib(string calib){
 		}
 		p = strtok(NULL, " ");
 	}
-	cout << "P2: " << p2 << endl;	
+	//cout << "P2: " << p2 << endl;	
 	Mat roi2 = p2(Rect(0,0,3,3));
 	cameraMatrix[1] = roi2;
-	cout << "closing the file" << endl;	
 	infile.close();
-	cout << "file closed" << endl;
 	double f = p2.at<double>(0,0);
 	double tf = p2.at<double>(0,3);
 	double tx = tf / f;
