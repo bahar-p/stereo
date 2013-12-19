@@ -1371,5 +1371,4 @@ void image::subpxEnhance(cv::Mat* fcost, cv::Mat& idisp){
 			}
 	}
 	cv::medianBlur(idisp, idisp, 3);
-	//cv::GaussianBlur(idisp, idisp, cv::Size(3,3), 3,3, cv::BORDER_DEFAULT);
 }

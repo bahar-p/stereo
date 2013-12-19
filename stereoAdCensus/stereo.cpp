@@ -20,7 +20,7 @@ int main(int argc, char **argv)
    	int minDisp=0, maxDisp;
 	int LR = 0;
 	if(argc < 6 ) {
-		cout << "Usage: ./main leftImg rightImg maxDisp focal_l baseline ?mask? ?LRCheck?" << endl;
+		cout << "Usage: ./main leftImg rightImg maxDisp focal_l baseline ?LRCheck? ?mask?" << endl;
 		return -1;
 	}
 	Mat mask;
@@ -35,8 +35,8 @@ int main(int argc, char **argv)
 	maxDisp = atoi(argv[3]);
 	float focal = atof(argv[4]);
 	float baseline = atof(argv[5]);
-	if(argc==7) mask = imread(argv[6],0);
-	if(argc==8) LR = atoi(argv[7]);
+	if(argc==7) LR = atoi(argv[6]);
+	if(argc==8) mask = imread(argv[7],0);
 	Size s = image_left.size();
 	img = new image(image_left,image_right, minDisp, maxDisp);
 	cv::Mat dispR8;
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
 		bool Rdisp= true;
 		img->reset();
 		for(int i=0; i<maxDisp - minDisp+1; i++){
-			DSI[i] = cv::Scalar::all(0);
+			DSI[i].release();
 		}
 		DSI = img->costAD(Rdisp);
 		img->c_census(7,9,Rdisp);
@@ -98,22 +98,22 @@ int main(int argc, char **argv)
 	//cout << "maxv: " << maxv1 << endl;
 	//cout << "final disp channels: " << dispL.channels() << " depth: " << dispL.depth() << endl;
 	dispL.convertTo( dispL8, CV_8UC1,255.0/maxDisp);
-	imshow( "Img", image_left );                   
-	imshow( "DispL", dispL8 );                   	
-	if(LR) imshow( "DispR", dispR8 ); 
+//	imshow( "Img", image_left );                   
+//	imshow( "DispL", dispL8 );                   	
+//	if(LR) imshow( "DispR", dispR8 ); 
 	string fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/" + fname + ".png";
 	imwrite(fpath1 , dispL8);
-	if(argc>6) {
+	if(argc>7) {
 		//cout << "masking.."<< endl;
 		Mat d_masked;
 		string fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/" + fname + ".png";
 		dispL8.copyTo(d_masked, mask);
-		imshow( "DispMasked", d_masked );                   	
+		//imshow( "DispMasked", d_masked );                   	
 		imwrite(fpath2, d_masked);
 	}
-	waitKey(0);
-   	char c = waitKey(10);
-	if (c == ' ')  
-		return 0;
+	//waitKey(0);
+   //	char c = waitKey(10);
+//	if (c == ' ')  return 0;
+	return 0;
 }
 
