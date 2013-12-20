@@ -35,8 +35,8 @@ int main(int argc, char **argv)
 	maxDisp = atoi(argv[3]);
 	float focal = atof(argv[4]);
 	float baseline = atof(argv[5]);
-	if(argc==7) LR = atoi(argv[6]);
-	if(argc==8) mask = imread(argv[7],0);
+	if(argc>6) LR = atoi(argv[6]);
+	if(argc>7) mask = imread(argv[7],0);
 	Size s = image_left.size();
 	img = new image(image_left,image_right, minDisp, maxDisp);
 	cv::Mat dispR8;
@@ -56,12 +56,8 @@ int main(int argc, char **argv)
 	cv::Mat* fcost = img->scanline(1.0,3.0,15, dispL, costL);
 	
 	if(LR){
-		//tStart = clock();
 		bool Rdisp= true;
 		img->reset();
-		for(int i=0; i<maxDisp - minDisp+1; i++){
-			DSI[i].release();
-		}
 		DSI = img->costAD(Rdisp);
 		img->c_census(7,9,Rdisp);
 		img->initCost(DSI, 10,30);
@@ -71,24 +67,19 @@ int main(int argc, char **argv)
 		Mat costR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 		img->scanline(1.0,3.0,15, dispR, costR,Rdisp);
 		cv::minMaxLoc(dispR, &minv,&maxv);
-		dispR8 = Mat(dispR.size().height, dispR.size().width, CV_8UC1, Scalar::all(0));
-		dispR.convertTo( dispR8, CV_8UC1,255.0/(maxv-minv));
+		//dispR8 = Mat(dispR.size().height, dispR.size().width, CV_8UC1, Scalar::all(0));
+		//dispR.convertTo( dispR8, CV_8UC1,255.0/maxDisp);
 		//std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
-
-		/* Refinement */
-	
+		/* Refinement */	
 		cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
 		img->findOutliers(dispL, dispR,pixflags,focal, baseline);
 		img->regionVoting(dispL, pixflags, 20, 0.4, 5);
 		img->findOutliers(dispL, dispR,pixflags,focal, baseline);
 		img->interpolate(image_left, dispL, pixflags);
-		//cerr << "out of interpol" << endl;
-		Mat border;
-		img->border(dispL, border);
-		//cerr << "out of border" << endl;
-		img->discAdjust(dispL, fcost, border);
-		//cerr << "out of discAdj" << endl;
-	}	
+		//Mat br;
+		//img->border(dispL, br);
+		//img->discAdjust(dispL, fcost, br);
+	}
 	img->subpxEnhance(fcost,dispL);
 	//cerr << "out of subPx" << endl;
 	std::cout << "Exec_time: " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
@@ -104,7 +95,6 @@ int main(int argc, char **argv)
 	string fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/" + fname + ".png";
 	imwrite(fpath1 , dispL8);
 	if(argc>7) {
-		//cout << "masking.."<< endl;
 		Mat d_masked;
 		string fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/" + fname + ".png";
 		dispL8.copyTo(d_masked, mask);

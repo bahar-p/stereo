@@ -1068,6 +1068,7 @@ void image::discAdjust(cv::Mat& disp, cv::Mat* fcost, cv::Mat mask){
 		for(int q= subRW+1 ; q<img_leftRGB.cols-subRW-1 ; q++){
 			n=0;
 			if(mask.at<int>(p,q) != 0){	
+				//cout << "next p,q " << p << " " << q << "mask: " << mask.at<int>(p,q)<< endl;
 				if(mask.at<int>(p,q-1) ==0){
 					n++;
 					//cout << " Left Not On Edge " << endl;
@@ -1080,14 +1081,13 @@ void image::discAdjust(cv::Mat& disp, cv::Mat* fcost, cv::Mat mask){
 				//cout << "size: " << pt.size() << endl;
 				if(n==2){
 					//cout << " 2 points found!" << endl;
-				
-					if(fcost[(int)disp.at<float>(p,q-1)].at<double>(p,q-1) < fcost[(int)disp.at<float>(p,q)].at<double>(p,q)){
+					if(fcost[(int)disp.at<float>(p,q-1)-dispMin].at<double>(p,q-1) < fcost[(int)disp.at<float>(p,q)-dispMin].at<double>(p,q)){
 						disp.at<float>(p,q) = disp.at<float>(p,q-1);
 					}
-					if(fcost[(int)disp.at<float>(p,q+1)].at<double>(p,q+1) < fcost[(int)disp.at<float>(p,q)].at<double>(p,q)){
+					if(fcost[(int)disp.at<float>(p,q+1)-dispMin].at<double>(p,q+1) < fcost[(int)disp.at<float>(p,q)-dispMin].at<double>(p,q)){
 						disp.at<float>(p,q) = disp.at<float>(p,q+1);
 					}
-					
+					//cout << "p,q, disp: " << p <<" " << q << " " << disp.at<float>(p,q) << endl; 
 				}
 				
 			}
@@ -1362,11 +1362,11 @@ void image::subpxEnhance(cv::Mat* fcost, cv::Mat& idisp){
 				if(d>0 && d < dispMax-dispMin){
 					double val = (fcost[d+1].at<double>(p,q) - fcost[d-1].at<double>(p,q))/(2*(fcost[d+1].at<double>(p,q)+
 					fcost[d-1].at<double>(p,q) - 2*fcost[d].at<double>(p,q)));
-				//	std::cout << "old disp: " << idisp.at<float>(p,q) <<std::endl;
+					//std::cout << "old disp: " << idisp.at<float>(p,q) <<std::endl;
 					float val1 = (idisp.at<float>(p,q) - (float)val); 
 					idisp.at<float>(p,q) = (val1+dispMin < 0 ? idisp.at<float>(p,q) : val1);
 					if(idisp.at<float>(p,q) < 0) cerr << "negative value" << endl;
-				//	std::cout << "new disp: " << idisp.at<float>(p,q) <<std::endl;
+					//std::cout << "new disp: " << idisp.at<float>(p,q) <<std::endl;
 				}
 			}
 	}
