@@ -13,7 +13,7 @@ set maskp "${::mainp}${maskp}"
 proc runex1 {myargs} {
 	set sgbm [lindex $myargs 0]
 	set imglist [lrange $myargs 1 end]
-	
+	set LR 0
 #	global ::mainp
 	global maskp
 #	global ::adcensus
@@ -34,7 +34,7 @@ proc runex1 {myargs} {
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T "${maskp}${m}"} msg] } {
+					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T $LR "${maskp}${m}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -55,7 +55,7 @@ proc runex1 {myargs} {
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T "${maskp}${m}"} msg] } {
+					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T $LR "${maskp}${m}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -76,7 +76,7 @@ proc runex1 {myargs} {
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T "${maskp}${m}"} msg] } {
+					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T $LR "${maskp}${m}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -97,7 +97,7 @@ proc runex1 {myargs} {
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T "${maskp}${m}"} msg] } {
+					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T $LR "${maskp}${m}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -118,7 +118,7 @@ proc runex1 {myargs} {
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T "${maskp}${m}"} msg] } {
+					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T $LR "${maskp}${m}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -139,7 +139,7 @@ proc runex1 {myargs} {
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T "${maskp}${m}"} msg] } {
+					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T $LR "${maskp}${m}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -160,7 +160,7 @@ proc runex1 {myargs} {
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T "${maskp}${m}"} msg] } {
+					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T $LR "${maskp}${m}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -181,7 +181,7 @@ proc runex1 {myargs} {
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T "${maskp}${m}"} msg] } {
+					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T $LR "${maskp}${m}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -202,7 +202,7 @@ proc runex1 {myargs} {
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T "${maskp}${m}"} msg] } {
+					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T $LR "${maskp}${m}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -223,7 +223,7 @@ proc runex1 {myargs} {
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T "${maskp}${m}"} msg] } {
+					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T $LR "${maskp}${m}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -244,7 +244,7 @@ proc runex1 {myargs} {
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T "${maskp}${m}"} msg] } {
+					if { [catch { exec $::adcensus "${::mainp}${fL}" "${::mainp}${fR}" $maxd $f $T $LR "${maskp}${m}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
