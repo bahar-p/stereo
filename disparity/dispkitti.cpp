@@ -177,27 +177,3 @@ void kittiCalib(string calib){
 	cout << "R1: " << R1 << " R2: " << R2 << " " << " P11: " << P11 << " P22: " << P22 << endl; */
 }
 
-/*
-void readCalibfile (string extr, string intr){
-	
-	FileStorage fse(extr, FileStorage::READ);
-	FileStorage fsi(intr, FileStorage::READ);
-	
-	fse["R"] >> R;
-	fse["T"] >> T;
-	fse["R1"] >> R1;
-	fse["R2"] >> R2;
-	fse["P1"] >> P1;
-	fse["P2"] >> P2;
-	fse["Q"] >> Q;
-	fsi["M1"] >> cameraMatrix[0];
-	fsi["D1"] >> distCoeffs[0];
-	fsi["M2"] >> cameraMatrix[1];
-	fsi["D2"] >> distCoeffs[1];
-	cout << "camera matrix: " << cameraMatrix[0] << endl
-	<< "distortion coefficient: " << distCoeffs[1] << endl
-	<< "R1: " << R1 << endl << "P1: " << P1 << endl; 
-	fse.release();
-	fsi.release();
-	
-}*/
