@@ -29,7 +29,7 @@ int main(int argc, char **argv)
    	Mat image_right = imread(argv[2], -1);
 	char* fullpath = argv[1];
 	char* bname = basename(fullpath);
-	char* x = strtok(bname, ".");
+	//char* x = strtok(bname, ".");
 	const std::string fname(reinterpret_cast<char*>(bname));
 	//cout << "filename: " << x << " sName: " << sName  << endl;
 	maxDisp = atoi(argv[3]);
@@ -92,11 +92,11 @@ int main(int argc, char **argv)
 //	imshow( "Img", image_left );                   
 //	imshow( "DispL", dispL8 );                   	
 //	if(LR) imshow( "DispR", dispR8 ); 
-	string fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/" + fname + ".png";
+	string fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/" + fname;
 	imwrite(fpath1 , dispL8);
 	if(argc>7) {
 		Mat d_masked;
-		string fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/" + fname + ".png";
+		string fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/" + fname;
 		dispL8.copyTo(d_masked, mask);
 		//imshow( "DispMasked", d_masked );                   	
 		imwrite(fpath2, d_masked);
