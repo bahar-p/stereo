@@ -5,8 +5,6 @@ proc runex1 {myargs} {
 	set sgbm [lindex $myargs 0]
 	set imglist [lrange $myargs 1 end]
 	set LR 0
-#	global ::mainp
-#	global ::adcensus
 		foreach img $imglist {
 			puts "img: $img"
 			switch -exact $img {
