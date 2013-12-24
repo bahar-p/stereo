@@ -40,8 +40,8 @@ int main (int argc, char** argv) {
 	// Compare: get absolute difference
 	for(int j=0; j<height;j++){
 		for(int i=0; i<width; i++){
-			float fd_gt = d_gt.at<uint16_t>(j,i)/256.0;
-			float fd_gen = dmax*d_gt.at<uchar>(j,i)/255.0;
+			float fd_gt = d_gt.at<float>(j,i);
+			float fd_gen = dmax*d_gt.at<float>(j,i);
 			if(isValid(fd_gt)) {
 				float err = fabs(fd_gen - fd_gen);
 				if(err > err_thr) pix_count++;
