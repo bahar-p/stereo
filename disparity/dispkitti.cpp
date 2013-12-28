@@ -69,7 +69,6 @@ int main(int argc, char **argv)
 	}
 	char* fullpath = argv[2];
 	char* bname = basename(fullpath);
-	char* x = strtok(bname, ".");
 	fname = (reinterpret_cast<char*>(bname));
 
 	if(!leftimg.data || !rightimg.data){
@@ -92,14 +91,14 @@ int main(int argc, char **argv)
 	Mat dmasked;
 
 	if(argc==6){
-		string fpath2 = "/home/bahar/Master/stereo/Ex1/sgbm/dispmasked/" + fname + ".png";
+		string fpath2 = "/home/bahar/Master/stereo/Ex1/sgbm/dispmasked/" + fname;
 		disp8.copyTo(dmasked, mask);
 		imwrite( fpath2 , dmasked);
 		//imshow("mask" , mask);
 		//imshow("disparity", dmasked);
 	}
 	
-	string fpath1 = "/home/bahar/Master/stereo/Ex1/sgbm/mydisp/" + fname + ".png";
+	string fpath1 = "/home/bahar/Master/stereo/Ex1/sgbm/mydisp/" + fname;
 	imwrite(fpath1 , disp8);
 	//imshow("disp8", disp8);
 	
