@@ -90,7 +90,7 @@ int main(int argc, char **argv)
 	//cout << "final disp channels: " << dispL.channels() << " depth: " << dispL.depth() << endl;
 	dispL.convertTo( dispL8, CV_8UC1,255.0/maxDisp);
 //	imshow( "Img", image_left );                   
-//	imshow( "DispL", dispL8 );                   	
+	imshow( "DispL", dispL8 );                   	
 //	if(LR) imshow( "DispR", dispR8 ); 
 	string fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/" + fname;
 	imwrite(fpath1 , dispL8);
@@ -98,10 +98,10 @@ int main(int argc, char **argv)
 		Mat d_masked;
 		string fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/" + fname;
 		dispL8.copyTo(d_masked, mask);
-		//imshow( "DispMasked", d_masked );                   	
+		imshow( "DispMasked", d_masked );                   	
 		imwrite(fpath2, d_masked);
 	}
-	//waitKey(0);
+	waitKey(0);
    //	char c = waitKey(10);
 //	if (c == ' ')  return 0;
 	return 0;
