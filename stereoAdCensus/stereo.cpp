@@ -76,9 +76,10 @@ int main(int argc, char **argv)
 		img->regionVoting(dispL, pixflags, 20, 0.4, 5);
 		img->findOutliers(dispL, dispR,pixflags,focal, baseline);
 		img->interpolate(image_left, dispL, pixflags);
-		//Mat br;
-		//img->border(dispL, br);
-		//img->discAdjust(dispL, fcost, br);
+		Mat br;
+		img->border(dispL, br);
+		img->discAdjust(dispL, fcost, br);
+		imshow( "borders", br );                   	
 	}
 	img->subpxEnhance(fcost,dispL);
 	//cerr << "out of subPx" << endl;

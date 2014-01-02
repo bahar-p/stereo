@@ -1070,13 +1070,13 @@ void image::border(cv::Mat disp, cv::Mat& grad){
 	Mat abs_grad_x, abs_grad_y;
 
 	/// Gradient X
-	Scharr( disp, grad_x, ddepth, 1, 0, scale, delta, BORDER_DEFAULT );
-	//Sobel( disp, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT );
+	//Scharr( disp, grad_x, ddepth, 1, 0, scale, delta, BORDER_DEFAULT );
+	Sobel( disp, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT );
 	convertScaleAbs( grad_x, abs_grad_x );
 
 	/// Gradient Y
-	Scharr( disp, grad_y, ddepth, 0, 1, scale, delta, BORDER_DEFAULT );
-	//Sobel( disp, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT );
+	//Scharr( disp, grad_y, ddepth, 0, 1, scale, delta, BORDER_DEFAULT );
+	Sobel( disp, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT );
 	convertScaleAbs( grad_y, abs_grad_y );
 
 	/// Total Gradient (approximate)
@@ -1085,7 +1085,6 @@ void image::border(cv::Mat disp, cv::Mat& grad){
 }
 
 void image::discAdjust(cv::Mat& disp, cv::Mat* fcost, cv::Mat mask){
-	//cerr << "discAdjust..." << endl;
 	//std::list<Point> pt;
 	int n=0;
 	for(int p=subRH+1 ; p<img_leftRGB.rows-subRH-1 ; p++){					
@@ -1105,11 +1104,22 @@ void image::discAdjust(cv::Mat& disp, cv::Mat* fcost, cv::Mat mask){
 				//cout << "size: " << pt.size() << endl;
 				if(n==2){
 					//cout << " 2 points found!" << endl;
-					if(fcost[(int)disp.at<float>(p,q-1)-dispMin].at<double>(p,q-1) < fcost[(int)disp.at<float>(p,q)-dispMin].at<double>(p,q)){
-						disp.at<float>(p,q) = disp.at<float>(p,q-1);
+					if((int)disp.at<float>(p,q)-dispMin>=subRW && (int)disp.at<float>(p,q)-dispMin){
+						if(disp.at<float>(p,q-1)!=-1 && 
+						  (int)disp.at<float>(p,q-1)-dispMin>=subRW && 
+						  (int)disp.at<float>(p,q-1)-dispMin<img_leftRGB.cols-subRW-1){
+							if(fcost[(int)disp.at<float>(p,q-1)-dispMin].at<double>(p,q-1) < 
+							   fcost[(int)disp.at<float>(p,q)-dispMin].at<double>(p,q)){
+								disp.at<float>(p,q) = disp.at<float>(p,q-1);
+						}
 					}
-					if(fcost[(int)disp.at<float>(p,q+1)-dispMin].at<double>(p,q+1) < fcost[(int)disp.at<float>(p,q)-dispMin].at<double>(p,q)){
-						disp.at<float>(p,q) = disp.at<float>(p,q+1);
+						if(disp.at<float>(p,q+1)!=-1 && (int)disp.at<float>(p,q+1)-dispMin>=subRW && 
+					          (int)disp.at<float>(p,q+1)-dispMin<img_leftRGB.cols-subRW-1){
+							if(fcost[(int)disp.at<float>(p,q+1)-dispMin].at<double>(p,q+1) <
+						   	fcost[(int)disp.at<float>(p,q)-dispMin].at<double>(p,q)){
+								disp.at<float>(p,q) = disp.at<float>(p,q+1);
+						}
+					}
 					}
 					//cout << "p,q, disp: " << p <<" " << q << " " << disp.at<float>(p,q) << endl; 
 				}
