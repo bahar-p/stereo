@@ -845,9 +845,6 @@ void image::find_disparity(cv::Mat* in, cv::Mat& idisp ,cv::Mat& icost){
 			double tmpcost = MAX_DB;
 			if(q>=dispMax+subRW){
 				for(int d=0; d<dispMax-dispMin+1; d++){
-					/*if(p==0 && q==dispMax){
-						cout << in[d](Rect(0,0, 20,1)) << endl;
-					}*/
 					if(in[d].at<double>(p,q)!=0){
 						if(in[d].at<double>(p,q) < tmpcost){
 							tmpcost=in[d].at<double>(p,q);
@@ -864,9 +861,9 @@ void image::find_disparity(cv::Mat* in, cv::Mat& idisp ,cv::Mat& icost){
 			
 		}
 	}
-	double minv, maxv;
-	cv::Point minL, maxL;
-	cv::minMaxLoc(icost, &minv,&maxv, &minL, &maxL);
+	//double minv, maxv;
+	//cv::Point minL, maxL;
+	//cv::minMaxLoc(icost, &minv,&maxv, &minL, &maxL);
 	//std::cout<< "minv: " << (float)minv << " maxv: " << (float)maxv << " maxLx: " << maxL.x << " maxL.y: " << maxL.y << std::endl;
 }
 
@@ -907,6 +904,7 @@ int image::findOutliers(cv::Mat dispL, cv::Mat dispR,cv::Mat& pixflag, float f, 
 			if(dispL.at<float>(p,q) == -1){
 				pixflag.at<int>(p,q)=1;
 			} else {
+				if(q-(int)dispL.at<float>(p,q)>=subRW){
 				if(dispL.at<float>(p,q) != dispR.at<float>(p,q-(int)dispL.at<float>(p,q))){
 				//cout<< "dispL: " << dispL.at<float>(p,q) << " dispR: " << dispR.at<float>(p,q-(int)dispL.at<float>(p,q)) << endl;
 					n++;
@@ -916,6 +914,7 @@ int image::findOutliers(cv::Mat dispL, cv::Mat dispR,cv::Mat& pixflag, float f, 
 					//cout << dispR.at<float>(p,q-(int)dispL.at<float>(p,q)) << endl;
 					}
 					else pixflag.at<int>(p,q)=-1;			//Mistmatch	
+				}
 				}
 			}
 			
@@ -1104,17 +1103,17 @@ void image::discAdjust(cv::Mat& disp, cv::Mat* fcost, cv::Mat mask){
 				//cout << "size: " << pt.size() << endl;
 				if(n==2){
 					//cout << " 2 points found!" << endl;
-					if((int)disp.at<float>(p,q)-dispMin>=subRW && (int)disp.at<float>(p,q)-dispMin){
+					if((int)disp.at<float>(p,q)-dispMin>=subRW && (int)disp.at<float>(p,q)-dispMin < img_leftRGB.cols-subRW-1){
 						if(disp.at<float>(p,q-1)!=-1 && 
 						  (int)disp.at<float>(p,q-1)-dispMin>=subRW && 
-						  (int)disp.at<float>(p,q-1)-dispMin<img_leftRGB.cols-subRW-1){
+						  (int)disp.at<float>(p,q-1)-dispMin<img_leftRGB.cols-subRW){
 							if(fcost[(int)disp.at<float>(p,q-1)-dispMin].at<double>(p,q-1) < 
 							   fcost[(int)disp.at<float>(p,q)-dispMin].at<double>(p,q)){
 								disp.at<float>(p,q) = disp.at<float>(p,q-1);
 						}
 					}
 						if(disp.at<float>(p,q+1)!=-1 && (int)disp.at<float>(p,q+1)-dispMin>=subRW && 
-					          (int)disp.at<float>(p,q+1)-dispMin<img_leftRGB.cols-subRW-1){
+					          (int)disp.at<float>(p,q+1)-dispMin < img_leftRGB.cols-subRW){
 							if(fcost[(int)disp.at<float>(p,q+1)-dispMin].at<double>(p,q+1) <
 						   	fcost[(int)disp.at<float>(p,q)-dispMin].at<double>(p,q)){
 								disp.at<float>(p,q) = disp.at<float>(p,q+1);
