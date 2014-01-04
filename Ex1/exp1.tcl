@@ -21,7 +21,7 @@ proc runex1 {myargs} {
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_noc}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
