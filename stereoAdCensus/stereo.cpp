@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 	Mat dispL8;
 	//cout << "maxv: " << maxv1 << endl;
 	//cout << "final disp channels: " << dispL.channels() << " depth: " << dispL.depth() << endl;
-	dispL.convertTo( dispL8, CV_8UC1,255.0/maxDisp);
+	dispL.convertTo( dispL8, CV_16U,16*255.0/maxDisp);
 //	imshow( "Img", image_left );                   
 	imshow( "DispL", dispL8 );                   	
 //	if(LR) imshow( "DispR", dispR8 ); 
