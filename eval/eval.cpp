@@ -11,13 +11,16 @@ bool isValid(float d){
 
 int main (int argc, char** argv) {
 
-	if(argc!=4) {
-		std::cerr << "Usage: ./eval gt_disp gen_disp maxDisp" << std::endl;
+	int adcensus=0;
+	if(argc<4) {
+		std::cerr << "Usage: ./eval gt_disp gen_disp maxDisp ?Adcensusflag?" << std::endl;
 		return -1;
 	}
 	cv::Mat im_gt = cv::imread(argv[1],-1);
 	cv::Mat im_gen = cv::imread(argv[2],-1);
 	int dmax = atoi(argv[3]);
+	if(argc==5) adcensus=atoi(argv[4]);
+
 	if(!im_gt.data || !im_gen.data){
 		std::cerr << "Invalid Image" << std::endl;
 		return -1;
@@ -26,7 +29,8 @@ int main (int argc, char** argv) {
 	//Get the original disp values
 	cv::Mat d_gt, d_gen;
 	im_gt.convertTo(d_gt, CV_32F, 1/256.);
-	im_gen.convertTo(d_gen, CV_32F,dmax/(255.));
+	if(adcensus) im_gen.convertTo(d_gen, CV_32F,dmax/(16*255.)); 		//if it's AdCensus generated disparity
+	else im_gen.convertTo(d_gen, CV_32F,dmax/(255.)); 			//if it's sgbm generate disparity
 	//cv::Mat opr(im_gt.size(), CV_32F, cv::Scalar::all(dmax/16.*256));
 	//cv::multipy(d_gen, opr, d_gen);
 
@@ -44,8 +48,8 @@ int main (int argc, char** argv) {
 	int pix_count = 0;	//Total number of valid pixels in ground truth
 	int pix_gen_count = 0;	//Total number of valid pixels in generated disparity
 
-	std::cout << "d_gen: " << d_gen(cv::Rect(400,200, 10,1)) << std::endl;
-	std::cout << "d_gt: " << d_gt(cv::Rect(400,200, 10,1)) << std::endl;
+	std::cout << "d_gen: " << d_gen(cv::Rect(500,150, 10,1)) << std::endl;
+	std::cout << "d_gt: " << d_gt(cv::Rect(500,150, 10,1)) << std::endl;
 	if(height != d_gen.size().height || width != d_gen.size().width){
 		std::cerr << "disparity image sizes don't match!" << std::endl;
 		return -1;
