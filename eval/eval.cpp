@@ -3,7 +3,10 @@
 #include "cv.h"
 #include "highgui.h"
 
-float* dispErrorAvg(cv::Mat& d_gt, cv::Mat& d_gen);
+//Global Variables
+cv::Mat mask;
+
+float* dispErrorAvg(cv::Mat& d_gt, cv::Mat& d_gen, int dmax, bool mask);
 bool isValid(float d){
 	bool valid = (d > 0 ? true : false);
 	return valid;
@@ -17,30 +20,31 @@ int main (int argc, char** argv) {
 
 	int adcensus=0;
 	if(argc<4) {
-		std::cerr << "Usage: ./eval gt_disp gen_disp maxDisp ?Adcensusflag?" << std::endl;
+		std::cerr << "Usage: ./eval gt_disp gen_disp maxDisp ?Adcensusflag? ?mask?" << std::endl;
 		return -1;
 	}
 	cv::Mat im_gt = cv::imread(argv[1],-1);
 	cv::Mat im_gen = cv::imread(argv[2],-1);
 	int dmax = atoi(argv[3]);
-	if(argc==5) adcensus=atoi(argv[4]);
-
+	if(argc>4) adcensus=atoi(argv[4]);
+	bool masked = false;
+	if(argc>5) {
+		mask = cv::imread(argv[5],0);
+		masked = true;
+	}
 	if(!im_gt.data || !im_gen.data){
 		std::cerr << "Invalid Image" << std::endl;
 		return -1;
 	}
-
 	//Get the original disp values
 	cv::Mat d_gt, d_gen;
 	im_gt.convertTo(d_gt, CV_32F, 1/256.);
-	if(adcensus) im_gen.convertTo(d_gen, CV_32F,dmax/(16*255.)); 		//if it's AdCensus generated disparity
+	if(adcensus) im_gen.convertTo(d_gen, CV_32F,dmax/(16.*255)); 		//if it's AdCensus generated disparity
 	else im_gen.convertTo(d_gen, CV_32F,dmax/(255.)); 			//if it's sgbm generate disparity
-	//cv::Mat opr(im_gt.size(), CV_32F, cv::Scalar::all(dmax/16.*256));
-	//cv::multipy(d_gen, opr, d_gen);
 
 	int height = d_gt.size().height;
 	int width = d_gt.size().width;
-	float err_thr[4]={0.5,1,2,3};		//Different error thresholds
+	float err_thr[5]={0.5,0.75,1,2,3};		//Different error thresholds
 	int arr_len = sizeof(err_thr)/sizeof(*err_thr);
 	float err_total_pxs[arr_len];			//Number of incorrect pixels corresponding to each threshold
 	float err_valid_pxs[arr_len];			//Number of incorrect valid pixels in the result corresponding to each threshold
@@ -52,8 +56,8 @@ int main (int argc, char** argv) {
 	int pix_count = 0;	//Total number of valid pixels in ground truth
 	int pix_gen_count = 0;	//Total number of valid pixels in generated disparity
 
-	//std::cout << "d_gen: " << d_gen(cv::Rect(500,150, 10,1)) << std::endl;
-	//std::cout << "d_gt: " << d_gt(cv::Rect(500,150, 10,1)) << std::endl;
+	//std::cout << "d_gen: " << d_gen(cv::Rect(500,150, 80,1)) << std::endl;
+	//std::cout << "d_gt: " << d_gt(cv::Rect(500,150, 80,1)) << std::endl;
 	if(height != d_gen.size().height || width != d_gen.size().width){
 		std::cerr << "disparity image sizes don't match!" << std::endl;
 		return -1;
@@ -61,12 +65,16 @@ int main (int argc, char** argv) {
 	
 	/***** Disp Error Outliers *****/
 	for(int j=0; j<height;j++){
-		for(int i=maxd; i<width; i++){
+		for(int i=dmax; i<width; i++){
+			if(masked){
+				if(mask.at<uchar>(j,i)==0) continue;
+			}
 			float fd_gt = d_gt.at<float>(j,i);
 			float fd_gen = d_gen.at<float>(j,i);
 			if(isValid(fd_gt)) {
 				pix_count++;
-				float err = fabs(fd_gt - fd_gen);
+				//if(fd_gen < 0) std::cout << "Negative value!" << std::endl;
+				float err = fabs(fd_gt - (fd_gen < 0 ? 0 : fd_gen));
 				//std::cout << "err: " << err << std::endl;
 				for(int k=0; k<arr_len; k++){	
 					if(err > err_thr[k]) err_total_pxs[k]++; 
@@ -77,7 +85,7 @@ int main (int argc, char** argv) {
 						if(err > err_thr[k]) err_valid_pxs[k]++; 
 					}
 				}
-			}	
+			}
 		}
 	}
 
@@ -91,17 +99,19 @@ int main (int argc, char** argv) {
 		err_total_pxs[i] /= std::max((float)pix_count, 1.0f);
 		if(pix_gen_count > 0)
 			err_valid_pxs[i] /= std::max((float)pix_gen_count,1.0f);
-		std::cout <<  "outliers for all and just valid disp results= " << err_thr[i] << " are: " << err_total_pxs[i] << "  " <<  err_valid_pxs[i] << std::endl;
+		std::cout <<  "outliers for all and just valid disp results for thresh " << err_thr[i] << " are: " << 
+		err_total_pxs[i] << "  " <<  err_valid_pxs[i] << std::endl;
 	}
 	density = (float)pix_gen_count/std::max((float)pix_count,1.0f);
-	std::cout << "total valid pixs in gt: " << pix_count << " number of valid disp results in gen_disp: " << pix_gen_count << " density of generated results: " << density << std::endl;
+	std::cout << "total valid pixs in gt: " << pix_count << " number of valid disp results in gen_disp: " << 
+	pix_gen_count << " density of generated results: " << density << std::endl;
 	/***** End of Disp Error Outliers *****/
 
-	float* error = dispErrorAvg(d_gt, d_gen, dmax);
+	float* error = dispErrorAvg(d_gt, d_gen, dmax,masked);
 	std::cout << "Avg error of all pixs: " << error[0] << " Avg error of valid disp results: " << error[1] << std::endl;
 }
 
-float* dispErrorAvg(cv::Mat& d_gt, cv::Mat& d_gen, int dmax){
+float* dispErrorAvg(cv::Mat& d_gt, cv::Mat& d_gen, int dmax, bool masked){
 	
 	int height = d_gt.size().height;
 	int width = d_gt.size().width;
@@ -110,21 +120,22 @@ float* dispErrorAvg(cv::Mat& d_gt, cv::Mat& d_gen, int dmax){
 	int pix_count = 0;	//Total number of valid pixels in ground truth
 	int pix_gen_count = 0;	//Total number of valid pixels in generated disparity
 
-	//std::cout << "d_gen: " << d_gen(cv::Rect(400,200, 10,10)) << std::endl;
-	//std::cout << "d_gt: " << d_gt(cv::Rect(400,200, 10,10)) << std::endl;
 	if(height != d_gen.size().height || width != d_gen.size().width){
 		std::cerr << "disparity image sizes don't match!" << std::endl;
 		throw 1;
 	}
-	
+
 	/***** Disp Error Outliers *****/
 	for(int j=0; j<height;j++){
 		for(int i=dmax; i<width; i++){
+			if(masked){
+				if(mask.at<uchar>(j,i)==0) continue;
+			}
 			float fd_gt = d_gt.at<float>(j,i);
 			float fd_gen = d_gen.at<float>(j,i);
 			if(isValid(fd_gt)) {
 				pix_count++;
-				float err = fabs(fd_gt - fd_gen);
+				float err = fabs(fd_gt - (fd_gen < 0 ? 0 : fd_gen));
 				error[0] += err;
 				if(mydValid(fd_gen)){
 					pix_gen_count++;
