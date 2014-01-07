@@ -79,19 +79,18 @@ int main(int argc, char **argv)
 		Mat br;
 		img->border(dispL, br);
 		img->discAdjust(dispL, fcost, br);
-		imshow( "borders", br );                   	
+		//imshow( "borders", br );                   	
 	}
 	img->subpxEnhance(fcost,dispL);
 	//cerr << "out of subPx" << endl;
 	std::cout << "Exec_time: " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
-	double minv1, maxv1;
-	cv::minMaxLoc(dispL, &minv1,&maxv1);
+	//double minv1, maxv1;
+	//cv::minMaxLoc(dispL, &minv1,&maxv1);
 	Mat dispL8;
 	//cout << "maxv: " << maxv1 << endl;
-	//cout << "final disp channels: " << dispL.channels() << " depth: " << dispL.depth() << endl;
 	dispL.convertTo( dispL8, CV_16U,16*255.0/maxDisp);
 //	imshow( "Img", image_left );                   
-	imshow( "DispL", dispL8 );                   	
+//	imshow( "DispL", dispL8 );                   	
 //	if(LR) imshow( "DispR", dispR8 ); 
 	string fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/" + fname;
 	imwrite(fpath1 , dispL8);
@@ -99,11 +98,15 @@ int main(int argc, char **argv)
 		Mat d_masked;
 		string fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/" + fname;
 		dispL8.copyTo(d_masked, mask);
-		imshow( "DispMasked", d_masked );                   	
+		//Mat tmp;
+		//dispL.copyTo(tmp,mask);
+		//cout<< "tmp: " << tmp(Rect(500,150,80,1)) << endl;
+		//cout<< "d_masked: " << d_masked(Rect(500,150,80,1)) << endl;
+//		imshow( "DispMasked", d_masked );                   	
 		imwrite(fpath2, d_masked);
 	}
-	waitKey(0);
-   //	char c = waitKey(10);
+//	waitKey(0);
+//	char c = waitKey(10);
 //	if (c == ' ')  return 0;
 	return 0;
 }
