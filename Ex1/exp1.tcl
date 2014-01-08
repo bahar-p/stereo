@@ -15,13 +15,13 @@ proc runex1 {myargs} {
 				set f 707
 				set T 537
 				if {$sgbm} {
-					puts "${::cal}${cnu} ${::L}${nu} ${::R}${nu} $maxd ${::mask_noc}${nu}"
-					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_noc}${nu}"} msg] } {
+					puts "${::cal}${cnu} ${::L}${nu} ${::R}${nu} $maxd ${::mask_occ}${nu}"
+					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -35,12 +35,12 @@ proc runex1 {myargs} {
 				set f 718
 				set T 537
 				if {$sgbm} {
-					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -54,12 +54,12 @@ proc runex1 {myargs} {
 				set f 718
 				set T 537
 				if {$sgbm} {
-					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -73,12 +73,12 @@ proc runex1 {myargs} {
 				set f 721
 				set T 537
 				if {$sgbm} {
-					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -92,12 +92,12 @@ proc runex1 {myargs} {
 				set f 721
 				set T 537
 				if {$sgbm} {
-					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -111,12 +111,12 @@ proc runex1 {myargs} {
 				set f 707
 				set T 537
 				if {$sgbm} {
-					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -130,12 +130,12 @@ proc runex1 {myargs} {
 				set f 718
 				set T 537
 				if {$sgbm} {
-					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -149,12 +149,12 @@ proc runex1 {myargs} {
 				set f 721
 				set T 537
 				if {$sgbm} {
-					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -168,12 +168,12 @@ proc runex1 {myargs} {
 				set f 707
 				set T 537
 				if {$sgbm} {
-					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -187,12 +187,12 @@ proc runex1 {myargs} {
 				set f 718
 				set T 537
 				if {$sgbm} {
-					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -206,12 +206,12 @@ proc runex1 {myargs} {
 				set f 718
 				set T 537
 				if {$sgbm} {
-					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -225,12 +225,12 @@ proc runex1 {myargs} {
 				set f 718
 				set T 537
 				if {$sgbm} {
-					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -244,12 +244,12 @@ proc runex1 {myargs} {
 				set f 721
 				set T 537
 				if {$sgbm} {
-					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
@@ -263,12 +263,12 @@ proc runex1 {myargs} {
 				set f 718
 				set T 537
 				if {$sgbm} {
-					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::sgbm "${::cal}${cnu}" "${::L}${nu}" "${::R}${nu}" $maxd "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
 				} else {
-					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T "${::mask_noc}${nu}"} msg] } {
+					if { [catch { exec $::adcensus "${::L}${nu}" "${::R}${nu}" $maxd $f $T $LR "${::mask_occ}${nu}"} msg] } {
 						puts "Something seems to have gone wrong:"
 						puts "Information about it: $::errorInfo and $msg"
 					}
