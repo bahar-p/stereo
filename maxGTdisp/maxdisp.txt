@@ -1,2 +1,0 @@
-image: 000005.png maxDisp: 68.5156
-image: 000009.png maxDisp: 64.8438

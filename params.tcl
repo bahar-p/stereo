@@ -14,6 +14,9 @@ set canny "${mainp}${canny}"
 # Dilate #
 set dilate "build/dilate"
 set dilate "${mainp}${dilate}"
+# MaxGTDisp #
+set maxdisp "build/maxdisp"
+set maxdisp "${mainp}${maxdisp}"
 # L-R Images #
 set L "${mainp}simg/L/"
 set R "${mainp}simg/R/"
