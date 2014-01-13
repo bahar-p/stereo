@@ -6,12 +6,13 @@
 #include "highgui.h"
 
 int main (int argc, char** argv){
-	if(argc < 2) {
-		std::cerr << "Usage: ./maxdisp gt_disp" << std::endl;
+	if(argc < 3) {
+		std::cerr << "Usage: ./maxdisp gt_disp is_noc" << std::endl;
 		return -1;
 	}
 	cv::Mat im_gt = cv::imread(argv[1],-1);
 	cv::Mat gt;
+	int is_noc = std::atoi(argv[2]); 
 	im_gt.convertTo(gt, CV_32F, 1/256.);
 	char* fullpath = argv[1];
 	char* bname = basename(fullpath);
@@ -28,7 +29,10 @@ int main (int argc, char** argv){
 	}
 	std::cout << "gonna write to file, value: " << max << std::endl;
 	std::ofstream myfile;
-	myfile.open("/home/bahar/Master/stereo/maxGTdisp/maxdisp.txt", std::ios::out | std::ios::app);
+	if(is_noc)
+		myfile.open("/home/bahar/Master/stereo/maxGTdisp/maxdisp_noc.txt", std::ios::out | std::ios::app);
+	else
+		myfile.open("/home/bahar/Master/stereo/maxGTdisp/maxdisp_occ.txt", std::ios::out | std::ios::app);
 	myfile << "image: " << fname << " maxDisp: " << max << std::endl;
 	return 0;
 }
