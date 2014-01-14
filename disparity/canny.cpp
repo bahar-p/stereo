@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <fstream>
 #include "cv.h"
 #include "highgui.h"
 
@@ -15,7 +16,7 @@ int lowThreshold;
 int const max_lowThreshold = 100;
 int ratio;
 int kernel_size = 3;
-char* window_name = (char*) "Edge Map";
+string window_name = "";
 int itr;
 /**
    * @function CannyThreshold
@@ -34,14 +35,14 @@ void CannyThreshold(int, void*)
 	dilate(detected_edges,detected_edges, Mat(), Point(-1,-1), itr);
 	org_src.copyTo( dst, detected_edges);	//Mask the src based on the detected edges
 //	dst.convertTo(dst, -1,3,0);		
-	//imshow( window_name, dst );
-	//imshow( "detected_edges mask", detected_edges );
+	imshow( window_name, dst );
+	imshow( "detected_edges mask", detected_edges );
 }
 
 int main(int argc, char* argv[]){
 	
-	if(argc < 5){
-		cout << "Usage: ./canny smoothed_gt original_gt ratio dilate_itr ?minThreshold?" << endl;
+	if(argc < 6){
+		cout << "Usage: ./canny smoothed_gt original_gt ratio dilate_itr noc ?minThreshold?" << endl;
 		return -1;
 	}
 	/// Load an image
@@ -50,8 +51,10 @@ int main(int argc, char* argv[]){
 
 	//cout << "src: " << src.type() << " org_src: " << src.type() << endl;
 	ratio = atoi(argv[3]); 
-	itr = atoi(argv[4]); 
-	if (argc==6) lowThreshold = atoi(argv[5]);
+	itr = atoi(argv[4]);
+	int noc = atoi(argv[5]);
+	if (argc==7) lowThreshold = atoi(argv[6]);
+	else lowThreshold = 0;
 	char* fullpath = argv[2];
 	char* bname = basename(fullpath);
 	string fname = reinterpret_cast<char*>(bname);
@@ -59,7 +62,7 @@ int main(int argc, char* argv[]){
 		cout << "No valid data" << endl;
 		return -1; 
 	}
-
+	window_name = (char*) fname.c_str(); 
 	/// Create a matrix of the same type and size as src (for dst)
 	dst.create( org_src.size(), org_src.type() );
 
@@ -77,12 +80,21 @@ int main(int argc, char* argv[]){
 	createTrackbar( "Min Threshold:", window_name, &lowThreshold, max_lowThreshold, CannyThreshold );
 
 	/// Show the image
-	CannyThreshold(0, 0);
+	CannyThreshold(lowThreshold, 0);
 
 	/// Wait until user exit program by pressing a key
-	//waitKey(0);
-	string fpath1 = "/home/bahar/Master/stereo/masks/" + fname;
-	string fpath2 = "/home/bahar/Master/stereo/maskgt/" + fname;
+	waitKey(0);
+	string fpath1, fpath2;
+	ofstream myfile;
+	if(noc) {
+		myfile.open("/home/bahar/Master/stereo/masks/minthr.txt", std::ios::out | std::ios::app);
+		fpath1 = "/home/bahar/Master/stereo/masks/disp_noc/" + fname;
+		fpath2 = "/home/bahar/Master/stereo/maskgt/disp_noc/" + fname;
+	} else {
+		fpath1 = "/home/bahar/Master/stereo/masks/disp_occ/" + fname;
+		fpath2 = "/home/bahar/Master/stereo/maskgt/disp_occ/" + fname;
+	}
+	myfile << "img: " << fname << " min_thr: " << lowThreshold << endl;
 	imwrite(fpath1, detected_edges);
 	imwrite(fpath2 , dst);
 	return 0;
