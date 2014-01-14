@@ -40,8 +40,8 @@ void CannyThreshold(int, void*)
 
 int main(int argc, char* argv[]){
 	
-	if(argc != 6){
-		cout << "Usage: ./canny smoothed_gt original_gt ratio dilate_itr minThreshold" << endl;
+	if(argc < 5){
+		cout << "Usage: ./canny smoothed_gt original_gt ratio dilate_itr ?minThreshold?" << endl;
 		return -1;
 	}
 	/// Load an image
@@ -51,7 +51,7 @@ int main(int argc, char* argv[]){
 	//cout << "src: " << src.type() << " org_src: " << src.type() << endl;
 	ratio = atoi(argv[3]); 
 	itr = atoi(argv[4]); 
-	lowThreshold = atoi(argv[5]);
+	if (argc==6) lowThreshold = atoi(argv[5]);
 	char* fullpath = argv[2];
 	char* bname = basename(fullpath);
 	string fname = reinterpret_cast<char*>(bname);
