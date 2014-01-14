@@ -35,7 +35,6 @@ image: 000103.png maxDisp: 124.27
 image: 000110.png maxDisp: 73.543
 image: 000116.png maxDisp: 100.969
 image: 000123.png maxDisp: 94.875
-image: 000037.png maxDisp: 126.961
 image: 000133.png maxDisp: 151.77
 image: 000138.png maxDisp: 71.3438
 image: 000139.png maxDisp: 77.7773
