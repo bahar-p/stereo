@@ -1,0 +1,56 @@
+\documentclass[dvips,letterpaper,12pt]{report}
+\usepackage{thesis}
+\usepackage[tight,footnotesize]{subfigure}
+\usepackage[dvips]{graphicx}
+\usepackage{makeidx}
+\usepackage{longtable}
+\usepackage{mathrsfs}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[boxruled,noend]{algorithm2e}
+\usepackage{algorithmic}
+\usepackage{comment} 
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true
+  tabsize=3
+}
+\makeindex
+\begin{document}
+
+\pagenumbering{roman}
+
+\thesistitle
+	{ }
+
+%\include{abstract}
+%\include{ack}
+%\include{contents}
+%\include{figures}
+
+\pagenumbering{arabic}
+\include{Introduction}
+
+
+\bibliographystyle{plain}
+\bibliography{reference}
+
+
+
+\end{document}
