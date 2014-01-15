@@ -8,3 +8,7 @@ build/
 *.swp
 *.swo
 *~
+*.aux
+*.log
+*.toc
+ThesisReport/*.pdf
