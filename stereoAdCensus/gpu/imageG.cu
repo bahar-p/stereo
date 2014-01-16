@@ -64,11 +64,12 @@ Mat image::get_image(int left){
 		return img_leftRGB;
 	else return img_rightRGB;
 }
+
 int image::costAD_caller (const cv::gpu::PtrStepSz<uchar3>& srcL, const cv::gpu::PtrStepSz<uchar3>& srcR,const cv::gpu::PtrStepSz<double>& DSI, int d_idx, bool r_disp) {
-	unsigned int block_dimX = (unsigned int)std::ceil(srcL.cols/(float)16);
-	unsigned int block_dimY = (unsigned int)std::ceil(srcL.rows/(float)16);
+	unsigned int block_dimX = (unsigned int)std::ceil(srcL.cols/(float)32);
+	unsigned int block_dimY = (unsigned int)std::ceil(srcL.rows/(float)32);
 	dim3 blocks(block_dimX,block_dimY);
-	dim3 threads(16,16);
+	dim3 threads(32,32);
 	costAD<<<blocks, threads>>>(srcL, srcR, DSI, subRW, subRH, dispMin, dispMax, d_idx, channels, r_disp);
 	cudaDeviceSynchronize();
 		//check for error
@@ -1329,6 +1330,10 @@ double image::findMax(cv::Mat* in){
 
 void image::subpxEnhance(cv::Mat* fcost, cv::Mat& idisp){
 	//cerr << "subpxEnhance..." << endl;
+	//This is the last function called in the algorithm, so release the memories//
+	free(census_hamming);
+	free(censusLeft);
+	free(censusRight);
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
 				int d = idisp.at<float>(p,q)-dispMin;

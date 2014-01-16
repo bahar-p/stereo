@@ -44,13 +44,16 @@ int main(int argc, char **argv)
 	cv::Mat* h_DSI = new cv::Mat[drange];
 	cv::gpu::GpuMat* d_DSI = new cv::gpu::GpuMat[drange];
 	cv::gpu::GpuMat imgL;
+	cv::gpu::createContinuous(image_left.size(), CV_8UC3, imgL);
 	imgL.upload(image_left);
 	cv::gpu::GpuMat imgR;
+	cv::gpu::createContinuous(image_left.size(), CV_8UC3, imgR);
 	imgR.upload(image_right);
 
 	clock_t tStart = clock();
 	for(int d=0;d<drange;d++){
 		cv::gpu::createContinuous(image_left.size(), CV_64F, d_DSI[d]);
+		d_DSI[d].setTo(cv::Scalar::all(0));
 		h_DSI[d] = cv::Mat(image_left.size(), CV_64FC1,cv::Scalar::all(0)); 
 		if(img->costAD_caller(imgL, imgR,d_DSI[d],d)!=0){
 			std::cout<< "kernel call unsuccessful! " << std::endl;
@@ -58,6 +61,8 @@ int main(int argc, char **argv)
 		}
 		d_DSI[d].download(h_DSI[d]);
 	}
+	//std::cout << "h_DSI[d]: " << h_DSI[](Rect(0,100, 18,18)) << "DSI: " << DSI[](Rect(0,100,18,18)) << std::endl;
+	//std::cout << "ADExec_time: " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
 	img -> costCensus(7,9,1);
 	img-> costCensus(7,9,0);
 	img->c_census(7,9);
@@ -70,19 +75,26 @@ int main(int argc, char **argv)
 	Mat dispL= cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	Mat costL= cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	cv::Mat* fcost = img->scanline(1.0,3.0,15, dispL, costL);	
-	std::cout << "dispL: " << dispL(Rect(200,150,5,5)) << std::endl;
-/*	if(LR){
+	if(LR){
 		bool Rdisp= true;
 		img->reset();
-		h_DSI = img->costAD(Rdisp);
+		for(int d=0;d<drange;d++){
+			d_DSI[d].setTo(cv::Scalar::all(0));
+			h_DSI[d] = cv::Scalar::all(0); 
+			if(img->costAD_caller(imgL, imgR,d_DSI[d],d)!=0){
+				std::cout<< "kernel call unsuccessful! " << std::endl;
+				return -1;
+			}
+			d_DSI[d].download(h_DSI[d]);
+		}
+		//h_DSI = img->costAD(Rdisp);
 		img->c_census(7,9,Rdisp);
-		img->initCost(DSI, 10,30);
+		img->initCost(h_DSI, 10,30);
 		img->line_segment(20.,6.,34.,17.,Rdisp);
-		img->aggregateCost(DSI);
+		img->aggregateCost(h_DSI);
 		Mat dispR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 		Mat costR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 		img->scanline(1.0,3.0,15, dispR, costR,Rdisp);
-		cv::minMaxLoc(dispR, &minv,&maxv);
 		//dispR8 = Mat(dispR.size().height, dispR.size().width, CV_8UC1, Scalar::all(0));
 		//dispR.convertTo( dispR8, CV_8UC1,255.0/maxDisp);
 		//std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
@@ -96,7 +108,7 @@ int main(int argc, char **argv)
 		img->border(dispL, br);
 		img->discAdjust(dispL, fcost, br);
 		imshow( "borders", br );                   	
-	}*/
+	}
 	img->subpxEnhance(fcost,dispL);
 	std::cout << "Exec_time: " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
 	double minv, maxv;
