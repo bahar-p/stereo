@@ -66,9 +66,8 @@ int main(int argc, char **argv)
 		Mat dispR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 		Mat costR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 		img->scanline(1.0,3.0,15, dispR, costR,Rdisp);
-		cv::minMaxLoc(dispR, &minv,&maxv);
-		//dispR8 = Mat(dispR.size().height, dispR.size().width, CV_8UC1, Scalar::all(0));
-		//dispR.convertTo( dispR8, CV_8UC1,255.0/maxDisp);
+		dispR8 = Mat(dispR.size().height, dispR.size().width, CV_8UC1, Scalar::all(0));
+		dispR.convertTo( dispR8, CV_8UC1,255.0/maxDisp);
 		//std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
 		/* Refinement */	
 		cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
@@ -84,14 +83,12 @@ int main(int argc, char **argv)
 	img->subpxEnhance(fcost,dispL);
 	//cerr << "out of subPx" << endl;
 	std::cout << "Exec_time: " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
-	//double minv1, maxv1;
-	//cv::minMaxLoc(dispL, &minv1,&maxv1);
 	Mat dispL8;
 	//cout << "maxv: " << maxv1 << endl;
 	dispL.convertTo( dispL8, CV_16U,16*255.0/maxDisp);
-//	imshow( "Img", image_left );                   
-//	imshow( "DispL", dispL8 );                   	
-//	if(LR) imshow( "DispR", dispR8 ); 
+	//imshow( "Img", image_left );                   
+	//imshow( "DispL", dispL8 );                   	
+	//if(LR) imshow( "DispR", dispR8 ); 
 	string fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/" + fname;
 	imwrite(fpath1 , dispL8);
 	if(argc>7) {
@@ -105,9 +102,7 @@ int main(int argc, char **argv)
 //		imshow( "DispMasked", d_masked );                   	
 		imwrite(fpath2, d_masked);
 	}
-//	waitKey(0);
-//	char c = waitKey(10);
-//	if (c == ' ')  return 0;
+	//waitKey(0);
 	return 0;
 }
 

@@ -18,6 +18,7 @@ image *img;
 
 int main(int argc, char **argv)
 {	
+	double minv, maxv;
    	int minDisp=0, maxDisp;
 	int LR = 0;
 	if(argc < 6 ) {
@@ -38,7 +39,7 @@ int main(int argc, char **argv)
 	if(argc>7) mask = imread(argv[7],0);
 	Size s = image_left.size();
 	img = new image(image_left,image_right, minDisp, maxDisp);
-	//cv::Mat dispR8;
+	cv::Mat dispR8;
 	int drange = maxDisp-minDisp+1;
 
 	cv::Mat* h_DSI = new cv::Mat[drange];
@@ -75,13 +76,15 @@ int main(int argc, char **argv)
 	Mat dispL= cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	Mat costL= cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	cv::Mat* fcost = img->scanline(1.0,3.0,15, dispL, costL);	
+	cv::minMaxLoc(dispL, &minv,&maxv);
+	cout << "maxv: " << maxv << endl;
 	if(LR){
 		bool Rdisp= true;
 		img->reset();
 		for(int d=0;d<drange;d++){
 			d_DSI[d].setTo(cv::Scalar::all(0));
 			h_DSI[d] = cv::Scalar::all(0); 
-			if(img->costAD_caller(imgL, imgR,d_DSI[d],d)!=0){
+			if(img->costAD_caller(imgL, imgR,d_DSI[d],d,Rdisp)!=0){
 				std::cout<< "kernel call unsuccessful! " << std::endl;
 				return -1;
 			}
@@ -95,8 +98,8 @@ int main(int argc, char **argv)
 		Mat dispR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 		Mat costR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 		img->scanline(1.0,3.0,15, dispR, costR,Rdisp);
-		//dispR8 = Mat(dispR.size().height, dispR.size().width, CV_8UC1, Scalar::all(0));
-		//dispR.convertTo( dispR8, CV_8UC1,255.0/maxDisp);
+		dispR8 = Mat(dispR.size().height, dispR.size().width, CV_8UC1, Scalar::all(0));
+		dispR.convertTo( dispR8, CV_8UC1,255.0/maxDisp);
 		//std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
 		// Refinement //	
 		cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
@@ -107,18 +110,19 @@ int main(int argc, char **argv)
 		Mat br;
 		img->border(dispL, br);
 		img->discAdjust(dispL, fcost, br);
-		imshow( "borders", br );                   	
+		//imshow( "borders", br );                   	
 	}
+	cv::minMaxLoc(dispL, &minv,&maxv);
+	cout << "maxv: " << maxv << endl;
 	img->subpxEnhance(fcost,dispL);
 	std::cout << "Exec_time: " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
-	double minv, maxv;
 	cv::minMaxLoc(dispL, &minv,&maxv);
 	cout << "maxv: " << maxv << endl;
 	//cout << "final disp channels: " << dispL.channels() << " depth: " << dispL.depth() << endl;
 	Mat dispL8;
 	dispL.convertTo( dispL8, CV_8UC1,255.0/maxDisp);
 	imshow( "DispL", dispL8 );                   	
-//	if(LR) imshow( "DispR", dispR8 ); 
+	if(LR) imshow( "DispR", dispR8 ); 
 	string fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/" + fname;
 	//imwrite(fpath1 , dispL8);
 	if(argc>7) {
