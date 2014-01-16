@@ -1392,6 +1392,11 @@ void image::subpxEnhance(cv::Mat* fcost, cv::Mat& idisp){
 	free(census_hamming);
 	free(censusLeft);
 	free(censusRight);
+	delete[] sumH;
+	delete[] semi_cost;
+	img_leftRGB.release();
+	img_rightRGB.release();
+	supReg.release();
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
 				int d = idisp.at<float>(p,q)-dispMin;

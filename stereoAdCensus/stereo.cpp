@@ -101,7 +101,9 @@ int main(int argc, char **argv)
 		//cout<< "d_masked: " << d_masked(Rect(500,150,80,1)) << endl;
 //		imshow( "DispMasked", d_masked );                   	
 		imwrite(fpath2, d_masked);
-	}
+	}	
+	delete[] fcost;
+	delete[] DSI;
 	//waitKey(0);
 	return 0;
 }
