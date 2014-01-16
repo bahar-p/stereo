@@ -132,6 +132,9 @@ int main(int argc, char **argv)
 		imshow( "DispMasked", d_masked );                   	
 		//imwrite(fpath2, d_masked);
 	}
+	delete[] fcost;
+	delete[] d_DSI;
+	delete[] h_DSI;
 	waitKey(0);
 	return 0;
 }
