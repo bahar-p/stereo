@@ -1388,6 +1388,10 @@ double image::findMax(cv::Mat* in){
 
 void image::subpxEnhance(cv::Mat* fcost, cv::Mat& idisp){
 	//cerr << "subpxEnhance..." << endl;
+	//This is the last function called in the algorithm, so release the memories//
+	free(census_hamming);
+	free(censusLeft);
+	free(censusRight);
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
 				int d = idisp.at<float>(p,q)-dispMin;
