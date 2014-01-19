@@ -6,7 +6,18 @@
 \chapter{Introduction}
 
 Augmented reality (AR) systems combine standard video inputs with computer-generated objects and
-usually provide real-time interaction for the users. Combining virtual objects and annotations with real
+usually provide real-time interaction for the users. 
+In general, an augmented reality system can be defined with the following properties \cite{azuma01} :
+\begin{itemize}
+\item Combination of real and virtual environment
+\item Registration (alignment) of real and virtual objects
+\item Real-time interaction
+\end{itemize}
+This concept was pioneered in 1960’s by an American computer scientist named Ivan Sutherland
+who created the first head-mounted augmented reality
+system with the help of one of his students \cite{azuma01}.
+
+Combining virtual objects and annotations with real
 world scenes has proved to be an effective way of conveying information about the surrounding environment to
 the user and can be useful in many applications such as gaming industry, medical surgeries, tourism and etc.
 
@@ -59,28 +70,58 @@ reference} \cite{spe}. There are different approaches to speed up a system. Acce
 \end{enumerate}
 However, having access to advanced technology and better hardware is not always feasible and even the most advanced technology have some limitation to their memory space and computional capability whic
 h may not meet the requirement for some real-time applications. 
-Therefore, we have focused more on the second approach while designing our evaluation system which also look into the 3rd most important feature of
-an AR system mentioned earlier, i.e, real-time user interaction. \newline In fact, one of the most important features that makes our evaluation unique and different from other works is that in order to
-address the speed factor in augmented reality systems we have focused on certain regions rather than the whole image while evaluating the results.
+Therefore, we have focused more on the second approach while designing our evaluation system which also looks into the 3rd most important constraints of
+an AR system mentioned earlier, i.e, real-time user interaction. \newline 
+In fact, one of the most important features that makes our evaluation unique and different from others is that in order to
+address the speed factor in augmented reality systems we have decided to focus on certain regions in the scene rather than the whole image for evaluating the depth results. 
+This idea which originates from having a more complicated and efficient design, also addresses the computational resources used during the process and may help to speed up our AR system if 
+the results show that the decisions made based on these certain regions are reliable enough for later interactions of the user and the augmented world.
+
 We believe that in an outdoor augmented reality application there are certain regions in a scene which are more important to human sight and erroneous registeration of virtual and 
 real object in those regions can be perceived and picked out easier by the users. Wrong results in these regions can result in poor performance of the system and possibly faulty interaction between 
 the user and the augmented world. We have defined these regions to be the depth edges in the scene that have been expanded few pixels from each side. 
-We believe that the depth edges, which will normally include object boundaries as well, are important depth cues for the user to perceive the depth of different objects in the scene. 
-The reason we decided to extend the detected edges within a few pixels on each side is to also address occlusion and depth discontinuity. Finding correct depth values in these regions 
-can lead to more accurate combination of virtual and real objects in the scene and therefore a more reasonable augmented world from the user point of view to interact with. \newline
+Our hypothesis is that the depth edges, which normally includes object boundaries as well, are important depth cues for the user to perceive the depth of different objects in the scene. 
+However, the reason for which we decided to extend the detected edges within a few pixels on each side is to also address occlusion and depth discontinuity. Finding correct depth values in these 
+regions can lead to more accurate combination of virtual and real objects in the scene and therefore a more reasonable augmented world from the user point of view to interact with. \newline
+\newline
 
-In this research work, using our designed test bed we have evaluated two stereo matching algorithms as samples. These two algorithms are:
+Since our objective in this research is to study the combination of stereo vision and augmented reality systems, we have surveyed some of the existing approaches in stereo matching and the
+related geometry for 3D reconstruction from stereo pairs. We will go through the related works and background more in the next chapter. 
+
+To evaluate our idea and work in this research, we have decided to assess two stereo matching alogirthms. These algorithms are as follow:
 \begin{enumerate}
 \item Semi-global stereo matching and mutual information by Hirschmuller \cite{hir08}
 \item On building an accurate stereo matching system on graphics hardware \cite{mei11}
 \end{enumerate}
 
-The first algorithm by Hirschmuller has already been implemented in Open Source Computer Vision Library (OpenCV). Therefore, we have used its Opencv implementation that is 
+The first algorithm by Hirschmuller has already been implemented in Open Source Computer Vision Library (OpenCV) \cite{sgbm}. Therefore, we have used its Opencv implementation that is 
 called SGBM. On the other hand, there was no source code available for the second algorithm. So, we have used our own implementation of this solution in the evaluation process, both on CPU and GPU.
 
-We have used Kitti stereo training dataset as our input for stereo pairs, since they are proper samples taken from outdoor scenes under different conditions and the ground truth disparity map
-is also provided for each stereo pairs.
+The reason we have chosen these two algorithms is that the first method, known as SGM, has shown to generate acceptable results within 1-2 seconds on typical test images \cite{hir08} and 
+its implementation in OpenCV library has also made its usage more common and easier in applications. The second algorithm, also known as ADCensus, was chosen since it has been designed in a way that
+can be ported to graphics processing unit for accelartion and according to Middleburry evaluation benchmark it is currently ranked as one of the top algorithms for stereo matching \cite{mideval}.
+It should also be noted that this solution uses better and more complicated approaches to do stereo matching which makes it superior to many other solutions.
+We have used KITTI stereo training dataset \cite{kitti} as our stereo inputs for evaluation. These images are more realistic and they have been taken from outdoor scenes under different circumstances 
+and the ground truth disparity map is also provided for each of them which is useful in the evaluation process. KITTI Vision also provides a benchmark and an evaluation table for different stereo 
+matching algorithms assessed in real outdoor scenes which makes it more relevant to our interest in this research. AdCensus currently does not exist in their evaluation table and that can be
+considered as another reason for us to choose it in our evaluation.
 
+
+\chapter{Background and Related Works}
+Stereo vision is the concept of viewing a scene (object) in the real world from slightly different
+viewpoints at the same time which results in stereo image
+pairs. Using computer vision techniques, it is possible to extract depth information from stereo
+images. This process is called Stereo Matching or Stereo Correspondence in computer vision,
+which is in fact the process of taking two or multiple images of the same scene and construct its
+3D model by finding corresponding pixels in the images and their spatial movement in the images within two or multiple views that is known as {\it disparity} \cite{sze11}.
+
+Corresponding pixels in stereo images are the ones that represent the same point in the real
+world. As it will be seen shortly in more detail, the amount of horizontal motion of such pixels
+in stereo pairs, which is referred to as {\it disparity}, is inversely proportional to the
+distance from the observer (depth); however, for calculating the exact depth of the points, some
+other information is required, such as the position, and the calibration data of the cameras that took the pictures.
+While the physical and geometrical approach to this problem is well understood, the process of finding the corresponding pixels automatically, correctly and yet efficiently
+and measuring the disparity to generate a dense depth map still remains a challenging task.
 
 
 \bibliographystyle{plain}
