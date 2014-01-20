@@ -95,6 +95,7 @@ int main(int argc, char* argv[]){
 		fpath2 = "/home/bahar/Master/stereo/maskgt/disp_occ/" + fname;
 	}
 	myfile << "img: " << fname << " min_thr: " << lowThreshold << endl;
+	myfile.close();
 	imwrite(fpath1, detected_edges);
 	imwrite(fpath2 , dst);
 	return 0;

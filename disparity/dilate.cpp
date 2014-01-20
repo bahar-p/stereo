@@ -50,6 +50,7 @@ int main (int argc, char* argv[]){
 		fpath = "/home/bahar/Master/stereo/gtfill/disp_occ/" + fname;
 	}
 	myfile << "img: " << fname << " dil_itr: " << itr << endl;
+	myfile.close();
 	imwrite( fpath , dst);
 	return 0;
 }
