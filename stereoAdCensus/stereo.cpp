@@ -19,6 +19,7 @@ int main(int argc, char **argv)
 	double minv, maxv;
    	int minDisp=0, maxDisp;
 	int LR = 0;
+	float focal, baseline; 
 	if(argc < 5 ) {
 		cout << "Usage: ./main leftImg rightImg maxDisp is_noc ?LRCheck focal_l baseline? ?mask?" << endl;
 		return -1;
@@ -41,8 +42,8 @@ int main(int argc, char **argv)
 				"Usage: ./main leftImg rightImg maxDisp is_noc ?LRCheck focal_l baseline? ?mask?" << endl;
 			return -1;
 		}
-		float focal = atof(argv[6]);
-		float baseline = atof(argv[7]);
+		focal = atof(argv[6]);
+		baseline = atof(argv[7]);
 	}
 	if(argc>8) mask = imread(argv[8],0);
 	Size s = image_left.size();
@@ -96,19 +97,21 @@ int main(int argc, char **argv)
 	dispL.convertTo( dispL8, CV_16U,16*255.0/maxDisp);
 	//imshow( "Img", image_left );                   
 	//imshow( "DispL", dispL8 );                   	
-	//if(LR) imshow( "DispR", dispR8 ); 
+	//if(LR) imshow( "DispR", dispR8 );
+	string fpath1; 
 	if(noc)
-		string fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/noc" + fname;
+		fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/noc" + fname;
 	else 
-		string fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/occ" + fname;
+		fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/occ" + fname;
 	
 	imwrite(fpath1 , dispL8);
 	if(argc>7) {
 		Mat d_masked;
+		string fpath2; 
 		if(noc)
-			string fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/noc" + fname;
+			fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/noc" + fname;
 		else
-			string fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/occ" + fname;
+			fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/occ" + fname;
 		dispL8.copyTo(d_masked, mask);
 		//Mat tmp;
 		//dispL.copyTo(tmp,mask);
