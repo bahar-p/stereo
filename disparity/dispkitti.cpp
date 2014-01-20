@@ -46,7 +46,7 @@ Size frameSize;
 int main(int argc, char **argv)
 {
 	if (argc<5){
-		cout<< "usage: ./disparity calibFile leftimg rightimg maxdisp ?mask?" << endl;
+		cout<< "usage: ./disparity leftimg rightimg maxdisp is_noc ?calibFile? ?mask?" << endl;
 		return 0;
 	}
 
@@ -60,14 +60,17 @@ int main(int argc, char **argv)
 	cv::Mat mask;
 	p1= Mat(3,4,CV_64F);
 	p2 = Mat(3,4,CV_64F);
-	kittiCalib(argv[1]);	
-	leftimg = imread(argv[2],0);
-	rightimg = imread(argv[3],0);
-	maxdisp = atoi(argv[4]);
-	if(argc==6) {
-		mask = imread(argv[5],0);
+	leftimg = imread(argv[1],0);
+	rightimg = imread(argv[2],0);
+	maxdisp = atoi(argv[3]);
+	int noc = atoi(argv[4]);
+	if(argc > 5){
+		kittiCalib(argv[5]);	
+		if(argc==7) {
+			mask = imread(argv[6],0);
+		}
 	}
-	char* fullpath = argv[2];
+	char* fullpath = argv[1];
 	char* bname = basename(fullpath);
 	fname = (reinterpret_cast<char*>(bname));
 
@@ -88,18 +91,26 @@ int main(int argc, char **argv)
 	sgbm(leftimg,rightimg,disp);
 	cout << "SGBM Execution_time: " << (double) (clock() - tStart) / (double)CLOCKS_PER_SEC << " secs " << endl;
 	disp.convertTo(disp8, CV_8U, 255/(maxdisp*16.)); 
-	Mat dmasked;
-
-	if(argc==6){
-		string fpath2 = "/home/bahar/Master/stereo/Ex1/sgbm/dispmasked/" + fname;
+	string fpath1; 
+	if(noc)
+		fpath1 = "/home/bahar/Master/stereo/Ex1/sgbm/mydisp/noc" + fname;
+	else
+		fpath1 = "/home/bahar/Master/stereo/Ex1/sgbm/mydisp/occ" + fname;
+	imwrite(fpath1 , disp8);
+	
+	if(argc==7){
+		Mat dmasked;
+		string fpath2; 
+		if(noc)
+			fpath2 = "/home/bahar/Master/stereo/Ex1/sgbm/dispmasked/noc" + fname;
+		else
+			fpath2 = "/home/bahar/Master/stereo/Ex1/sgbm/dispmasked/occ" + fname;
 		disp8.copyTo(dmasked, mask);
 		imwrite( fpath2 , dmasked);
 		//imshow("mask" , mask);
 		//imshow("disparity", dmasked);
 	}
 	
-	string fpath1 = "/home/bahar/Master/stereo/Ex1/sgbm/mydisp/" + fname;
-	imwrite(fpath1 , disp8);
 	//imshow("disp8", disp8);
 	
 	//waitKey(0);
