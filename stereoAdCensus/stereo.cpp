@@ -19,8 +19,8 @@ int main(int argc, char **argv)
 	double minv, maxv;
    	int minDisp=0, maxDisp;
 	int LR = 0;
-	if(argc < 6 ) {
-		cout << "Usage: ./main leftImg rightImg maxDisp focal_l baseline ?LRCheck? ?mask?" << endl;
+	if(argc < 5 ) {
+		cout << "Usage: ./main leftImg rightImg maxDisp is_noc ?LRCheck focal_l baseline? ?mask?" << endl;
 		return -1;
 	}
 	Mat mask;
@@ -33,10 +33,18 @@ int main(int argc, char **argv)
 	const std::string fname(reinterpret_cast<char*>(bname));
 	//cout << "filename: " << x << " sName: " << sName  << endl;
 	maxDisp = atoi(argv[3]);
-	float focal = atof(argv[4]);
-	float baseline = atof(argv[5]);
-	if(argc>6) LR = atoi(argv[6]);
-	if(argc>7) mask = imread(argv[7],0);
+	int noc = atoi(argv[4]);
+	if(argc > 5) {
+		LR = atoi(argv[6]);
+		if(argc==6){
+			cout << "FocalLength and Baseline are required when triggering LR Check. \n" << 
+				"Usage: ./main leftImg rightImg maxDisp is_noc ?LRCheck focal_l baseline? ?mask?" << endl;
+			return -1;
+		}
+		float focal = atof(argv[6]);
+		float baseline = atof(argv[7]);
+	}
+	if(argc>8) mask = imread(argv[8],0);
 	Size s = image_left.size();
 	img = new image(image_left,image_right, minDisp, maxDisp);
 	cv::Mat dispR8;
@@ -89,11 +97,18 @@ int main(int argc, char **argv)
 	//imshow( "Img", image_left );                   
 	//imshow( "DispL", dispL8 );                   	
 	//if(LR) imshow( "DispR", dispR8 ); 
-	string fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/" + fname;
+	if(noc)
+		string fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/noc" + fname;
+	else 
+		string fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/occ" + fname;
+	
 	imwrite(fpath1 , dispL8);
 	if(argc>7) {
 		Mat d_masked;
-		string fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/" + fname;
+		if(noc)
+			string fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/noc" + fname;
+		else
+			string fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/occ" + fname;
 		dispL8.copyTo(d_masked, mask);
 		//Mat tmp;
 		//dispL.copyTo(tmp,mask);
