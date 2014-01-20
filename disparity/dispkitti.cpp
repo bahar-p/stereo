@@ -41,12 +41,13 @@ Mat leftimg,rightimg,p1,p2, mask;
 int dWidth,dHeight;
 string fname;
 Size frameSize;
+double f,tx;			//FocalLength - Baseline
 // Disparity parameters //
 
 int main(int argc, char **argv)
 {
 	if (argc<5){
-		cout<< "usage: ./disparity leftimg rightimg maxdisp is_noc ?calibFile? ?mask?" << endl;
+		cout<< "usage: ./disparity leftimg rightimg maxdisp is_noc ?mask? ?calibFile?" << endl;
 		return 0;
 	}
 
@@ -65,15 +66,14 @@ int main(int argc, char **argv)
 	maxdisp = atoi(argv[3]);
 	int noc = atoi(argv[4]);
 	if(argc > 5){
-		kittiCalib(argv[5]);	
+		mask = imread(argv[5],0);
 		if(argc==7) {
-			mask = imread(argv[6],0);
+			kittiCalib(argv[6]);	
 		}
 	}
 	char* fullpath = argv[1];
 	char* bname = basename(fullpath);
 	fname = (reinterpret_cast<char*>(bname));
-
 	if(!leftimg.data || !rightimg.data){
 		cerr << " No valid image" << endl;
 		return -1;
@@ -89,37 +89,40 @@ int main(int argc, char **argv)
 	StereoSGBM sgbm(mindisp, maxdisp, SADWindow, 8*P, 32*P, dispMaxdiff,
                         preFilterCap, uniqueness, speckleWS, speckleRange, true);
 	sgbm(leftimg,rightimg,disp);
-	cout << "SGBM Execution_time: " << (double) (clock() - tStart) / (double)CLOCKS_PER_SEC << " secs " << endl;
+	double ex_time= (double) (clock() - tStart) / (double)CLOCKS_PER_SEC;
 	disp.convertTo(disp8, CV_8U, 255/(maxdisp*16.)); 
 	string fpath1; 
-	if(noc)
-		fpath1 = "/home/bahar/Master/stereo/Ex1/sgbm/mydisp/noc" + fname;
-	else
-		fpath1 = "/home/bahar/Master/stereo/Ex1/sgbm/mydisp/occ" + fname;
+	ofstream of;
+	if(noc){
+		of.open("/home/bahar/Master/stereo/Ex1/sgbm/mydisp/noc/ExeTime.txt", std::ios::out | std::ios::app);
+		fpath1 = "/home/bahar/Master/stereo/Ex1/sgbm/mydisp/noc/" + fname;
+	} else{
+		of.open("/home/bahar/Master/stereo/Ex1/sgbm/mydisp/occ/ExeTime.txt", std::ios::out | std::ios::app);
+		fpath1 = "/home/bahar/Master/stereo/Ex1/sgbm/mydisp/occ/" + fname;
+	}
 	imwrite(fpath1 , disp8);
 	
 	if(argc==7){
 		Mat dmasked;
 		string fpath2; 
 		if(noc)
-			fpath2 = "/home/bahar/Master/stereo/Ex1/sgbm/dispmasked/noc" + fname;
+			fpath2 = "/home/bahar/Master/stereo/Ex1/sgbm/dispmasked/noc/" + fname;
 		else
-			fpath2 = "/home/bahar/Master/stereo/Ex1/sgbm/dispmasked/occ" + fname;
+			fpath2 = "/home/bahar/Master/stereo/Ex1/sgbm/dispmasked/occ/" + fname;
 		disp8.copyTo(dmasked, mask);
 		imwrite( fpath2 , dmasked);
 		//imshow("mask" , mask);
 		//imshow("disparity", dmasked);
 	}
 	
+	ofstream myfile;
+	myfile.open("/home/bahar/Master/stereo/Ex1/adcensus/calibparam.txt", std::ios::out | std::ios::app);
+	myfile << "img: " << fname << "  Focal_Length: " << f << "  Baseline: " << tx  << "   Execution_Time: " << ex_time << " sec"<< endl;
+	of << "img: " << fname << "  Execution_Time: " << ex_time << " sec"<< endl;
+	myfile.close();
+	of.close();
 	//imshow("disp8", disp8);
-	
 	//waitKey(0);
-	//imwrite( "/home/bahar/FrameDisp5.png", disp8 );
-	/*if (waitKey(10) == 27) 				//wait for 'esc' key press for 10ms. If 'esc' key is pressed, break loop
-	{
-		cout << "esc key is pressed by user" << endl;
-		return 0;
-	}*/
 	return 0;
 }
 
@@ -173,10 +176,10 @@ void kittiCalib(string calib){
 	Mat roi2 = p2(Rect(0,0,3,3));
 	cameraMatrix[1] = roi2;
 	infile.close();
-	double f = p2.at<double>(0,0);
+	f = p2.at<double>(0,0);
 	double tf = p2.at<double>(0,3);
-	double tx = tf / f;
-	cout << " Translation: " << tx << " Focal length: " << f <<  endl;
+	tx = tf / f;
+	//cout << " Translation: " << tx << " Focal length: " << f <<  endl;
 	/*Mat R = (Mat_<float>(3,3) << 1,0,0,0,1,0,0,0,1);
 	Mat T = (Mat_<float>(3,1) << tx,0,0 );
 	distCoeffs[0] = Mat(1,8, CV_32F, Scalar::all(0));
