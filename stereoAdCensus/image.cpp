@@ -903,16 +903,16 @@ int image::findOutliers(cv::Mat dispL, cv::Mat dispR,cv::Mat& pixflag, float f, 
 				pixflag.at<int>(p,q)=1;
 			} else {
 				if(q-(int)dispL.at<float>(p,q)>=subRW){
-				if(dispL.at<float>(p,q) != dispR.at<float>(p,q-(int)dispL.at<float>(p,q))){
-				//cout<< "dispL: " << dispL.at<float>(p,q) << " dispR: " << dispR.at<float>(p,q-(int)dispL.at<float>(p,q)) << endl;
-					n++;
-					int occluded = labelOut(Ql, (float)p, (float)q, dispL.at<float>(p,q), dispR.at<float>(p,q-(int)dispL.at<float>(p,q)));
-					if(occluded == 1){
-						pixflag.at<int>(p,q)=1;				//Occluded
-					//cout << dispR.at<float>(p,q-(int)dispL.at<float>(p,q)) << endl;
+					if(dispL.at<float>(p,q) != dispR.at<float>(p,q-(int)dispL.at<float>(p,q))){
+					//cout<< "dispL: " << dispL.at<float>(p,q) << " dispR: " << dispR.at<float>(p,q-(int)dispL.at<float>(p,q)) << endl;
+						n++;
+						int occluded = labelOut(Ql, (float)p, (float)q, dispL.at<float>(p,q), dispR.at<float>(p,q-(int)dispL.at<float>(p,q)));
+						if(occluded == 1){
+							pixflag.at<int>(p,q)=1;				//Occluded
+						//cout << dispR.at<float>(p,q-(int)dispL.at<float>(p,q)) << endl;
+						}
+						else pixflag.at<int>(p,q)=-1;			//Mistmatch	
 					}
-					else pixflag.at<int>(p,q)=-1;			//Mistmatch	
-				}
 				}
 			}
 			
@@ -1101,7 +1101,7 @@ void image::discAdjust(cv::Mat& disp, cv::Mat* fcost, cv::Mat mask){
 				//cout << "size: " << pt.size() << endl;
 				if(n==2){
 					//cout << " 2 points found!" << endl;
-					if((int)disp.at<float>(p,q)-dispMin>=subRW && (int)disp.at<float>(p,q)-dispMin < img_leftRGB.cols-subRW-1){
+					if((int)disp.at<float>(p,q)-dispMin>=subRW && (int)disp.at<float>(p,q)-dispMin < img_leftRGB.cols-subRW){
 						if(disp.at<float>(p,q-1)!=-1 && 
 						  (int)disp.at<float>(p,q-1)-dispMin>=subRW && 
 						  (int)disp.at<float>(p,q-1)-dispMin<img_leftRGB.cols-subRW){
@@ -1404,7 +1404,7 @@ void image::subpxEnhance(cv::Mat* fcost, cv::Mat& idisp){
 					fcost[d-1].at<double>(p,q) - 2*fcost[d].at<double>(p,q)));
 					//std::cout << "old disp: " << idisp.at<float>(p,q) <<std::endl;
 					float val1 = (idisp.at<float>(p,q) - (float)val); 
-					idisp.at<float>(p,q) = (val1+dispMin < 0 ? idisp.at<float>(p,q) : val1);
+					idisp.at<float>(p,q) = (val1+dispMin < 0 ? idisp.at<float>(p,q) : val1 + dispMin);
 					if(idisp.at<float>(p,q) < 0) cerr << "negative value" << endl;
 					//std::cout << "new disp: " << idisp.at<float>(p,q) <<std::endl;
 				}
