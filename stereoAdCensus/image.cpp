@@ -843,7 +843,7 @@ void image::find_disparity(cv::Mat* in, cv::Mat& idisp ,cv::Mat& icost){
 			//double tmpcost=1.79769e+308;
 			//double tmpcost=in[0].at<double>(p,q);
 			double tmpcost = MAX_DB;
-			if(q>=dispMax+subRW){
+			//if(q>=dispMax+subRW){
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(in[d].at<double>(p,q)!=0){
 						if(in[d].at<double>(p,q) < tmpcost){
@@ -853,12 +853,10 @@ void image::find_disparity(cv::Mat* in, cv::Mat& idisp ,cv::Mat& icost){
 						}
 					}
 				}
-			}
+			//}
 			if(tmpcost==MAX_DB){
 				idisp.at<float>(p,q)=-1;				//Check again later to make sure it's correct..
 			}
-
-			
 		}
 	}
 	//double minv, maxv;
@@ -971,26 +969,26 @@ void image::interpolate(cv::Mat img, cv::Mat& disp, cv::Mat pixflag){
 			
 			if(pixflag.at<int>(p,q)==1){ 				//Occluded
 				float min_disp = 10000000;
-				float min1, min2;
+				float min1;
 				for(int j=-2; j<3; j++){		
-					min1 = std::min(((p-2 < subRH || q+j > img_leftRGB.cols-subRW-1 || q+j < subRW || pixflag.at<int>(p-2,q+j)!=0 
-							) ? 20000000 : disp.at<float>(p-2,q+j)),
-							((p+2 > img_leftRGB.rows-subRH-1 || q+j > img_leftRGB.cols-subRW-1 || q+j < subRW || 
-							  pixflag.at<int>(p+2,q+j)!=0) ? 20000000 : disp.at<float>(p+2,q+j)));
+					min1 = std::min(((p-1 < subRH || q+j > img_leftRGB.cols-subRW-1 || q+j < subRW || pixflag.at<int>(p-1,q+j)!=0) 
+							? 20000000 : disp.at<float>(p-1,q+j)),
+							((p+1 > img_leftRGB.rows-subRH-1 || q+j > img_leftRGB.cols-subRW-1 || q+j < subRW || 
+							  pixflag.at<int>(p+1,q+j)!=0) ? 20000000 : disp.at<float>(p+1,q+j)));
 					if(min1 < min_disp){
 						min_disp = min1;
 					}
 				}
-				for (int i=-1; i<2; i++){
-					min1 = std::min(((p+i < subRH || p+i > img_leftRGB.rows-subRH-1 || q-2 < subRW || pixflag.at<int>(p+i,q-2)!=0
-							) ? 20000000 : disp.at<float>(p+i,q-2)),
-							((p+i < subRH || p+i > img_leftRGB.rows-subRH-1 || q+2 > img_leftRGB.cols-subRW-1 || 
-							  pixflag.at<int>(p+i,q+2)!=0) ? 20000000 : disp.at<float>(p+i, q+2)));
+				for (int i=-2; i<3; i++){
+					min1 = std::min(((p+i < subRH || p+i > img_leftRGB.rows-subRH-1 || q-1 < subRW || pixflag.at<int>(p+i,q-1)!=0) 
+							? 20000000 : disp.at<float>(p+i,q-1)),
+							((p+i < subRH || p+i > img_leftRGB.rows-subRH-1 || q+1 > img_leftRGB.cols-subRW-1 || 
+							  pixflag.at<int>(p+i,q+1)!=0) ? 20000000 : disp.at<float>(p+i, q+1)));
 					if(min1 < min_disp){
 						min_disp = min1;
 					}
 				}
-				if(min_disp == 10000000 || min_disp == 20000000) ; //cout << "Very large disp! " << endl;
+				if(min_disp == 10000000 || min_disp == 20000000); //cout << "Very large disp: " << min_disp << " p=" << p << " ,q=" << q << endl;
 				else disp.at<float>(p,q) = min_disp;							//lowest disparity from 16 nearest reliable pixels
 			}
 			else if(pixflag.at<int>(p,q)== -1){ 				//Mismatch
@@ -1007,20 +1005,20 @@ void image::interpolate(cv::Mat img, cv::Mat& disp, cv::Mat pixflag){
 				}
 				unsigned char I1 = gimg.at<uchar>(p,q);
 				for(int j=-2; j<3; j++){
-					I2 =  gimg.at<uchar>(p-2,q+j);
-					I3 =  gimg.at<uchar>(p+2,q+j);
-					diff1 = (p-2 < subRH || q+j < subRW || q+j > img_leftRGB.cols-subRW-1 || pixflag.at<int>(p-2,q+j)!=0) 
+					I2 =  gimg.at<uchar>(p-1,q+j);
+					I3 =  gimg.at<uchar>(p+1,q+j);
+					diff1 = (p-1 < subRH || q+j < subRW || q+j > img_leftRGB.cols-subRW-1 || pixflag.at<int>(p-1,q+j)!=0) 
 						? 20000000 : abs((int)I1 - I2);
-					diff2 = (p+2 > img_leftRGB.rows-subRH-1 || q+j < subRW || q+j > img_leftRGB.cols-subRW-1 
-							|| pixflag.at<int>(p+2,q+j)!=0) ? 20000000 : abs((int)I1 - I3);
+					diff2 = (p+1 > img_leftRGB.rows-subRH-1 || q+j < subRW || q+j > img_leftRGB.cols-subRW-1 
+							|| pixflag.at<int>(p+1,q+j)!=0) ? 20000000 : abs((int)I1 - I3);
 					if(diff1 < diff2){
 						temp_diff = diff1;
 						tempx = q+j;
-						tempy = p-2;
+						tempy = p-1;
 					} else {
 						temp_diff = diff2;
 						tempx = q+j;
-						tempy = p+2;
+						tempy = p+1;
 					}
 					if(temp_diff < min_diff ){
 						min_diff = temp_diff;
@@ -1028,20 +1026,20 @@ void image::interpolate(cv::Mat img, cv::Mat& disp, cv::Mat pixflag){
 						y = tempy;
 					}
 				}
-				for (int i=-1; i<2; i++){
-					I2 = gimg.at<uchar>(p+i,q-2);
-					I3 = gimg.at<uchar>(p+i,q+2);
-					diff1 = (q-2 < subRW || p+i < subRH || p+i > img_leftRGB.rows-subRH-1 || pixflag.at<int>(p+i,q-2)!=0) 
+				for (int i=-2; i<3; i++){
+					I2 = gimg.at<uchar>(p+i,q-1);
+					I3 = gimg.at<uchar>(p+i,q+1);
+					diff1 = (q-1 < subRW || p+i < subRH || p+i > img_leftRGB.rows-subRH-1 || pixflag.at<int>(p+i,q-1)!=0) 
 						? 20000000 : abs((int)I1 - I2);
-					diff2 = (q+2 > img_leftRGB.cols-subRW-1 || p+i < subRH || p+i > img_leftRGB.rows-subRH-1 
-							|| pixflag.at<int>(p+i,q+2)!=0) ? 20000000 : abs((int)I1 - I3);
+					diff2 = (q+1 > img_leftRGB.cols-subRW-1 || p+i < subRH || p+i > img_leftRGB.rows-subRH-1 
+							|| pixflag.at<int>(p+i,q+1)!=0) ? 20000000 : abs((int)I1 - I3);
 					if(diff1 < diff2){
 						temp_diff = diff1;
-						tempx = q-2;
+						tempx = q-1;
 						tempy = p+i;
 					} else {
 						temp_diff = diff2;
-						tempx = q+2;
+						tempx = q+1;
 						tempy = p+i;
 					}
 					if(temp_diff < min_diff){
@@ -1050,9 +1048,9 @@ void image::interpolate(cv::Mat img, cv::Mat& disp, cv::Mat pixflag){
 						y = tempy;
 					}
 				}
-				if(min_diff == 20000000 || min_diff == 10000000) ;//cout << "Very large intensity difference! " << endl;
+				if(min_diff == 20000000 || min_diff == 10000000); //cout << "Very large intensity diff: " << min_diff << " p=" << p << " ,q=" << q << endl;
 				else disp.at<float>(p,q) = disp.at<float>(y,x);
-			}
+			} else ;
 			
 		}
 	}
