@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <libgen.h>
 #include <math.h>
+#include <fstream>
 #include <iostream>
 #include <string>
 #include "image.h"
@@ -21,7 +22,7 @@ int main(int argc, char **argv)
 	int LR = 0;
 	float focal, baseline; 
 	if(argc < 5 ) {
-		cout << "Usage: ./main leftImg rightImg maxDisp is_noc ?LRCheck focal_l baseline? ?mask?" << endl;
+		cout << "Usage: ./main leftImg rightImg maxDisp is_noc ?mask? ?LRCheck focal_l baseline?" << endl;
 		return -1;
 	}
 	Mat mask;
@@ -35,17 +36,17 @@ int main(int argc, char **argv)
 	//cout << "filename: " << x << " sName: " << sName  << endl;
 	maxDisp = atoi(argv[3]);
 	int noc = atoi(argv[4]);
-	if(argc > 5) {
+	if(argc > 5) mask = imread(argv[5],0);
+	if(argc > 6) {
 		LR = atoi(argv[6]);
-		if(argc==6){
+		if(argc==7){
 			cout << "FocalLength and Baseline are required when triggering LR Check. \n" << 
-				"Usage: ./main leftImg rightImg maxDisp is_noc ?LRCheck focal_l baseline? ?mask?" << endl;
+				"Usage: ./main leftImg rightImg maxDisp is_noc ?mask? ?LRCheck focal_l baseline?" << endl;
 			return -1;
 		}
-		focal = atof(argv[6]);
-		baseline = atof(argv[7]);
+		focal = atof(argv[7]);
+		baseline = atof(argv[8]);
 	}
-	if(argc>8) mask = imread(argv[8],0);
 	Size s = image_left.size();
 	img = new image(image_left,image_right, minDisp, maxDisp);
 	cv::Mat dispR8;
@@ -91,28 +92,40 @@ int main(int argc, char **argv)
 	}
 	img->subpxEnhance(fcost,dispL);
 	//cerr << "out of subPx" << endl;
-	std::cout << "Exec_time: " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
-	Mat dispL8;
+	//std::cout << "Exec_time: " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
+	double ex_time =  double( clock() - tStart) / (double)CLOCKS_PER_SEC;
+	Mat dispL16, dispL8;
 	//cout << "maxv: " << maxv1 << endl;
-	dispL.convertTo( dispL8, CV_16U,16*255.0/maxDisp);
+	dispL.convertTo( dispL16, CV_16U,16*255.0/maxDisp);
+	//dispL.convertTo( dispL8, CV_8U,255.0/maxDisp);
 	//imshow( "Img", image_left );                   
 	//imshow( "DispL", dispL8 );                   	
 	//if(LR) imshow( "DispR", dispR8 );
+	ofstream myfile, of;
 	string fpath1; 
-	if(noc)
-		fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/noc" + fname;
-	else 
-		fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/occ" + fname;
-	
-	imwrite(fpath1 , dispL8);
-	if(argc>7) {
+	if(noc){
+		myfile.open("/home/bahar/Master/stereo/Ex1/adcensus/maxDisp_noc.txt", std::ios::out | std::ios::app);
+		of.open("/home/bahar/Master/stereo/Ex1/adcensus/mydisp/noc/exeTime.txt", std::ios::out | std::ios::app);
+		fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/noc/" + fname;
+	}
+	else {
+		of.open("/home/bahar/Master/stereo/Ex1/adcensus/mydisp/occ/exeTime.txt", std::ios::out | std::ios::app);
+		myfile.open("/home/bahar/Master/stereo/Ex1/adcensus/maxDisp_occ.txt", std::ios::out | std::ios::app);
+		fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/occ/" + fname;
+	}
+	myfile << "img: " << fname << " Maxdisp_used: " << maxDisp << endl;
+	of << "img: " << fname << " Execution_Time: " << ex_time << " sec" << endl;
+	myfile.close();
+	of.close();
+	imwrite(fpath1 , dispL16);
+	if(argc>5) {
 		Mat d_masked;
 		string fpath2; 
 		if(noc)
-			fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/noc" + fname;
+			fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/noc/" + fname;
 		else
-			fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/occ" + fname;
-		dispL8.copyTo(d_masked, mask);
+			fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/occ/" + fname;
+		dispL16.copyTo(d_masked, mask);
 		//Mat tmp;
 		//dispL.copyTo(tmp,mask);
 		//cout<< "tmp: " << tmp(Rect(500,150,80,1)) << endl;
@@ -122,7 +135,8 @@ int main(int argc, char **argv)
 	}	
 	delete[] fcost;
 	delete[] DSI;
-	//waitKey(0);
+//	imshow("displ8" , dispL8);
+//	waitKey(0);
 	return 0;
 }
 
