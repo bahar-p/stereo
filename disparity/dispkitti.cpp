@@ -117,7 +117,7 @@ int main(int argc, char **argv)
 	
 	ofstream myfile;
 	myfile.open("/home/bahar/Master/stereo/Ex1/adcensus/calibparam.txt", std::ios::out | std::ios::app);
-	myfile << "img: " << fname << "  Focal_Length: " << f << "  Baseline: " << tx  << "   Execution_Time: " << ex_time << " sec"<< endl;
+	myfile << "img: " << fname << "  Focal_Length: " << f << "  Baseline: " << tx << endl;
 	of << "img: " << fname << "  Execution_Time: " << ex_time << " sec"<< endl;
 	myfile.close();
 	of.close();
