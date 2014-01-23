@@ -2,6 +2,8 @@
 \usepackage[square,numbers]{natbib}
 \usepackage{url}
 \usepackage{thesis}
+\usepackage{graphicx}
+\usepackage{amsmath}
 \begin{document}
 \chapter{Introduction}
 
@@ -62,22 +64,22 @@ perception of depth for an outdoor augmented reality application in urban settin
 were motivated by in this research, we have set our criteria for the error in human peception of depth based on their published results and we will consider it as a reference for the 
 evaluation of the depth results from stereo matching solutions. \newline
 Providing real-time interaction in an AR system for the user requires the processing time and update rate of the whole system to keep up idealy with the standard video frame rate, between 24fps and 
-30fps. However, studies show that in practice to build a reasonable interactive augmented world the processing rate should not be less than half of the video frame rate {\bf NOTE: Search for more vali
-reference} \cite{spe}. There are different approaches to speed up a system. Acceleration of a system is possible in two ways:
+30fps. However, studies show that in practice to build a reasonable interactive augmented world the processing rate should not be less than half of the video frame rate  \textbf{NOTE: Search for more
+valid reference} \cite{spe}. There are different approaches to speed up a system. Acceleration of a system is possible in two ways:
 \begin{enumerate}
 \item Using more advanced technology and hardware
 \item More complicated and efficient software design
 \end{enumerate}
 However, having access to advanced technology and better hardware is not always feasible and even the most advanced technology have some limitation to their memory space and computional capability whic
 h may not meet the requirement for some real-time applications. 
-Therefore, we have focused more on the second approach while designing our evaluation system which also looks into the 3rd most important constraints of
+Therefore, we have focused more on the second approach while designing our evaluation system which also looks into the 3rd most important property of
 an AR system mentioned earlier, i.e, real-time user interaction. \newline 
 In fact, one of the most important features that makes our evaluation unique and different from others is that in order to
 address the speed factor in augmented reality systems we have decided to focus on certain regions in the scene rather than the whole image for evaluating the depth results. 
 This idea which originates from having a more complicated and efficient design, also addresses the computational resources used during the process and may help to speed up our AR system if 
 the results show that the decisions made based on these certain regions are reliable enough for later interactions of the user and the augmented world.
 
-We believe that in an outdoor augmented reality application there are certain regions in a scene which are more important to human sight and erroneous registeration of virtual and 
+(\textbf{NEED SOLID PROOF!}) We believe that in an outdoor augmented reality application there are certain regions in a scene which are more important to human sight and erroneous registeration of virtual and 
 real object in those regions can be perceived and picked out easier by the users. Wrong results in these regions can result in poor performance of the system and possibly faulty interaction between 
 the user and the augmented world. We have defined these regions to be the depth edges in the scene that have been expanded few pixels from each side. 
 Our hypothesis is that the depth edges, which normally includes object boundaries as well, are important depth cues for the user to perceive the depth of different objects in the scene. 
@@ -111,17 +113,148 @@ considered as another reason for us to choose it in our evaluation.
 Stereo vision is the concept of viewing a scene (object) in the real world from slightly different
 viewpoints at the same time which results in stereo image
 pairs. Using computer vision techniques, it is possible to extract depth information from stereo
-images. This process is called Stereo Matching or Stereo Correspondence in computer vision,
-which is in fact the process of taking two or multiple images of the same scene and construct its
-3D model by finding corresponding pixels in the images and their spatial movement in the images within two or multiple views that is known as {\it disparity} \cite{sze11}.
+images. This process is called {\it Stereo Matching} or {\it Stereo Correspondence} in computer vision,
+which in fact results in the construction of a
+3D model of a scene from two or multiple views by finding corresponding pixels and therefore, their spatial movement within various views of the same scene.\cite{sze11}.
 
 Corresponding pixels in stereo images are the ones that represent the same point in the real
 world. As it will be seen shortly in more detail, the amount of horizontal motion of such pixels
 in stereo pairs, which is referred to as {\it disparity}, is inversely proportional to the
-distance from the observer (depth); however, for calculating the exact depth of the points, some
-other information is required, such as the position, and the calibration data of the cameras that took the pictures.
-While the physical and geometrical approach to this problem is well understood, the process of finding the corresponding pixels automatically, correctly and yet efficiently
-and measuring the disparity to generate a dense depth map still remains a challenging task.
+distance from the observer (depth); however,  estimation of the exact depth of the points, requires some
+other information as well, such as the position, and the calibration data of the cameras that took the pictures.
+While the physical and geometrical approach to this problem is well understood by researchers in the field, the process of finding the corresponding pixels correctly, yet efficiently
+and measuring the disparity to generate a dense depth map still remains a challenging task. \newline
+
+\section{Epipolar Geometry}
+The basic geometry of stereo matching is described in more detail in this section. 
+The epipolar geometry in stereo images is defined by the intersection between the image planes and any plane having the line between two camera centers, known as {\it baseline}, as axis. 
+This geometry helps to understand the core idea of stereo matching algorithms and 3D model reconstruction from stereo images.
+(\textbf {FIGURE  for epipolar planes similiar to the figure in multipleview geometry page240})
+%\begin{figure}{h!}
+%\centering
+%\includegraphics[width=1.5in,height=1.5in]{epipole}
+%\end{figure}
+
+If we consider a point P in space and project it back as P' and P'' with rays passing through each camera's centre
+into the left and right image planes, there will be a common feature between all these points and the camera centres which serves as an important property while searcing for corresponding points
+in stereo matching algorithms. Let us call the plane shared by all these point $\pi$.
+Now, suppose that we only know the position of the point P' in the left image and want to find its correspondence, P'', in the right plane. According to the aformentioned property, P',
+its correspondence and their projection in 3D space are all coplanar with camera centres. This plane, $\pi$, is defined by the line connecting two camera centres and 
+the rays passing through P' and the left camera centre. Therefore, the point P'' would line somewhere on the line of intersection between $\pi$ and the right image plane.
+This line is in fact the back-projection in the right image plane of the ray passing through P'. This line is called the {\it epipolar line} corresponding to P'. Hence, in a stereo matching algorithm
+we only need to search this line rather than the whole image in order to find the corresponding point for point P'.
+There are a few fundamental concepts in epipolar geometry which we will introduce briefly and an illustration of these terminologies can be found in figure \textbf{FIGURE NUMER}
+The fundamental entities in epipolar geometry are as follow: \cite{hart2000}
+\begin{itemize}
+\item The \textbf{epipole}: The point of intesection between the baseline with each of the image planes is called the epipole. In other words, each epipole can be referred to as the image of one of
+the camera centre on the other image plane.
+
+\item The \textbf{epipolar plane}: Any plane containing the line between camera centres is called the epipolar plane. The collection of these planes is called an epipolar pencil. 
+
+\item The \textbf{epipolar line}: The intersection of the epipolar plane and the image plane results in a line called epipolar line. The epipolar line always passes through the epipole in the 
+image plane.
+\end{itemize}
+
+(\textbf{FIGURE HERE FOR EPIPOLAR GEOMETRY TERMS}) 
+\newline 
+Knowing the concepts in epipolar geometry helps with understanding how stereo correspondence algorithms work. Based on the description of epipolar geometry, 
+we know that in order to find the correspondence of a particular point x in the second image plane, first the corresponding epipolar line, which is the projection in the second image plane 
+of the ray passing through point x and the centre of the first camera on the second image plane, must be found. Therefore, there is a projective mapping from each point in the first image plane 
+to its corresponding epipolar line in the second image, which is represented as matrix that is independant of the scene and is related to the camera's properties.\cite{hart2000} As it can be
+seen in figure (\textbf{figure number}), mapping from point P' to its correspondence, P'', in the other image plane requires certain transformations; rotation and translation. However, in order
+to make the scanning process more efficient in stereo matching algorithms, it is better to have the input image pairs warped first, i.e., {\it rectified}. The best way to accomplish this task is to
+rotate both cameras first so that their optical axis, the line passing through the camera centre which is perpendicular to the image plane, are parallel to each other; 
+i.e., their optical axis is perpendicular to the baseline. Furthermore, it is also necessary to have the camera's {\it y} axis perpendicular to the optical axis. These two steps result
+in corresponding epipolar lines to be horizontal which constrains the process of searching for the corresponding points. In this model, the disparity for points at infinity is 0.\cite{sze11}
+The relation between particular geometrical parameters through which the depth of a certain point in 3D space is obtained, can be clearly defined base on the aforementioed rectified model. 
+This relation is presented as follows:
+\begin{center}
+$d = f\frac{B}{Z}$
+\end{center}
+where f is the {\it focal length} measured in pixels, B is the {\it baseline}, Z is the {\it 3D depths}, and d is {\it disparity}. The relationship between corresponding pixels in the left
+and right images according to disparity {\it d} is as follows:
+\begin{center}
+${P}''_{x}={P}'_{x}+d(x,y)$
+
+${P}''_{y} = {P}'_{y}$
+\end{center}
+Therefore, based on the aforementioned formulas, the depth of points in 3D space can be easily calculated after finding the corresponding pixels in multiple views and consequently their
+disparities. \cite{bol87,oku93,sch02}
+
+\section{Stereo Correspondence Algorithms}
+A survey of the field shows that the algorithms which address stereo correspondence problem can be roughly divided into two main classes \cite{sch02}. These classifications are commonly known as:
+\begin{enumerate}
+\item Sparse Correspondence Algorithms
+\item Dense Correspondence Algorithms 
+\end{enumerate}
+
+In this section, we are going to briefly describe the important specifications of the algorithms belonging to each of these two classes.
+\subsection{Sparse Correspondence Algorithms}
+Sparse correspondence algorithms, also known as feature-based algorithms, are the early stereo matching methods. In this type of methods, particular features in an image, such as edge 
+points, line segments, and other significant features in an image are extracted and therefore, the search for corresponding pixels is only applied to these regions. Consequently, algorithms of this
+type result in a sparse disparity map \cite{matt89,hsie92, sze11}. The introduction of feature-based algorithms has mainly been motivated by three important reasons \cite{sze11}:
+\begin{itemize}
+\item Limitation in computational resources
+\item Constraint of the searching area in order to find more reliable matches
+\item Images with different illumination, where edges or some other particular features preserves their photometric properties and therefore, are reliable enough to be used for
+correspondence search
+\end{itemize}
+
+\subsection{Dense Crrespondence Algorithms}
+Unlike feature-based methods, dense correspondence algorithms try to find the
+corresponding pixels in the whole image, and therefore, result in a dense disparity map. Most recent algorithms and studies have focused on this class of algorithms since many applications 
+nowadays, such as image-based rendering, modeling, or augmented reality require a dense depth map of the scene. This class of algorithms face many challenges that need to be properly
+addressed, such as finding the depth values in textureless areas, depth discontinuities, and occluded regions.
+
+Dense correspondence algorithms can be classified in two groups based on how they assign
+disparities to pixels:
+\begin{enumerate}
+\item Local approaches
+\item Global approaches
+\end{enumerate}
+
+\textbf{Local Approaches}
+\newline
+Local methods try to find the disparity of each pixel based on its local neighboring pixels. In
+other words, the disparity of a pixel is calculated in a finite window, based on the intensity values
+of neighboring pixels in the same window. \cite{sch02}
+
+These methods make an implicit smoothness assumption for the pixels in the search
+window and assign the same disparity to all of them, which could result in incorrect disparity values in slanted surfaces or
+depth discontinuities \cite{hirsch02}. This assumption can be considered as one of the major drawbacks of local methods. One
+of the other drawbacks of local methods is their dependency on the window size \cite{sch02}. A fixed window size can raise certain problems in these algorithms:
+\begin{enumerate}
+\item If too large of a window size is considered, due to aforementioned smoothness assumption, the algorithm may result in blurry object boundaries and inaccuracy near depth discontinuities.
+\item If the window size chosen is too small, the disparity results will be less accurate since little information has been considered for 
+finding the correspondences of pixels in the image.
+\end{enumerate}
+
+However, a significant advantage of using local approaches, which is their high speed in finding disparity results.\newline
+
+\textbf {Global Approaches}
+\newline
+Unlike local approaches, in global methods the disparity of a pixel depends on the information in
+the whole image. Global methods usually contain an optimization step of a global energy
+function. In this class of algorithms, an optimal disparity value for each pixel is sought that lead to minimization of a global cost
+function that normally combines a data term with an explicit smoothness assumption in form of \cite{roy98,bobi99,boyk01}:
+
+\begin{center}
+$E(d)=E_{data}(d)+\lambda E_{smooth}(d)$
+\end{center}
+The term $E_{data}$ normally represent the difference in the intensity of corresponding pixels and is denoted as follows:
+\begin{center}
+$E_{data}(d) = \sum_{(x,y)}C(x,y,d(x,y))$
+where C is the matching cost. The matching cost function can have various definitions depending on the algorithm; however, it is normally defined as sum of absolute difference 
+between corresponding pixels intesity in two images \cite{sch02}.
+
+Due to the existence of the smoothness term, $E_{smooth}$, neighboring pixels tend to have similar disparity values. $\lambda$ is also a weight factor that can vary depending 
+on the implementation of the global function in the algorithm \cite{sze11}.
+
+\end{center}
+
+The major drawback of global approaches is the high usage of computational resourses and the low speed in finding the matches. However, they usually result in more accurate disparity values
+\cite{hirsch02,sze11}. 
+
 
 
 \bibliographystyle{plain}
