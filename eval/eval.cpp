@@ -59,6 +59,12 @@ int main (int argc, char** argv) {
 	}
 	int pix_count = 0;	//Total number of valid pixels in ground truth
 	int pix_gen_count = 0;	//Total number of valid pixels in generated disparity
+	float stAcuity_1729=32;				//Avg Stereo Acuity 17-29 age = 32arcsec
+	float stAcuity_3049=33.75;			//Avg Stereo Acuity 17-29 age = 33.75arcsec
+	float stAcuity_5069=38.75;			//Avg Stereo Acuity 17-29 age = 38.75arcsec
+	float stAcuity_7083=112.5;			//Avg Stereo Acuity 17-29 age = 112.5arcsec
+	float pupil_dist = 64; 				//Avg value of Interpupillary distance (mm)
+	float c = 3437.75; 				//constant
 
 	//std::cout << "d_gen: " << d_gen(cv::Rect(500,150, 80,1)) << std::endl;
 	//std::cout << "d_gt: " << d_gt(cv::Rect(500,150, 80,1)) << std::endl;
@@ -80,38 +86,24 @@ int main (int argc, char** argv) {
 				if(fd_gen < 0) std::cout << "Negative value!" << std::endl;
 				float err = fabs(fd_gt - (fd_gen < 0 ? 0 : fd_gen));
 				float depth = (f*bs)/fd_gt;
+				float dz_1729 = ((depth*depth)*(stAcuity_1729/60))/(c*pupil_dist);
+				float dz_3049 = ((depth*depth)*(stAcuity_3049/60))/(c*pupil_dist);
 				float depth_err = (f*bs)/err;
-				//std::cout << "depth: " << depth << std::endl;
-				if(depth >= 1 && depth < 3){
-					if(depth_err >= err_thr[0]) err_total_pxs[0]++;
+			//	float dz_err = ((depth_err*depth_err)*stAcuity)/(c*pupil_dist);
+
+				std::cout << "disp_err: " << err << "  depth: " << depth_err << "  dz_1729: "  << dz_1729 << std::endl;
+				if(depth_err >= dz_1729){
+					err_total_pxs[0]++;
 				}
-				else if(depth >= 3 && depth < 5){
-					if(depth_err >= err_thr[1]) err_total_pxs[1]++;
+				else if(depth_err >= dz_3049){
+					err_total_pxs[1]++;
 				}
-				else if(depth >= 5 && depth < 7){
+				/*else if(depth >= 5 && depth < 7){
 					if(depth_err >= err_thr[2])  err_total_pxs[2]++;		//FIX LATER (the condition should probably change)
 				}
 				else if(depth >= 7 && depth < 11){
 					if(depth_err >= err_thr[3])  err_total_pxs[3]++;		//FIX LATER (the condition should probably change)
-				}
-				else if(depth >= 11 && depth < 17){
-					if(depth_err >= err_thr[4] )  err_total_pxs[4]++;		//FIX LATER (the condition should probably change)
-				}
-				else if(depth >= 17 && depth < 22){
-					if(depth_err >= err_thr[5])  err_total_pxs[5]++;		//FIX LATER (the condition should probably change)
-				}
-				else if(depth >= 22 && depth < 27){
-					if(depth_err >= err_thr[6])  err_total_pxs[6]++;		//FIX LATER (the condition should probably change)
-				}
-				else if(depth >= 27 && depth < 33){
-					if(depth_err >= err_thr[7])  err_total_pxs[7]++;		//FIX LATER (the condition should probably change)
-				}
-				else if(depth >= 33 && depth < 39){
-					if(depth_err >= err_thr[8])  err_total_pxs[8]++;		//FIX LATER (the condition should probably change)
-				}
-				else if(depth >= 39 && depth <= 44){
-					if(depth_err > err_thr[9])  err_total_pxs[9]++;		//FIX LATER (the condition should probably change)
-				}
+				}*/
 				else {
 					//std::cout << "depth out of defined ranges" << std::endl;
 				}
@@ -121,35 +113,11 @@ int main (int argc, char** argv) {
 				}*/	
 				if(mydValid(fd_gen)){
 					pix_gen_count++;
-					if(depth >= 1 && depth < 3){
-						if(depth_err >= err_thr[0]) err_valid_pxs[0]++;
+					if(depth_err >= dz_1729){
+						err_total_pxs[0]++;
 					}
-					else if(depth >= 3 && depth < 5){
-						if(depth_err >= err_thr[1]) err_valid_pxs[1]++;
-					}
-					else if(depth >= 5 && depth < 7){
-						if(depth_err >= err_thr[2])  err_valid_pxs[2]++;		//FIX LATER (the condition should probably change)
-					}
-					else if(depth >= 7 && depth < 11){
-						if(depth_err >= err_thr[3])  err_valid_pxs[3]++;		//FIX LATER (the condition should probably change)
-					}
-					else if(depth >= 11 && depth < 17){
-						if(depth_err >= err_thr[4])  err_valid_pxs[4]++;		//FIX LATER (the condition should probably change)
-					}
-					else if(depth >= 17 && depth < 22){
-						if(depth_err >= err_thr[5])  err_valid_pxs[5]++;		//FIX LATER (the condition should probably change)
-					}
-					else if(depth >= 22 && depth < 27){
-						if(depth_err >= err_thr[6])  err_valid_pxs[6]++;		//FIX LATER (the condition should probably change)
-					}
-					else if(depth >= 27 && depth < 33){
-						if(depth_err >= err_thr[7])  err_valid_pxs[7]++;		//FIX LATER (the condition should probably change)
-					}
-					else if(depth >= 33 && depth < 39){
-						if(depth_err >= err_thr[8])  err_valid_pxs[8]++;		//FIX LATER (the condition should probably change)
-					}
-					else if(depth >= 39 && depth <= 44){
-						if(depth_err > err_thr[9])  err_valid_pxs[9]++;		//FIX LATER (the condition should probably change)
+					else if(depth_err >= dz_3049){
+						err_total_pxs[1]++;
 					}
 					else {
 						//std::cout << "depth out of defined ranges" << std::endl;
@@ -180,8 +148,8 @@ int main (int argc, char** argv) {
 	pix_gen_count << " density of generated results: " << density << std::endl;
 	/***** End of Disp Error Outliers *****/
 
-	float* error = dispErrorAvg(d_gt, d_gen, dmax,masked);
-	std::cout << "Avg error of all pixs: " << error[0] << " Avg error of valid disp results: " << error[1] << std::endl;
+	//float* error = dispErrorAvg(d_gt, d_gen, dmax,masked);
+	//std::cout << "Avg error of all pixs: " << error[0] << " Avg error of valid disp results: " << error[1] << std::endl;
 }
 
 float* dispErrorAvg(cv::Mat& d_gt, cv::Mat& d_gen, int dmax, bool masked){
