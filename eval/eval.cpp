@@ -2,9 +2,11 @@
 #include <stdio.h>
 #include "cv.h"
 #include "highgui.h"
+#include <fstream>
 
 //Global Variables
 cv::Mat mask;
+std::fstream of;
 
 float* dispErrorAvg(cv::Mat& d_gt, cv::Mat& d_gen, int dmax, bool mask);
 bool isValid(float d){
@@ -72,7 +74,8 @@ int main (int argc, char** argv) {
 		std::cerr << "disparity image sizes don't match!" << std::endl;
 		return -1;
 	}
-	
+	of.open("/home/bahar/Master/stereo/eval/result.txt", std::ios::out);
+	float INF = std::numeric_limits<float>::infinity();
 	/***** Disp Error Outliers *****/
 	for(int j=0; j<height;j++){
 		for(int i=dmax; i<width; i++){
@@ -90,12 +93,18 @@ int main (int argc, char** argv) {
 				float dz_3049 = ((depth*depth)*(stAcuity_3049/60))/(c*pupil_dist);
 				float dz_5069 = ((depth*depth)*(stAcuity_5069/60))/(c*pupil_dist);
 				float dz_7083 = ((depth*depth)*(stAcuity_7083/60))/(c*pupil_dist);
-				float depth_gen;
+				float depth_gen;	
 				if(fd_gen!=0)
 					depth_gen = (f*bs)/fd_gen;
-				else depth_gen = std::numeric_limits<float>::infinity();
-				float depth_err = fabs(depth-depth_gen);
+				else depth_gen = INF;
+				float depth_err;
+				if(depth_gen == INF) depth_err =0;
+				else depth_err = fabs(depth-depth_gen);
 				//std::cout << "disp_err: " << err << "  depth: " << depth_err << "  dz_1729: "  << dz_1729 << " dz_3049: " << dz_3049 << std::endl;
+				//Write to output file
+				of << (depth/100) << "  "  << (dz_1729/100) << "  " << (dz_3049/100) << "  " << (dz_5069/100) << "  "  << (dz_7083/100) << "  " 
+					<< (depth_err/100) <<  std::endl;
+				
 				if(depth_err >= dz_1729){
 					err_total_pxs[0]++;
 				}
@@ -153,6 +162,8 @@ int main (int argc, char** argv) {
 
 	float* error = dispErrorAvg(d_gt, d_gen, dmax,masked);
 	std::cout << "Avg error of all pixs: " << error[0] << " Avg error of valid disp results: " << error[1] << std::endl;
+	of.close();
+	system("tclsh ../eval/myplot.tcl");
 }
 
 float* dispErrorAvg(cv::Mat& d_gt, cv::Mat& d_gen, int dmax, bool masked){
