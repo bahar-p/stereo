@@ -581,7 +581,6 @@ void image::aggregateCost(cv::Mat* icost){
 /* Calculating Integral Image */
 void image::IImage(cv::Mat* in, cv::Mat* out, char dir){
 	//cerr << "IImage..." << endl;
-	double max=0.0;
 	switch (dir){
 		case 'H':
 			for(int d=0; d<dispMax-dispMin+1; d++){
@@ -591,7 +590,6 @@ void image::IImage(cv::Mat* in, cv::Mat* out, char dir){
 					}
 				}
 			}
-			max = findMax(out);
 			//std::cout << "Imax: " << max << " dir:H" << std::endl;
 		break;
 		case 'V':
@@ -603,7 +601,6 @@ void image::IImage(cv::Mat* in, cv::Mat* out, char dir){
 					}
 				}
 			}
-			max = findMax(out);
 			//std::cout << "Imax: " << max << " dir: V" << std::endl;
 		break;
 		default:
@@ -816,16 +813,6 @@ void image::finalCost(cv::Mat Lpath, cv::Mat Rpath, cv::Mat Upath, cv::Mat Dpath
 				outCost.at<double>(p,q,d) = (Lpath.at<double>(p,q,d) + Rpath.at<double>(p,q,d) + Upath.at<double>(p,q,d) + Dpath.at<double>(p,q,d))/4.0;
 				//printf("final_cost(%d,%d,%d): %f\t, left: %f\t, right: %f\t, up: %f\t, down: %f\t\n", p,q,d, outCost.at<double>(p,q,d), Lpath.at<double>(p,q,d), Rpath.at<double>(p,q,d), Upath.at<double>(p,q,d), \
 				Dpath.at<double>(p,q,d));
-				
-				if (max< outCost.at<double>(p,q,d)){
-					max=outCost.at<double>(p,q,d);
-					loc_x=q;
-					loc_y=p;
-					loc_d=d;
-				}
-				if (outCost.at<double>(p,q,d) < min){
-					min = outCost.at<double>(p,q,d);
-				}
 			}
 		}
 	}
@@ -1397,7 +1384,7 @@ void image::subpxEnhance(cv::Mat* fcost, cv::Mat& idisp){
 	supReg.release();
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 		for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
-				int d = idisp.at<float>(p,q)-dispMin;
+				int d = (int)idisp.at<float>(p,q)-dispMin;
 				//std::cout << "float d: " << idisp.at<float>(p,q)<< " int d: " << d << std::endl;
 				if(d>0 && d < dispMax-dispMin){
 					double val = (fcost[d+1].at<double>(p,q) - fcost[d-1].at<double>(p,q))/(2*(fcost[d+1].at<double>(p,q)+
