@@ -47,8 +47,7 @@ int main (int argc, char** argv) {
 
 	int height = d_gt.size().height;
 	int width = d_gt.size().width;
-	float err_thr[10]={0.3,0.6,0.7,1.5,1.5,1.0,1.4,1.2,4.0,4.5};		//Different error thresholds
-	int arr_len = sizeof(err_thr)/sizeof(*err_thr);
+	int arr_len = 4;
 	//int arr_len = 10;
 	float err_total_pxs[arr_len];			//Number of incorrect pixels corresponding to each threshold
 	float err_valid_pxs[arr_len];			//Number of incorrect valid pixels in the result corresponding to each threshold
@@ -57,15 +56,16 @@ int main (int argc, char** argv) {
 		err_total_pxs[i]=0;
 		err_valid_pxs[i]=0;
 	}
-	int pix_count = 0;	//Total number of valid pixels in ground truth
-	int pix_gen_count = 0;	//Total number of valid pixels in generated disparity
+	int pix_count = 0;				//Total number of valid pixels in ground truth
+	int pix_gen_count = 0;				//Total number of valid pixels in generated disparity
 	float stAcuity_1729=32;				//Avg Stereo Acuity 17-29 age = 32arcsec
 	float stAcuity_3049=33.75;			//Avg Stereo Acuity 17-29 age = 33.75arcsec
 	float stAcuity_5069=38.75;			//Avg Stereo Acuity 17-29 age = 38.75arcsec
 	float stAcuity_7083=112.5;			//Avg Stereo Acuity 17-29 age = 112.5arcsec
 	float pupil_dist = 64; 				//Avg value of Interpupillary distance (mm)
 	float c = 3437.75; 				//constant
-
+	float err_thr[4]={stAcuity_1729, stAcuity_3049,stAcuity_5069, stAcuity_7083};		//Different error thresholds
+	
 	//std::cout << "d_gen: " << d_gen(cv::Rect(500,150, 80,1)) << std::endl;
 	//std::cout << "d_gt: " << d_gt(cv::Rect(500,150, 80,1)) << std::endl;
 	if(height != d_gen.size().height || width != d_gen.size().width){
@@ -88,43 +88,46 @@ int main (int argc, char** argv) {
 				float depth = (f*bs)/fd_gt;
 				float dz_1729 = ((depth*depth)*(stAcuity_1729/60))/(c*pupil_dist);
 				float dz_3049 = ((depth*depth)*(stAcuity_3049/60))/(c*pupil_dist);
-				float depth_err = (f*bs)/err;
-			//	float dz_err = ((depth_err*depth_err)*stAcuity)/(c*pupil_dist);
-
-				std::cout << "disp_err: " << err << "  depth: " << depth_err << "  dz_1729: "  << dz_1729 << std::endl;
+				float dz_5069 = ((depth*depth)*(stAcuity_5069/60))/(c*pupil_dist);
+				float dz_7083 = ((depth*depth)*(stAcuity_7083/60))/(c*pupil_dist);
+				float depth_gen;
+				if(fd_gen!=0)
+					depth_gen = (f*bs)/fd_gen;
+				else depth_gen = std::numeric_limits<float>::infinity();
+				float depth_err = fabs(depth-depth_gen);
+				//std::cout << "disp_err: " << err << "  depth: " << depth_err << "  dz_1729: "  << dz_1729 << " dz_3049: " << dz_3049 << std::endl;
 				if(depth_err >= dz_1729){
 					err_total_pxs[0]++;
 				}
-				else if(depth_err >= dz_3049){
+				if(depth_err >= dz_3049){
 					err_total_pxs[1]++;
 				}
-				/*else if(depth >= 5 && depth < 7){
-					if(depth_err >= err_thr[2])  err_total_pxs[2]++;		//FIX LATER (the condition should probably change)
+				if(depth_err >= dz_5069){
+					err_total_pxs[2]++;
 				}
-				else if(depth >= 7 && depth < 11){
-					if(depth_err >= err_thr[3])  err_total_pxs[3]++;		//FIX LATER (the condition should probably change)
-				}*/
+				if(depth_err >= dz_7083){
+					err_total_pxs[3]++;
+				}
 				else {
 					//std::cout << "depth out of defined ranges" << std::endl;
 				}
-				//std::cout << "err: " << err << std::endl;
-				/*for(int k=0; k<arr_len; k++){	
-					if(err > err_thr[k]) err_total_pxs[k]++; 
-				}*/	
 				if(mydValid(fd_gen)){
 					pix_gen_count++;
 					if(depth_err >= dz_1729){
-						err_total_pxs[0]++;
+						err_valid_pxs[0]++;
 					}
-					else if(depth_err >= dz_3049){
-						err_total_pxs[1]++;
+					if(depth_err >= dz_3049){
+						err_valid_pxs[1]++;
+					}
+					if(depth_err >= dz_5069){
+						err_valid_pxs[2]++;
+					}
+					if(depth_err >= dz_7083){
+						err_valid_pxs[3]++;
 					}
 					else {
 						//std::cout << "depth out of defined ranges" << std::endl;
 					}
-					/*for(int k=0; k<arr_len; k++){		
-						if(err > err_thr[k]) err_valid_pxs[k]++; 
-					}*/
 				}
 			}
 		}
@@ -140,7 +143,7 @@ int main (int argc, char** argv) {
 		err_total_pxs[i] /= std::max((float)pix_count, 1.0f);
 		if(pix_gen_count > 0)
 			err_valid_pxs[i] /= std::max((float)pix_gen_count,1.0f);
-		std::cout <<  "outliers for all and just valid disp results for thresh " << err_thr[i] << " are: " << 
+		std::cout <<  "outliers for all and just valid disp results for stAcuity " <<  err_thr[i]  << " are: " << 
 		err_total_pxs[i] << "  " <<  err_valid_pxs[i] << std::endl;
 	}
 	density = (float)pix_gen_count/std::max((float)pix_count,1.0f);
@@ -148,8 +151,8 @@ int main (int argc, char** argv) {
 	pix_gen_count << " density of generated results: " << density << std::endl;
 	/***** End of Disp Error Outliers *****/
 
-	//float* error = dispErrorAvg(d_gt, d_gen, dmax,masked);
-	//std::cout << "Avg error of all pixs: " << error[0] << " Avg error of valid disp results: " << error[1] << std::endl;
+	float* error = dispErrorAvg(d_gt, d_gen, dmax,masked);
+	std::cout << "Avg error of all pixs: " << error[0] << " Avg error of valid disp results: " << error[1] << std::endl;
 }
 
 float* dispErrorAvg(cv::Mat& d_gt, cv::Mat& d_gen, int dmax, bool masked){
