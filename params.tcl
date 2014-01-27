@@ -40,3 +40,9 @@ set mask_occ "${mainp}${mask_occ}"
 
 set mask_noc "masks/disp_noc/"
 set mask_noc "${mainp}${mask_noc}"
+
+set plots "plots/"
+set plots "${mainp}${plots}"
+
+set evals "eval/"
+set evals "${mainp}${evals}"
