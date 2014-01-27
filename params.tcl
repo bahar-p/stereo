@@ -44,5 +44,5 @@ set mask_noc "${mainp}${mask_noc}"
 set plots "plots/"
 set plots "${mainp}${plots}"
 
-set evals "eval/"
+set evals "eval/results/"
 set evals "${mainp}${evals}"
