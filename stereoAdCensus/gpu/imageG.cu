@@ -560,7 +560,6 @@ void image::aggregateCost(cv::Mat* icost){
 /* Calculating Integral Image */
 void image::IImage(cv::Mat* in, cv::Mat* out, char dir){
 	//cerr << "IImage..." << endl;
-	double max=0.0;
 	switch (dir){
 		case 'H':
 			for(int d=0; d<dispMax-dispMin+1; d++){
@@ -570,7 +569,6 @@ void image::IImage(cv::Mat* in, cv::Mat* out, char dir){
 					}
 				}
 			}
-			max = findMax(out);
 			//std::cout << "Imax: " << max << " dir:H" << std::endl;
 		break;
 		case 'V':
@@ -582,7 +580,6 @@ void image::IImage(cv::Mat* in, cv::Mat* out, char dir){
 					}
 				}
 			}
-			max = findMax(out);
 			//std::cout << "Imax: " << max << " dir: V" << std::endl;
 		break;
 		default:
@@ -1034,36 +1031,33 @@ void image::discAdjust(cv::Mat& disp, cv::Mat* fcost, cv::Mat mask){
 	for(int p=subRH+1 ; p<img_leftRGB.rows-subRH-1 ; p++){					
 		for(int q= subRW+1 ; q<img_leftRGB.cols-subRW-1 ; q++){
 			n=0;
-			if(mask.at<int>(p,q) != 0){	
+			if(mask.at<short>(p,q) != 0){	
 				//cout << "next p,q " << p << " " << q << "mask: " << mask.at<int>(p,q)<< endl;
-				if(mask.at<int>(p,q-1) ==0){
+				if(mask.at<short>(p,q-1) ==0){
 					n++;
 					//cout << " Left Not On Edge " << endl;
 					//Point p1= Point(q-1,p);
 					//pt.push_back(p1);
 				}
-				if(mask.at<int>(p,q+1) == 0){
+				if(mask.at<short>(p,q+1) == 0){
 					n++;
 				}
 				//cout << "size: " << pt.size() << endl;
 				if(n==2){
 					//cout << " 2 points found!" << endl;
-					if((int)disp.at<float>(p,q)-dispMin>=subRW && (int)disp.at<float>(p,q)-dispMin < img_leftRGB.cols-subRW-1){
-						if(disp.at<float>(p,q-1)!=-1 && 
-						  (int)disp.at<float>(p,q-1)-dispMin>=subRW && 
-						  (int)disp.at<float>(p,q-1)-dispMin<img_leftRGB.cols-subRW){
+					if((int)disp.at<float>(p,q)>=dispMin && (int)disp.at<float>(p,q) <= dispMax-dispMin){
+						if((int)disp.at<float>(p,q-1)>=dispMin && (int)disp.at<float>(p,q-1)<= dispMax-dispMin){
 							if(fcost[(int)disp.at<float>(p,q-1)-dispMin].at<double>(p,q-1) < 
 							   fcost[(int)disp.at<float>(p,q)-dispMin].at<double>(p,q)){
 								disp.at<float>(p,q) = disp.at<float>(p,q-1);
+							}
 						}
-					}
-						if(disp.at<float>(p,q+1)!=-1 && (int)disp.at<float>(p,q+1)-dispMin>=subRW && 
-					          (int)disp.at<float>(p,q+1)-dispMin < img_leftRGB.cols-subRW){
+						if((int)disp.at<float>(p,q+1) >= dispMin && (int)disp.at<float>(p,q+1) <= dispMax-dispMin){
 							if(fcost[(int)disp.at<float>(p,q+1)-dispMin].at<double>(p,q+1) <
 						   	fcost[(int)disp.at<float>(p,q)-dispMin].at<double>(p,q)){
 								disp.at<float>(p,q) = disp.at<float>(p,q+1);
+							}
 						}
-					}
 					}
 					//cout << "p,q, disp: " << p <<" " << q << " " << disp.at<float>(p,q) << endl; 
 				}
@@ -1073,7 +1067,6 @@ void image::discAdjust(cv::Mat& disp, cv::Mat* fcost, cv::Mat mask){
 	}
 	
 }
-
 
 /* Iterative region voting */
 void image::regionVoting(cv::Mat& dispL, cv::Mat& pixflag, int TS, double TH,int iter){

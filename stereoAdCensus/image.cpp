@@ -49,18 +49,6 @@ image::image(Mat image_leftRGB, Mat image_rightRGB, int dMin, int dMax){
 }
 
 void image::reset(){
-//	DSI=cv::Scalar::all(0);
-	//init_cost=cv::Scalar::all(0);
-	//aggr_cost=cv::Scalar::all(0);
-	//final_cost=cv::Scalar::all(0);
-	//left_cost=cv::Scalar::all(0);
-//	right_cost=cv::Scalar::all(0);
-//	up_cost=cv::Scalar::all(0);
-//	down_cost=cv::Scalar::all(0);
-	//HII= cv::Scalar::all(0);
-//	VII=cv::Scalar::all(0);
-	//sumH= cv::Scalar::all(0);
-//	sumV=cv::Scalar::all(0);
 	supReg=cv::Scalar::all(0);
 	for(int p= 0 ; p<img_leftRGB.rows ; p++){
 		for(int q= 0 ; q<img_leftRGB.cols ; q++){
@@ -69,7 +57,6 @@ void image::reset(){
 			}
 		}
 	}
-	
 }
 
 Mat image::get_image(int left){
@@ -1074,36 +1061,33 @@ void image::discAdjust(cv::Mat& disp, cv::Mat* fcost, cv::Mat mask){
 	for(int p=subRH+1 ; p<img_leftRGB.rows-subRH-1 ; p++){					
 		for(int q= subRW+1 ; q<img_leftRGB.cols-subRW-1 ; q++){
 			n=0;
-			if(mask.at<int>(p,q) != 0){	
+			if(mask.at<short>(p,q) != 0){	
 				//cout << "next p,q " << p << " " << q << "mask: " << mask.at<int>(p,q)<< endl;
-				if(mask.at<int>(p,q-1) ==0){
+				if(mask.at<short>(p,q-1) ==0){
 					n++;
 					//cout << " Left Not On Edge " << endl;
 					//Point p1= Point(q-1,p);
 					//pt.push_back(p1);
 				}
-				if(mask.at<int>(p,q+1) == 0){
+				if(mask.at<short>(p,q+1) == 0){
 					n++;
 				}
 				//cout << "size: " << pt.size() << endl;
 				if(n==2){
 					//cout << " 2 points found!" << endl;
-					if((int)disp.at<float>(p,q)-dispMin>=subRW && (int)disp.at<float>(p,q)-dispMin < img_leftRGB.cols-subRW){
-						if(disp.at<float>(p,q-1)!=-1 && 
-						  (int)disp.at<float>(p,q-1)-dispMin>=subRW && 
-						  (int)disp.at<float>(p,q-1)-dispMin<img_leftRGB.cols-subRW){
+					if((int)disp.at<float>(p,q)>=dispMin && (int)disp.at<float>(p,q) <= dispMax-dispMin){
+						if((int)disp.at<float>(p,q-1)>=dispMin && (int)disp.at<float>(p,q-1)<= dispMax-dispMin){
 							if(fcost[(int)disp.at<float>(p,q-1)-dispMin].at<double>(p,q-1) < 
 							   fcost[(int)disp.at<float>(p,q)-dispMin].at<double>(p,q)){
 								disp.at<float>(p,q) = disp.at<float>(p,q-1);
+							}
 						}
-					}
-						if(disp.at<float>(p,q+1)!=-1 && (int)disp.at<float>(p,q+1)-dispMin>=subRW && 
-					          (int)disp.at<float>(p,q+1)-dispMin < img_leftRGB.cols-subRW){
+						if((int)disp.at<float>(p,q+1) >= dispMin && (int)disp.at<float>(p,q+1) <= dispMax-dispMin){
 							if(fcost[(int)disp.at<float>(p,q+1)-dispMin].at<double>(p,q+1) <
 						   	fcost[(int)disp.at<float>(p,q)-dispMin].at<double>(p,q)){
 								disp.at<float>(p,q) = disp.at<float>(p,q+1);
+							}
 						}
-					}
 					}
 					//cout << "p,q, disp: " << p <<" " << q << " " << disp.at<float>(p,q) << endl; 
 				}
