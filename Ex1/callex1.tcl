@@ -5,8 +5,9 @@ source ./ex1.tcl
 
 proc run1 {args} {
 	set myargs {*}$args
-	variable LR
-	variable noc
+	set sgbm 0
+	set LR 0
+	set noc 1
 	puts "myargs: [llength $myargs]"
 	switch -exact [llength $myargs] {
 		3 {
@@ -73,8 +74,59 @@ proc run1 {args} {
 		exper1 [list $sgbm 000191.png 112 $noc 000191.txt]
 		exper1 [list $sgbm 000193.png 96 $noc 000193.txt]
 	} else {
-		exper1 [list $sgbm 000004.png 80 $noc $LR 707 0.537]
-	}
+		exper1 [list $sgbm 000004.png 80 $noc $LR 718 537]
+		exper1 [list $sgbm 000005.png 80 $noc $LR 707 537]
+		exper1 [list $sgbm 000007.png 128 $noc $LR 718 537]
+		exper1 [list $sgbm 000009.png 80 $noc $LR 718 537]
+		exper1 [list $sgbm 000011.png 80 $noc $LR 707 537]
+		exper1 [list $sgbm 000015.png 160 $noc $LR 718 537]
+		exper1 [list $sgbm 000016.png 160 $noc $LR 718 537]
+		exper1 [list $sgbm 000018.png 112 $noc $LR 718 537]
+		exper1 [list $sgbm 000019.png 80 $noc $LR 707 537]
+		exper1 [list $sgbm 000021.png 144 $noc $LR 707 537]
+		exper1 [list $sgbm 000023.png 80 $noc $LR 721 537]
+		exper1 [list $sgbm 000026.png 96 $noc $LR 718 537]
+		exper1 [list $sgbm 000029.png 112 $noc $LR 718 537]
+		exper1 [list $sgbm 000031.png 144 $noc $LR 721 537]
+		exper1 [list $sgbm 000032.png 80 $noc $LR 721 537]
+		exper1 [list $sgbm 000037.png 128 $noc $LR 721 537]
+		exper1 [list $sgbm 000038.png 96 $noc $LR 707 537]
+		exper1 [list $sgbm 000039.png 112 $noc $LR 721 537]
+		exper1 [list $sgbm 000040.png 144 $noc $LR 718 537]
+		exper1 [list $sgbm 000045.png 128 $noc $LR 718 537]
+		exper1 [list $sgbm 000050.png 80 $noc $LR 718 537]
+		exper1 [list $sgbm 000053.png 160 $noc $LR 707 537]
+		exper1 [list $sgbm 000056.png 80 $noc $LR 718 537]
+		exper1 [list $sgbm 000059.png 112 $noc $LR 718 537]
+		exper1 [list $sgbm 000060.png 80 $noc $LR 707 537]
+		exper1 [list $sgbm 000064.png 160 $noc $LR 718 537]
+		exper1 [list $sgbm 000068.png 80 $noc $LR 718 537]
+		exper1 [list $sgbm 000081.png 80 $noc $LR 721 537]
+		exper1 [list $sgbm 000082.png 112 $noc $LR 718 537]
+		exper1 [list $sgbm 000086.png 80 $noc $LR 707 537]
+		exper1 [list $sgbm 000088.png 80 $noc $LR 721 537]
+		exper1 [list $sgbm 000092.png 160 $noc $LR 721 537]
+		exper1 [list $sgbm 000098.png 80 $noc $LR 721 537]
+		exper1 [list $sgbm 000103.png 128 $noc $LR 718 537]
+		exper1 [list $sgbm 000110.png 80 $noc $LR 718 537]
+		exper1 [list $sgbm 000116.png 112 $noc $LR 718 537]
+		exper1 [list $sgbm 000123.png 96 $noc $LR 721 537]
+		exper1 [list $sgbm 000133.png 160 $noc $LR 718 537]
+		exper1 [list $sgbm 000138.png 80 $noc $LR 721 537]
+		exper1 [list $sgbm 000139.png 80 $noc $LR 707 537]
+		exper1 [list $sgbm 000143.png 80 $noc $LR 707 537]
+		exper1 [list $sgbm 000147.png 80 $noc $LR 718 537]
+		exper1 [list $sgbm 000153.png 80 $noc $LR 707 537]
+		exper1 [list $sgbm 000154.png 80 $noc $LR 707 537]
+		exper1 [list $sgbm 000164.png 176 $noc $LR 707 537]
+		exper1 [list $sgbm 000167.png 128 $noc $LR 721 537]
+		exper1 [list $sgbm 000169.png 160 $noc $LR 718 537]
+		exper1 [list $sgbm 000173.png 96 $noc $LR 707 537]
+		exper1 [list $sgbm 000180.png 112 $noc $LR 718 537]
+		exper1 [list $sgbm 000185.png 80 $noc $LR 718 537]
+		exper1 [list $sgbm 000191.png 112 $noc $LR 707 537]
+		exper1 [list $sgbm 000193.png 96 $noc $LR 718 537]
+		}
 }
 
 run1 $::argv
