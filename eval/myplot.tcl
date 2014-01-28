@@ -2,9 +2,7 @@
 #package require Tk
 source ../params.tcl
 
-proc plot {imglist} {
-	set outlier "outlier.png"
-	
+proc plot_rdep {imglist} {
 	foreach img $imglist {
 		set rdep_pl "rdep.png"
 		set rdep "rdep${img}.txt"
@@ -31,4 +29,4 @@ proc plot {imglist} {
 #	gnuplot .c
 }
 
-plot $::argv
+plot_rdep $::argv
