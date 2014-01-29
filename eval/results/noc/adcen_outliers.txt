@@ -1,0 +1,8 @@
+img  000004.png  stAcuity  32  total_outl  0.428825  valid_outl  0.428825
+img  000004.png  stAcuity  33.75  total_outl  0.414431  valid_outl  0.414431
+img  000004.png  stAcuity  38.75  total_outl  0.379546  valid_outl  0.379546
+img  000004.png  stAcuity  112.5  total_outl  0.23277  valid_outl  0.23277
+img  000005.png  stAcuity  32  total_outl  0.409289  valid_outl  0.409289
+img  000005.png  stAcuity  33.75  total_outl  0.396055  valid_outl  0.396055
+img  000005.png  stAcuity  38.75  total_outl  0.367516  valid_outl  0.367516
+img  000005.png  stAcuity  112.5  total_outl  0.171568  valid_outl  0.171568

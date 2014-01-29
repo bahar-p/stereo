@@ -1,0 +1,19 @@
+CC = g++
+CFLAGS = -c
+LIB = 
+LFLAGS = 
+BUILDPATH = ../build
+GLFLAGS = -lGL -lglut -lGLU -lm
+OPENCVINC = `pkg-config --cflags opencv`
+OPENCVLIB = `pkg-config --libs opencv`
+
+all: middeval
+
+middeval: middeval.o
+	$(CC) -std=c++0x middeval.o -o $(BUILDPATH)/mideval $(OPENCVLIB) $(GLFLAGS)
+
+middeval.o: middeval.cpp
+	$(CC) -std=c++0x $(CFLAGS) $(GLFLAGS) $(OPENCVINC) middeval.cpp
+
+clean:
+	rm -rf *.o *~
