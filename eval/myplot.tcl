@@ -2,11 +2,23 @@
 #package require Tk
 source ../params.tcl
 
-proc plot_rdep {imglist} {
+proc plot_rdep {myargs} { 
+	set noc [lindex $myargs 0]
+	set adc [lindex $myargs 1]
+	set imglist [lindex $myargs 2 end]
 	foreach img $imglist {
-		set rdep_pl "rdep.png"
-		set rdep "rdep${img}.txt"
-		set rdep "${::evals}${rdep}"
+		if {$adc} {
+			set rdep_pl "adc_rdep.png"
+			set rdep "adcen_rdep${img}.txt"
+		} else {
+			set rdep "sgbm_rdep${img}.txt"
+			set rdep_pl "sgbm_rdep.png"
+		}
+		if {$noc} {
+			set rdep "${::res_noc}${rdep}"
+		} else {
+			set rdep "${::res_occ}${rdep}"
+		}
 		set rdep_pl "${img}${rdep_pl}"	
 		#puts "$path , $rdep"
 		eval [exec gnuplot << "
