@@ -6,7 +6,7 @@
 
 //Global Variables
 cv::Mat mask;
-std::fstream of;
+std::fstream of1,of2,of3;
 
 float* dispErrorAvg(cv::Mat& d_gt, cv::Mat& d_gen, int dmax, bool mask);
 bool isValid(float d){
@@ -22,19 +22,26 @@ int main (int argc, char** argv) {
 
 	int adcensus=0;
 	if(argc<6) {
-		std::cerr << "Usage: ./eval gt_disp gen_disp maxDisp focal baseline ?Adcensusflag? ?mask?" << std::endl;
+		std::cerr << "Usage: ./eval gt_disp gen_disp maxDisp focal baseline ?Adcensusflag? ?is_noc? ?mask?" << std::endl;
 		return -1;
 	}
 	cv::Mat im_gt = cv::imread(argv[1],-1);
 	cv::Mat im_gen = cv::imread(argv[2],-1);
+	char* fullpath = argv[1];
+	char* bname = basename(fullpath);
+	char* x = strtok(bname, ".");
+	const std::string fname(reinterpret_cast<char*>(x));
+	
 	int dmax = atoi(argv[3]);
 	float f = atof(argv[4]);
 	float bs = atof(argv[5]);
 	std::cout << "F: " << f << " BS: " << bs << std::endl;
 	if(argc>6) adcensus=atoi(argv[6]);
 	bool masked = false;
+	int noc=1;
 	if(argc>7) {
-		mask = cv::imread(argv[7],0);
+		noc = atoi(argv[7]);
+		mask = cv::imread(argv[8],0);
 		masked = true;
 	}
 	if(!im_gt.data || !im_gen.data){
@@ -74,7 +81,32 @@ int main (int argc, char** argv) {
 		std::cerr << "disparity image sizes don't match!" << std::endl;
 		return -1;
 	}
-	of.open("/home/bahar/Master/stereo/eval/result.txt", std::ios::out);
+	std::string res1,res2,res3; 
+	if(!adcensus){
+		if(noc){
+			res1 =  "/home/bahar/Master/stereo/eval/results/noc/sgbm_rdep" + fname + ".txt";
+			res2 =  "/home/bahar/Master/stereo/eval/results/noc/sgbm_outliers.txt";
+			res3 =  "/home/bahar/Master/stereo/eval/results/noc/sgbm_avgerr.txt";
+		} else {
+			res1 =  "/home/bahar/Master/stereo/eval/results/occ/sgbm_rdep" + fname + ".txt";
+			res2 =  "/home/bahar/Master/stereo/eval/results/occ/sgbm_outliers.txt";
+			res3 =  "/home/bahar/Master/stereo/eval/results/occ/sgbm_avgerr.txt";
+		}
+	} else {
+		if(noc){
+			res1 =  "/home/bahar/Master/stereo/eval/results/noc/adcen_rdep" + fname + ".txt";
+			res2 =  "/home/bahar/Master/stereo/eval/results/noc/adcen_outliers.txt";
+			res3 =  "/home/bahar/Master/stereo/eval/results/noc/adcen_avgerr.txt";
+		} else {
+			res1 =  "/home/bahar/Master/stereo/eval/results/occ/adcen_rdep" + fname + ".txt";
+			res2 =  "/home/bahar/Master/stereo/eval/results/occ/adcen_outliers.txt";
+			res3 =  "/home/bahar/Master/stereo/eval/results/occ/adcen_avgerr.txt";
+		}
+	}
+	of1.open(res1, std::ios::out);
+	of2.open(res2, std::ios::out | std::ios::app);
+	of3.open(res3, std::ios::out | std::ios::app);
+	
 	float INF = std::numeric_limits<float>::infinity();
 	/***** Disp Error Outliers *****/
 	for(int j=0; j<height;j++){
@@ -98,12 +130,12 @@ int main (int argc, char** argv) {
 					depth_gen = (f*bs)/fd_gen;
 				else depth_gen = INF;
 				float depth_err;
-				if(depth_gen == INF) depth_err =0;
-				else depth_err = fabs(depth-depth_gen);
+				//if(depth_gen == INF) depth_err =0;
+				depth_err = fabs(depth-depth_gen);
 				//std::cout << "disp_err: " << err << "  depth: " << depth_err << "  dz_1729: "  << dz_1729 << " dz_3049: " << dz_3049 << std::endl;
 				//Write to output file
-				of << (depth/100) << "  "  << (dz_1729/100) << "  " << (dz_3049/100) << "  " << (dz_5069/100) << "  "  << (dz_7083/100) << "  " 
-					<< (depth_err/100) <<  std::endl;
+				of1 << (depth/100) << "  "  << (dz_1729/100) << "  " << (dz_3049/100) << "  " << (dz_5069/100) << "  "  << (dz_7083/100) << "  " 
+					<< (depth_err==INF ? 1000000 : (depth_err/100)) <<  std::endl;
 				
 				if(depth_err >= dz_1729){
 					err_total_pxs[0]++;
@@ -154,6 +186,7 @@ int main (int argc, char** argv) {
 			err_valid_pxs[i] /= std::max((float)pix_gen_count,1.0f);
 		std::cout <<  "outliers for all and just valid disp results for stAcuity " <<  err_thr[i]  << " are: " << 
 		err_total_pxs[i] << "  " <<  err_valid_pxs[i] << std::endl;
+		of2 << "img  "  << fname+".png" << "  stAcuity  " << err_thr[i] << "  total_outl  " << err_total_pxs[i]  << "  valid_outl  " <<  err_valid_pxs[i]<< std::endl;
 	}
 	density = (float)pix_gen_count/std::max((float)pix_count,1.0f);
 	std::cout << "total valid pixs in gt: " << pix_count << " number of valid disp results in gen_disp: " << 
@@ -162,8 +195,11 @@ int main (int argc, char** argv) {
 
 	float* error = dispErrorAvg(d_gt, d_gen, dmax,masked);
 	std::cout << "Avg error of all pixs: " << error[0] << " Avg error of valid disp results: " << error[1] << std::endl;
-	of.close();
-	system("tclsh ../eval/myplot.tcl");
+	of3 <<"img  " << fname+".png" << "  total_err  "  << error[0] << "  valid_err  " << error[1] << std::endl;
+	of1.close();
+	of2.close();
+	of3.close();
+	//system(("tclsh ../eval/myplot.tcl " + fname).c_str());
 }
 
 float* dispErrorAvg(cv::Mat& d_gt, cv::Mat& d_gen, int dmax, bool masked){
@@ -199,7 +235,6 @@ float* dispErrorAvg(cv::Mat& d_gt, cv::Mat& d_gen, int dmax, bool masked){
 			}	
 		}
 	}
-
 	//normalize errors
 	error[0] /= std::max((float)pix_count,1.0f);
 	error[1] /= std::max((float)pix_gen_count,1.0f);
