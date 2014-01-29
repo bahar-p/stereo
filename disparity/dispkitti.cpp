@@ -73,7 +73,8 @@ int main(int argc, char **argv)
 	}
 	char* fullpath = argv[1];
 	char* bname = basename(fullpath);
-	fname = (reinterpret_cast<char*>(bname));
+	char* x =strtok(bname, ".");
+	fname = (reinterpret_cast<char*>(x));
 	if(!leftimg.data || !rightimg.data){
 		cerr << " No valid image" << endl;
 		return -1;
@@ -95,10 +96,10 @@ int main(int argc, char **argv)
 	ofstream of;
 	if(noc){
 		of.open("/home/bahar/Master/stereo/Ex1/sgbm/mydisp/noc/ExeTime.txt", std::ios::out | std::ios::app);
-		fpath1 = "/home/bahar/Master/stereo/Ex1/sgbm/mydisp/noc/" + fname;
+		fpath1 = "/home/bahar/Master/stereo/Ex1/sgbm/mydisp/noc/" + fname + ".png";
 	} else{
 		of.open("/home/bahar/Master/stereo/Ex1/sgbm/mydisp/occ/ExeTime.txt", std::ios::out | std::ios::app);
-		fpath1 = "/home/bahar/Master/stereo/Ex1/sgbm/mydisp/occ/" + fname;
+		fpath1 = "/home/bahar/Master/stereo/Ex1/sgbm/mydisp/occ/" + fname + ".png";
 	}
 	imwrite(fpath1 , disp8);
 	
@@ -106,20 +107,22 @@ int main(int argc, char **argv)
 		Mat dmasked;
 		string fpath2; 
 		if(noc)
-			fpath2 = "/home/bahar/Master/stereo/Ex1/sgbm/dispmasked/noc/" + fname;
+			fpath2 = "/home/bahar/Master/stereo/Ex1/sgbm/dispmasked/noc/" + fname + ".png";
 		else
-			fpath2 = "/home/bahar/Master/stereo/Ex1/sgbm/dispmasked/occ/" + fname;
+			fpath2 = "/home/bahar/Master/stereo/Ex1/sgbm/dispmasked/occ/" + fname + ".png";
 		disp8.copyTo(dmasked, mask);
 		imwrite( fpath2 , dmasked);
 		//imshow("mask" , mask);
 		//imshow("disparity", dmasked);
 	}
-	
-	ofstream myfile;
-	myfile.open("/home/bahar/Master/stereo/Ex1/adcensus/calibparam.txt", std::ios::out | std::ios::app);
-	myfile << "img: " << fname << "  Focal_Length: " << f << "  Baseline: " << tx << endl;
+
+	if(argc==7){
+		ofstream myfile;
+		myfile.open("/home/bahar/Master/stereo/Ex1/adcensus/calibparam.txt", std::ios::out | std::ios::app);
+		myfile << "img: " << fname << "  Focal_Length: " << f << "  Baseline: " << tx << endl;
+		myfile.close();
+	}
 	of << "img: " << fname << "  Execution_Time: " << ex_time << " sec"<< endl;
-	myfile.close();
 	of.close();
 	//imshow("disp8", disp8);
 	//waitKey(0);
