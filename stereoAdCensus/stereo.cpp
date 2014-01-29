@@ -115,6 +115,7 @@ int main(int argc, char **argv)
 	myfile.close();
 	of.close();
 	imwrite(fpath1 , dispL16);
+	imwrite("/home/bahar/adcen_disp.png" , dispL8);
 	if(argc>5) {
 		Mat d_masked;
 		string fpath2; 
