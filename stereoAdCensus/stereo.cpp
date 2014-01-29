@@ -31,16 +31,15 @@ int main(int argc, char **argv)
    	Mat image_right = imread(argv[2], -1);
 	char* fullpath = argv[1];
 	char* bname = basename(fullpath);
-	//char* x = strtok(bname, ".");
-	const std::string fname(reinterpret_cast<char*>(bname));
-	//cout << "filename: " << x << " sName: " << sName  << endl;
+	char* x = strtok(bname, ".");
+	const std::string fname(reinterpret_cast<char*>(x));
 	maxDisp = atoi(argv[3]);
 	int noc = atoi(argv[4]);
 	if(argc > 5) mask = imread(argv[5],0);
 	if(argc > 6) {
 		LR = atoi(argv[6]);
 		if(argc==7){
-			cout << "FocalLength and Baseline are required when triggering LR Check. \n" << 
+			cout << "FocalLength and Baseline are required when passing LRCheck flag. \n" << 
 				"Usage: ./main leftImg rightImg maxDisp is_noc ?mask? ?LRCheck focal_l baseline?" << endl;
 			return -1;
 		}
@@ -76,9 +75,8 @@ int main(int argc, char **argv)
 		Mat dispR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 		Mat costR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 		img->scanline(1.0,3.0,15, dispR, costR,Rdisp);
-		dispR8 = Mat(dispR.size().height, dispR.size().width, CV_8UC1, Scalar::all(0));
-		dispR.convertTo( dispR8, CV_8UC1,255.0/maxDisp);
-		//std::cout << "Execution time:  " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
+		//dispR8 = Mat(dispR.size().height, dispR.size().width, CV_8UC1, Scalar::all(0));
+		//dispR.convertTo( dispR8, CV_8UC1,255.0/maxDisp);
 		/* Refinement */	
 		cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
 		img->findOutliers(dispL, dispR,pixflags,focal, baseline);
@@ -91,27 +89,26 @@ int main(int argc, char **argv)
 		//imshow( "borders", br );                   	
 	}
 	img->subpxEnhance(fcost,dispL);
-	//cerr << "out of subPx" << endl;
+	minMaxLoc(dispL,&minv,&maxv);
 	//std::cout << "Exec_time: " << double( clock() - tStart) / (double)CLOCKS_PER_SEC<< " seconds." << std::endl;
 	double ex_time =  double( clock() - tStart) / (double)CLOCKS_PER_SEC;
 	Mat dispL16, dispL8;
-	//cout << "maxv: " << maxv1 << endl;
+	cout << "minv: " << minv << "  maxv: " << maxv << endl;
 	dispL.convertTo( dispL16, CV_16U,16*255.0/maxDisp);
-	//dispL.convertTo( dispL8, CV_8U,255.0/maxDisp);
-	//imshow( "Img", image_left );                   
-	//imshow( "DispL", dispL8 );                   	
+	dispL.convertTo( dispL8, CV_8U,255.0/maxDisp);
+	imshow( "DispL", dispL8 );                   	
 	//if(LR) imshow( "DispR", dispR8 );
 	ofstream myfile, of;
 	string fpath1; 
 	if(noc){
 		myfile.open("/home/bahar/Master/stereo/Ex1/adcensus/maxDisp_noc.txt", std::ios::out | std::ios::app);
 		of.open("/home/bahar/Master/stereo/Ex1/adcensus/mydisp/noc/exeTime.txt", std::ios::out | std::ios::app);
-		fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/noc/" + fname;
+		fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/noc/" + fname + ".png";
 	}
 	else {
 		of.open("/home/bahar/Master/stereo/Ex1/adcensus/mydisp/occ/exeTime.txt", std::ios::out | std::ios::app);
 		myfile.open("/home/bahar/Master/stereo/Ex1/adcensus/maxDisp_occ.txt", std::ios::out | std::ios::app);
-		fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/occ/" + fname;
+		fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/occ/" + fname+ ".png";
 	}
 	myfile << "img: " << fname << " Maxdisp_used: " << maxDisp << endl;
 	of << "img: " << fname << " Execution_Time: " << ex_time << " sec" << endl;
@@ -122,9 +119,9 @@ int main(int argc, char **argv)
 		Mat d_masked;
 		string fpath2; 
 		if(noc)
-			fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/noc/" + fname;
+			fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/noc/" + fname + ".png";
 		else
-			fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/occ/" + fname;
+			fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/occ/" + fname + ".png";
 		dispL16.copyTo(d_masked, mask);
 		//Mat tmp;
 		//dispL.copyTo(tmp,mask);
@@ -132,11 +129,15 @@ int main(int argc, char **argv)
 		//cout<< "d_masked: " << d_masked(Rect(500,150,80,1)) << endl;
 //		imshow( "DispMasked", d_masked );                   	
 		imwrite(fpath2, d_masked);
-	}	
+	}
+
+	for(int i=0;i< maxDisp-minDisp+1 ; i++){
+		DSI[i].release();
+		fcost[i].release();
+	}
 	delete[] fcost;
 	delete[] DSI;
-//	imshow("displ8" , dispL8);
-//	waitKey(0);
+	waitKey(0);
 	return 0;
 }
 
