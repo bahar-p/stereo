@@ -636,9 +636,6 @@ double image::colDiffer(cv::Mat in, int x1, int y1, int x2, int y2){
 	if (channels == 1){
 		color = (double) abs(in.at<uchar>(x1,y1)-in.at<uchar>(x2,y2));
 	}
-	else if (channels == 2){
-		color = (double) std::max(abs(in.at<cv::Vec3b>(x1,y1)[0]-in.at<cv::Vec3b>(x2,y2)[0]), abs(in.at<cv::Vec3b>(x1,y1)[1]-in.at<cv::Vec3b>(x2,y2)[1]));
-	}
 	else if(channels == 3 || channels == 4) {
 		color = (double) std::max(std::max(abs(in.at<cv::Vec3b>(x1,y1)[0]-in.at<cv::Vec3b>(x2,y2)[0]), abs(in.at<cv::Vec3b>(x1,y1)[1]-in.at<cv::Vec3b>(x2,y2)[1])), 
 					abs(in.at<cv::Vec3b>(x1,y1)[2]-in.at<cv::Vec3b>(x2,y2)[2]));
