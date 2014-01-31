@@ -66,16 +66,12 @@ Mat image::get_image(int left){
 }
 
 /* Calculating the average intesity difference for each pixel and its correspondence */
-cv::Mat* image::costAD(bool dispR){
+void image::costAD(cv::Mat* DSI, bool dispR){
 	//cerr << "costAD..." << endl;
 	int d,p,q;
 	double val =0;
 	int drange = dispMax-dispMin+1;
-	cv::Mat* DSI = new cv::Mat[drange];
 	//int sz[] = {s.height, s.width, dispMax-dispMin+1};
-	for(int d=0; d< drange; d++){
-		DSI[d] = cv::Mat(s, mytype,cv::Scalar::all(0));
-	}
 	
 	for(d=0;d<drange;d++){
 		for(p=subRH;p<img_leftRGB.rows-subRH;p++){					//Rows = height
@@ -126,7 +122,6 @@ cv::Mat* image::costAD(bool dispR){
 			}
 		}
 	}
-	return DSI;
 //	cout << "DSI: " << DSI.at<double>(100,100,10) << endl;
 }
 
@@ -177,6 +172,8 @@ void image::costCensus(int winX, int winY, int left){
 				printf("x: %d\t , y: %d\t , censusR: %s\n" , x,y, itob(censusRight[x][y]));*/
 		}
 	}
+	left_gray.release();
+	right_gray.release();
 }
 
 char * image::itob(uint64_t x)
@@ -453,7 +450,7 @@ void image::line_segment(double colLim1, double colLim2, double distLim1, double
 }
 
 /* Calculating aggregated cost */
-void image::aggregateCost(cv::Mat* icost){
+void image::aggregateCost(cv::Mat* icost, cv::Mat* sumH){
 	//cerr << "aggregateCost..." << endl;
 	int counter=1;
 	int iter=4;
@@ -461,10 +458,6 @@ void image::aggregateCost(cv::Mat* icost){
 	//cv::Mat HII(3, sz , mytype, cv::Scalar::all(0));
 	//cv::Mat VII(3, sz, mytype, cv::Scalar::all(0));
 	int drange = dispMax-dispMin+1;
-	sumH = new cv::Mat[drange];
-	for(int d=0; d<drange ;d++){
-		sumH[d]= cv::Mat(s, mytype, cv::Scalar::all(0));
-	}
 	//cv::Mat sumV(3, sz, mytype, cv::Scalar::all(0));
 	while(counter<=iter){
 		switch(counter){
@@ -525,8 +518,6 @@ void image::aggregateCost(cv::Mat* icost){
 					icost[d] = cv::Scalar::all(0);
 				}
 				finalSum(sumH,icost,'V',counter);
-				//VII = cv::Scalar::all(0);
-				//std::cout<< "sumV(100,200,10): " << sumV.at<double>(100,200,10) << std::endl;
 			break;
 			case 4:
 				//std::cout<< "4"<<std::endl;
@@ -546,8 +537,6 @@ void image::aggregateCost(cv::Mat* icost){
 					icost[d] = cv::Scalar::all(0);
 				}
 				finalSum(sumH, icost, 'H',counter);
-				//HII = cv::Scalar::all(0);
-				//std::cout<< "sumH(100,200,10): " << sumH.at<double>(100,200,10) << std::endl;
 			break;
 			default:
 				std::cout<< "iteration out of range" <<std::endl;
@@ -561,8 +550,6 @@ void image::aggregateCost(cv::Mat* icost){
 		sumH[i] = cv::Scalar::all(0);
 		sumH[i] = icost[i];
 	}
-	//finalSum(sumH, aggr_cost, 'C',  counter-1);
-	//std::cout<< "aggr_cost(100,200,10): " << aggr_cost.at<double>(100,200,10) << std::endl;
 		
 }
 /* Calculating Integral Image */
@@ -636,9 +623,6 @@ double image::colDiffer(cv::Mat in, int x1, int y1, int x2, int y2){
 	if (channels == 1){
 		color = (double) abs(in.at<uchar>(x1,y1)-in.at<uchar>(x2,y2));
 	}
-	else if (channels == 2){
-		color = (double) std::max(abs(in.at<cv::Vec3b>(x1,y1)[0]-in.at<cv::Vec3b>(x2,y2)[0]), abs(in.at<cv::Vec3b>(x1,y1)[1]-in.at<cv::Vec3b>(x2,y2)[1]));
-	}
 	else if(channels == 3 || channels == 4) {
 		color = (double) std::max(std::max(abs(in.at<cv::Vec3b>(x1,y1)[0]-in.at<cv::Vec3b>(x2,y2)[0]), abs(in.at<cv::Vec3b>(x1,y1)[1]-in.at<cv::Vec3b>(x2,y2)[1])), 
 					abs(in.at<cv::Vec3b>(x1,y1)[2]-in.at<cv::Vec3b>(x2,y2)[2]));
@@ -651,16 +635,10 @@ double image::colDiffer(cv::Mat in, int x1, int y1, int x2, int y2){
 }
 
 /* Scanline optimization from 4 direction: LRUD */
-cv::Mat* image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost, bool dispR){	
+void image::scanline(cv::Mat* semi_cost, cv::Mat* final_cost, cv::Mat* sumH, double P1, double P2, double lim, Mat& disp, Mat& cost, bool dispR){	
 	//cerr << "scanline..." << endl;
 //	int sz[] = {s.height, s.width, dispMax-dispMin+1};
 	int drange = dispMax-dispMin+1;
-	cv::Mat* final_cost = new cv::Mat[drange];
-	semi_cost = new cv::Mat[drange];
-	for(int i=0; i < dispMax-dispMin+1; i++){
-		semi_cost[i]= cv::Mat(s, mytype, cv::Scalar::all(0));	
-		final_cost[i] = cv::Mat(s,mytype, cv::Scalar::all(0));
-	}
 	for(int d=0; d< drange; d++){
 		for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
 			for(int q= subRW ; q<img_leftRGB.cols-subRW ; q++){
@@ -681,7 +659,7 @@ cv::Mat* image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost,
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q-d-dispMin>subRW){									// > 0 because in calculation of parameters P1 and P2 for Left path optimization, 
 																			//the intensity of the the previous pixel on the left is required, which causes an out of boundry error in case of (q-d-dispMin=0)
-						semi_cost[d].at<double>(p,q) = costOpt(semi_cost, p,q,d, minLeft, 'L', P1, P2, lim);	
+						semi_cost[d].at<double>(p,q) = costOpt(semi_cost,sumH, p,q,d, minLeft, 'L', P1, P2, lim);	
 						final_cost[d].at<double>(p,q) += (semi_cost[d].at<double>(p,q)/4.0);
 					}	
 				}
@@ -689,7 +667,7 @@ cv::Mat* image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost,
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q+d+dispMin<img_leftRGB.cols-subRW){									// > 0 because in calculation of parameters P1 and P2 for Left path optimization, 
 																			//the intensity of the the previous pixel on the left is required, which causes an out of boundry error in case of (q-d-dispMin=0)
-						semi_cost[d].at<double>(p,q) = costOpt(semi_cost, p,q,d, minLeft, 'L', P1, P2, lim, dispR);
+						semi_cost[d].at<double>(p,q) = costOpt(semi_cost,sumH, p,q,d, minLeft, 'L', P1, P2, lim, dispR);
 						final_cost[d].at<double>(p,q) += (semi_cost[d].at<double>(p,q)/4.0);
 					}	
 				}
@@ -708,13 +686,13 @@ cv::Mat* image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost,
 			if(!dispR){
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q-d-dispMin>subRW-1)
-						semi_cost[d].at<double>(p,q) = costOpt(semi_cost, p,q,d, minRight, 'R', P1, P2, lim);
+						semi_cost[d].at<double>(p,q) = costOpt(semi_cost,sumH, p,q,d, minRight, 'R', P1, P2, lim);
 						final_cost[d].at<double>(p,q) += (semi_cost[d].at<double>(p,q)/4.0);
 				}
 			} else {
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q+d+dispMin<img_leftRGB.cols-subRW-1)
-						semi_cost[d].at<double>(p,q) = costOpt(semi_cost, p,q,d, minRight, 'R', P1, P2, lim,dispR);
+						semi_cost[d].at<double>(p,q) = costOpt(semi_cost,sumH, p,q,d, minRight, 'R', P1, P2, lim,dispR);
 						final_cost[d].at<double>(p,q) += (semi_cost[d].at<double>(p,q)/4.0);
 				}
 			}
@@ -731,13 +709,13 @@ cv::Mat* image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost,
 			if(!dispR){
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q-d-dispMin>subRW-1)
-						semi_cost[d].at<double>(p,q) = costOpt(semi_cost, p,q,d, minUp, 'U', P1, P2, lim);
+						semi_cost[d].at<double>(p,q) = costOpt(semi_cost,sumH, p,q,d, minUp, 'U', P1, P2, lim);
 						final_cost[d].at<double>(p,q) += (semi_cost[d].at<double>(p,q)/4.0);
 				}
 			} else {
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q+d+dispMin<img_leftRGB.cols-subRW)
-						semi_cost[d].at<double>(p,q) = costOpt(semi_cost, p,q,d, minUp, 'U', P1, P2, lim, dispR);
+						semi_cost[d].at<double>(p,q) = costOpt(semi_cost,sumH, p,q,d, minUp, 'U', P1, P2, lim, dispR);
 						final_cost[d].at<double>(p,q) += (semi_cost[d].at<double>(p,q)/4.0);
 				}					
 			}
@@ -755,13 +733,13 @@ cv::Mat* image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost,
 			if(!dispR){
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q-d-dispMin>subRW-1)
-						semi_cost[d].at<double>(p,q) = costOpt(semi_cost, p,q,d, minDown, 'D', P1, P2, lim);
+						semi_cost[d].at<double>(p,q) = costOpt(semi_cost,sumH, p,q,d, minDown, 'D', P1, P2, lim);
 						final_cost[d].at<double>(p,q) += (semi_cost[d].at<double>(p,q)/4.0);
 				}
 			} else {
 				for(int d=0; d<dispMax-dispMin+1; d++){
 					if(q+d+dispMin<img_leftRGB.cols-subRW)
-						semi_cost[d].at<double>(p,q) = costOpt(semi_cost, p,q,d, minDown, 'D', P1, P2, lim, dispR);
+						semi_cost[d].at<double>(p,q) = costOpt(semi_cost,sumH, p,q,d, minDown, 'D', P1, P2, lim, dispR);
 						final_cost[d].at<double>(p,q) += (semi_cost[d].at<double>(p,q)/4.0);
 				}
 			}
@@ -769,7 +747,6 @@ cv::Mat* image::scanline(double P1, double P2, double lim, Mat& disp, Mat& cost,
 	}	
 //	finalCost(left_cost,right_cost,down_cost,up_cost, final_cost);
 	find_disparity(final_cost, disp, cost);
-	return final_cost;
 	//subpxEnhance(final_cost,disp);
 	
 }
@@ -867,10 +844,10 @@ int image::findOutliers(cv::Mat dispL, cv::Mat dispR,cv::Mat& pixflag, float f, 
 	//cerr << "findOutliers..." << endl;
 	int n=0;
 	cv::Mat Ql= (Mat_<float>(4,4) << 1,0,0, -(img_leftRGB.cols/2),0,1,0,-(img_leftRGB.rows/2),0,0,0,f,0,0, -1/B, 0);
-	    cv::Mat Qr= (Mat_<float>(4,4) << 1,0,0, -(img_leftRGB.cols/2),0,1,0,-(img_leftRGB.rows/2),0,0,0,f,0,0, -1/B, 0);
+	cv::Mat Qr= (Mat_<float>(4,4) << 1,0,0, -(img_leftRGB.cols/2),0,1,0,-(img_leftRGB.rows/2),0,0,0,f,0,0, -1/B, 0);
 	cv::Mat T= (Mat_<float>(4,4) << 1,0,0, B,0,1,0,0,0,0,1,0,0,0, 0, 1);
 	for(int p=subRH ; p<img_leftRGB.rows-subRH ; p++){					
-		for(int q= subRW; q<img_leftRGB.cols-subRW ; q++){
+		for(int q= subRW; q<img_leftRGB.cols-subRW-dispMax ; q++){
 			//cout<< "dispL: " << dispL.at<float>(p,q) << " dispR: " << dispR.at<float>(p,q-(int)dispL.at<float>(p,q)) << endl;
 			//cout << p << " " << q << " " <<  dispL.at<float>(p,q) << endl;
 			if(dispL.at<float>(p,q) == -1){
@@ -892,6 +869,9 @@ int image::findOutliers(cv::Mat dispL, cv::Mat dispR,cv::Mat& pixflag, float f, 
 			
 		}
 	}
+	Ql.release();
+	Qr.release();
+	T.release();
 	//cout<< n << " outlier!" << endl;
 	
 }
@@ -925,7 +905,13 @@ int image::labelOut(cv::Mat Ql, float pl,float ql, float dl, float dr){
 		//cout << " Occluded!" << endl;
 		return 1;
 	}
-	
+	p1.release();	
+	q1.release();	
+	p2.release();	
+	res1.release();	
+	res2.release();	
+	res3.release();	
+	res4.release();	
 	//cv::Mat zero = Mat::zeros(1,1,CV_32F);
 	//cv::Mat diff = res4 != zero;
 	// Equal if no elements disagree
@@ -1024,6 +1010,7 @@ void image::interpolate(cv::Mat img, cv::Mat& disp, cv::Mat pixflag){
 				}
 				if(min_diff == 20000000 || min_diff == 10000000); //cout << "Very large intensity diff: " << min_diff << " p=" << p << " ,q=" << q << endl;
 				else disp.at<float>(p,q) = disp.at<float>(y,x);
+			gimg.release();
 			} else ;
 			
 		}
@@ -1052,7 +1039,10 @@ void image::border(cv::Mat disp, cv::Mat& grad){
 
 	/// Total Gradient (approximate)
 	addWeighted( abs_grad_x, 1, abs_grad_y, 1, 0, grad );
-	
+	grad_x.release();	
+	grad_y.release();	
+	abs_grad_x.release();	
+	abs_grad_y.release();	
 }
 
 void image::discAdjust(cv::Mat& disp, cv::Mat* fcost, cv::Mat mask){
@@ -1142,6 +1132,7 @@ void image::regionVoting(cv::Mat& dispL, cv::Mat& pixflag, int TS, double TH,int
 		}
 		n++;
 	}
+	hist.release();
 }
 
 int image::mostVote(cv::Mat hist){
@@ -1158,7 +1149,7 @@ int image::mostVote(cv::Mat hist){
 
 
 /* Calculating ech path cost to a pixel of interest */
-double image::costOpt(cv::Mat* in, int p, int q, int d, double preMin, char dir, double param1, double param2, double threshold,bool dispR){
+double image::costOpt(cv::Mat* in,cv::Mat* sumH, int p, int q, int d, double preMin, char dir, double param1, double param2, double threshold,bool dispR){
 	double cost=0.0;
 	std::pair<double,double> P;
 	if(!dispR){
@@ -1361,8 +1352,6 @@ void image::subpxEnhance(cv::Mat* fcost, cv::Mat& idisp){
 	free(census_hamming);
 	free(censusLeft);
 	free(censusRight);
-	delete[] sumH;
-	delete[] semi_cost;
 	img_leftRGB.release();
 	img_rightRGB.release();
 	supReg.release();

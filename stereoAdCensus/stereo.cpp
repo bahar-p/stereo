@@ -47,36 +47,61 @@ int main(int argc, char **argv)
 		baseline = atof(argv[8]);
 	}
 	Size s = image_left.size();
+	int drange = maxDisp - minDisp + 1;
 	img = new image(image_left,image_right, minDisp, maxDisp);
-	cv::Mat dispR8;
 	
 	clock_t tStart = clock();	
-	cv::Mat* DSI = img->costAD();
+	cv::Mat* DSI = new cv::Mat[drange];
+	cv::Mat* fcost = new cv::Mat[drange];
+	cv::Mat* semi_cost = new cv::Mat[drange];
+	cv::Mat* sumH = new cv::Mat[drange];
+	for(int d=0; d< drange; d++){
+		semi_cost[d]= cv::Mat(s, mytype, cv::Scalar::all(0));	
+		fcost[d] = cv::Mat(s,mytype, cv::Scalar::all(0));
+		DSI[d] = cv::Mat(s, mytype,cv::Scalar::all(0));
+		sumH[d]= cv::Mat(s, mytype, cv::Scalar::all(0));
+	}
+	img->costAD(DSI);
 	img -> costCensus(7,9,1);
 	img-> costCensus(7,9,0);
 	img->c_census(7,9);
 	img->initCost(DSI, 10,30);
 	img->line_segment(20.,6.,34.,17.);
-	img->aggregateCost(DSI);
-	for(int i=0;i< maxDisp-minDisp+1 ; i++)
-		DSI[i].release();
+	img->aggregateCost(DSI,sumH);
 	Mat dispL= cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 	Mat costL= cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
-	cv::Mat* fcost = img->scanline(1.0,3.0,15, dispL, costL);
-	
+	img->scanline(semi_cost, fcost, sumH,1.0,3.0,15, dispL, costL);
+	for(int d=0; d< drange; d++){
+		semi_cost[d].release();
+		DSI[d].release();
+		sumH[d].release();
+	}
 	if(LR){
+		cv::Mat* fRcost = new cv::Mat[drange];
+		for(int d=0; d< drange; d++){
+			semi_cost[d]= cv::Mat(s, mytype, cv::Scalar::all(0));	
+			fRcost[d] = cv::Mat(s,mytype, cv::Scalar::all(0));
+			DSI[d] = cv::Mat(s, mytype,cv::Scalar::all(0));
+			sumH[d]= cv::Mat(s, mytype, cv::Scalar::all(0));
+		}
 		bool Rdisp= true;
 		img->reset();
-		DSI = img->costAD(Rdisp);
+		img->costAD(DSI, Rdisp);
 		img->c_census(7,9,Rdisp);
 		img->initCost(DSI, 10,30);
 		img->line_segment(20.,6.,34.,17.,Rdisp);
-		img->aggregateCost(DSI);
+		img->aggregateCost(DSI,sumH);
 		Mat dispR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
 		Mat costR=cv::Mat(s.height, s.width, CV_32FC1,cv::Scalar::all(0));
-		img->scanline(1.0,3.0,15, dispR, costR,Rdisp);
+		img->scanline(semi_cost,fRcost,sumH,1.0,3.0,15, dispR, costR,Rdisp);
+		//Mat dispR8;
 		//dispR8 = Mat(dispR.size().height, dispR.size().width, CV_8UC1, Scalar::all(0));
 		//dispR.convertTo( dispR8, CV_8UC1,255.0/maxDisp);
+		for(int d=0; d< drange; d++){
+			fRcost[d].release();
+		}
+		//imshow("dispR" , dispR8);
+		delete[] fRcost;
 		/* Refinement */	
 		cv::Mat pixflags(dispL.rows, dispL.cols,CV_32S, Scalar::all(0));
 		img->findOutliers(dispL, dispR,pixflags,focal, baseline);
@@ -87,6 +112,9 @@ int main(int argc, char **argv)
 		img->border(dispL, br);
 		img->discAdjust(dispL, fcost, br);
 		//imshow( "borders", br );                   	
+		pixflags.release();
+		br.release();
+		dispR.release();
 	}
 	img->subpxEnhance(fcost,dispL);
 	minMaxLoc(dispL,&minv,&maxv);
@@ -96,7 +124,7 @@ int main(int argc, char **argv)
 	cout << "minv: " << minv << "  maxv: " << maxv << endl;
 	dispL.convertTo( dispL16, CV_16U,16*255.0/maxDisp);
 	dispL.convertTo( dispL8, CV_8U,255.0/maxDisp);
-	imshow( "DispL", dispL8 );                   	
+	//imshow( "DispL", dispL8 );                   	
 	//if(LR) imshow( "DispR", dispR8 );
 	ofstream myfile, of;
 	string fpath1; 
@@ -115,6 +143,7 @@ int main(int argc, char **argv)
 	myfile.close();
 	of.close();
 	imwrite(fpath1 , dispL16);
+	imwrite("/home/bahar/adcen_disp.png" , dispL8);
 	if(argc>5) {
 		Mat d_masked;
 		string fpath2; 
@@ -129,15 +158,26 @@ int main(int argc, char **argv)
 		//cout<< "d_masked: " << d_masked(Rect(500,150,80,1)) << endl;
 //		imshow( "DispMasked", d_masked );                   	
 		imwrite(fpath2, d_masked);
+		d_masked.release();
 	}
-
-	for(int i=0;i< maxDisp-minDisp+1 ; i++){
+	//waitKey(0);
+	for(int i=0;i< drange ; i++){
 		DSI[i].release();
 		fcost[i].release();
+		semi_cost[i].release();
+		sumH[i].release();
 	}
+	image_left.release();
+	image_right.release();
+	dispL.release();
+	dispL8.release();
+	dispL16.release();
+	costL.release();
+	mask.release();
+	delete[] sumH;
+	delete[] semi_cost;
 	delete[] fcost;
 	delete[] DSI;
-	waitKey(0);
 	return 0;
 }
 
