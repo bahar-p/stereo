@@ -95,10 +95,10 @@ int main(int argc, char **argv)
 	string fpath1; 
 	ofstream of;
 	if(noc){
-		of.open("/home/bahar/Master/stereo/Ex1/sgbm/mydisp/noc/ExeTime.txt", std::ios::out | std::ios::app);
+		of.open("/home/bahar/Master/stereo/Ex1/sgbm/mydisp/noc/sgExeTime.txt", std::ios::out | std::ios::app);
 		fpath1 = "/home/bahar/Master/stereo/Ex1/sgbm/mydisp/noc/" + fname + ".png";
 	} else{
-		of.open("/home/bahar/Master/stereo/Ex1/sgbm/mydisp/occ/ExeTime.txt", std::ios::out | std::ios::app);
+		of.open("/home/bahar/Master/stereo/Ex1/sgbm/mydisp/occ/sgExeTime.txt", std::ios::out | std::ios::app);
 		fpath1 = "/home/bahar/Master/stereo/Ex1/sgbm/mydisp/occ/" + fname + ".png";
 	}
 	imwrite(fpath1 , disp8);
@@ -122,7 +122,7 @@ int main(int argc, char **argv)
 		myfile << "img: " << fname << "  Focal_Length: " << f << "  Baseline: " << tx << endl;
 		myfile.close();
 	}
-	of << "img: " << fname << "  Execution_Time: " << ex_time << " sec"<< endl;
+	of << "img: " << fname << " Execution_Time: " << ex_time << " sec"<< endl;
 	of.close();
 	//imshow("disp8", disp8);
 	//waitKey(0);

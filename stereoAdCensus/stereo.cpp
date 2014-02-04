@@ -130,11 +130,11 @@ int main(int argc, char **argv)
 	string fpath1; 
 	if(noc){
 		myfile.open("/home/bahar/Master/stereo/Ex1/adcensus/maxDisp_noc.txt", std::ios::out | std::ios::app);
-		of.open("/home/bahar/Master/stereo/Ex1/adcensus/mydisp/noc/exeTime.txt", std::ios::out | std::ios::app);
+		of.open("/home/bahar/Master/stereo/Ex1/adcensus/mydisp/noc/adcexeTime.txt", std::ios::out | std::ios::app);
 		fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/noc/" + fname + ".png";
 	}
 	else {
-		of.open("/home/bahar/Master/stereo/Ex1/adcensus/mydisp/occ/exeTime.txt", std::ios::out | std::ios::app);
+		of.open("/home/bahar/Master/stereo/Ex1/adcensus/mydisp/occ/adcexeTime.txt", std::ios::out | std::ios::app);
 		myfile.open("/home/bahar/Master/stereo/Ex1/adcensus/maxDisp_occ.txt", std::ios::out | std::ios::app);
 		fpath1 = "/home/bahar/Master/stereo/Ex1/adcensus/mydisp/occ/" + fname+ ".png";
 	}
