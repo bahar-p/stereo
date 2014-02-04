@@ -41,8 +41,10 @@ int main (int argc, char** argv) {
 	int noc=1;
 	if(argc>7) {
 		noc = atoi(argv[7]);
-		mask = cv::imread(argv[8],0);
-		masked = true;
+		if(argc==9){
+			mask = cv::imread(argv[8],0);
+			masked = true;
+		}
 	}
 	if(!im_gt.data || !im_gen.data){
 		std::cerr << "Invalid Image" << std::endl;
@@ -53,7 +55,6 @@ int main (int argc, char** argv) {
 	im_gt.convertTo(d_gt, CV_32F, 1/256.);
 	if(adcensus) im_gen.convertTo(d_gen, CV_32F,dmax/(16.*255)); 		//if it's AdCensus generated disparity
 	else im_gen.convertTo(d_gen, CV_32F,dmax/(255.)); 			//if it's sgbm generate disparity
-
 	int height = d_gt.size().height;
 	int width = d_gt.size().width;
 	int arr_len = 4;
@@ -132,10 +133,16 @@ int main (int argc, char** argv) {
 				float depth_err;
 				//if(depth_gen == INF) depth_err =0;
 				depth_err = fabs(depth-depth_gen);
+				float err_stAc = c*pupil_dist*(depth_err/(depth*depth));
 				//std::cout << "disp_err: " << err << "  depth: " << depth_err << "  dz_1729: "  << dz_1729 << " dz_3049: " << dz_3049 << std::endl;
 				//Write to output file
-				of1 << (depth/100) << "  "  << (dz_1729/100) << "  " << (dz_3049/100) << "  " << (dz_5069/100) << "  "  << (dz_7083/100) << "  " 
-					<< (depth_err==INF ? 1000000 : (depth_err/100)) <<  std::endl;
+				/*of1 << (depth/100) << "  "  << (dz_1729/100) << "  " << (dz_3049/100) << "  " << (dz_5069/100) << "  "  << (dz_7083/100) << "  " 
+					<< (depth_err==INF ? 1000000 : (depth_err/100)) <<  std::endl;*/
+				if(depth_err != INF){
+					of1 << (depth/100) << "  "  << (stAcuity_1729/60) << "  " << (stAcuity_3049/60) << "  " << (stAcuity_5069/60) << "  "  << (stAcuity_7083/60) << "  " 
+					<< err_stAc <<  std::endl;
+				}
+				
 				
 				if(depth_err >= dz_1729){
 					err_total_pxs[0]++;
