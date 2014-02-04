@@ -8,7 +8,6 @@ proc readt {myargs} {
 	#set dir [split $f "/"]
 	set fname [file tail $f]
 	set name [lindex [split $fname "."] 0]
-			
 	puts "dir: $name"
 	set f_data [read $fp]
 	set data [split $f_data "\n"]
@@ -24,6 +23,7 @@ proc readt {myargs} {
 		}
 	}
 	set avg1 [expr {$sum1/$n1}]
+	set avg1 [expr {$avg1/60}]
 	puts "avg1: $avg1"
 	if {$noc} {
 		set fout [open "${::res_noc}avgtime.txt" "a+"]
