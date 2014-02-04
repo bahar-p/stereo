@@ -1,0 +1,2 @@
+sgExeTime avg_Extime: 0.5517307692307691
+adcexeTime avg_Extime: 272.84173076923076
