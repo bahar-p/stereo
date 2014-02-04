@@ -5,7 +5,7 @@ source ../params.tcl
 proc plot_rdep {myargs} { 
 	set noc [lindex $myargs 0]
 	set adc [lindex $myargs 1]
-	set imglist [lindex $myargs 2 end]
+	set imglist [lrange $myargs 2 end]
 	foreach img $imglist {
 		if {$adc} {
 			set rdep_pl "adc_rdep.png"
