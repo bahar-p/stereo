@@ -170,57 +170,50 @@ While the physical and geometrical approaches to this problem are well understoo
 and measuring the disparity to generate a dense depth map still remains a challenging task. \newline
 
 \section{Epipolar Geometry}
-The basic geometry of stereo matching is described in more detail in this section. 
-The epipolar geometry in stereo images is defined by the intersection between the image planes and any plane having the line between two camera centres, known as {\it baseline}, 
-as axis \cite{hart2000}. 
-This geometry helps to understand the core idea of stereo matching algorithms and 3D model reconstruction from stereo images.
-(\textbf {FIGURE  for epipolar planes similar to the figure in multipleview geometry page240})
+Understanding the fandumental concepts of the corresponding geometry of stereo matching helps to better understand the functionality of the methods designed to addressing this problem, 
+thus comprehending how a 3D model can be constructed from stereo image pairs. Therefore, we will thoroughly describe the basic geometry of stereo matching in this section. \newline
+If we consider two cameras that are looking at a particular scene from slightly different view points, a back projection of a point in the 3D space through rays passing each camera centre
+would result in two distinct points on each image plane. From here on, we will call the point in space $P$ and its image on the first (left) and second (right) planes 
+$P^{'}$ and ${P}^{"}$ respectively. \newline
+As a result of $P$'s back projection on the image planes, an important property will form between the points and the camera centres, which is a plane, called {\it epipolar plane}, 
+that traverses $P^{'}$, $P^{"}$ and the camera centres, thus intersecting each image plane. 
+It should be emphasized that this property, from which the consequent properties are derived, is the building block of stereo matching algorithms. 
+Let us denote the specified plane by $S$ for further reference. 
+Since $S$ passes through the camera centres, it also passes through the line 
+that connects two camera centres. This line, which is known as the {\it baseline}, intersects each image plane at a point called the {\it the epipole}. 
+Consequently, the intersection of the plane $S$ and each of the image planes, creates a line called {\it epipolar line} \cite{hart2000}. 
+The {\it epipolar line} always passes through the {\it epipole} in the image plane. 
+These concepts, illustrated in figure \textbf{FIGURENUM}, constitute the important components of the stereo correspondence geometry. \newline 
+(\textbf{FIGURE HERE FOR EPIPOLAR GEOMETRY TERMS}) \newline
+
+Now, we can define the problem of stereo correspondence as a case in which the location of $P^{'}$ in the image plane is clear, while the
+corresponding point $P^{"}$ is unknown; however, based on the aforementioned properties, we know that $P^{"}$ is located somewhere on the line (epipolar line) 
+created by the intersection of a plane traversing the ray passing through $P^{'}$ and the first camera centre and the {\it baseline}. This line is in fact, the projection of the ray going
+through $P^{'}$ and the first camera centre, on the right image plane. Therefore, the search for the corresponding point, $P^{"}$, will be limited to merely scanning the corresponding 
+epipolar line on the second image plane rather than the whole image.
+
+(\textbf {FIGURE  for epipolar planes similar to the figure in multipleview geometry page240}) \newline 
 %\begin{figure}{h!}
 %\centering
 %\includegraphics[width=1.5in,height=1.5in]{epipole}
 %\end{figure}
 
-If we consider a point $P$ in space and project it back as $P'$ and $P''$ with rays passing through each camera's centre
-into the left and right image planes, there will be a common feature between all these points and the camera centres which serves as an important property while searching for corresponding points
-in stereo matching algorithms. Let us call a plane traversing all these points $S$.
-Now, we can define the problem of finding the correspondence, as when we only know the position of the point $P'$ in the left image and want to find its correspondence, $P''$, 
-in the right plane. 
-According to the aforementioned property, $P'$,
-its correspondence and their projection in 3D space are all coplanar with camera centres. This plane, $S$, is defined by the line connecting two camera centres and 
-the rays passing through $P'$ and the left camera centre. Therefore, the point $P''$ would lie somewhere on the line created by the intersection of $S$ and the right image plane.
-This line is in fact the back-projection in the right image plane of the ray passing through $P'$, $P$ and the left camera centre. This line is called the {\it epipolar line} 
-corresponding to $P'$ \cite{hart2000}. 
-Hence, in a stereo matching algorithm
-we only need to search this line rather than the whole image in order to find the correspondence for point $P'$.
-In order to better understand the principal idea behind stereo matching algorithms, some fundamental concepts in epipolar geometry must be first introduced. 
-Here, we explain these concepts briefly. Figure \textbf{FIGURE NUMER} also provides an illustation of these concepts.
-\newline
-As described in \cite{hart2000}, the fundamental entities in epipolar geometry are as follows:
-\begin{itemize}
-\item The \textbf{epipole}: The point of intersection between the baseline and each of the image planes is called the epipole. In other words, each epipole can be referred to as the image of one of
-the camera centres in the other image plane.
-
-\item The \textbf{epipolar plane}: Any plane containing the line between camera centres is called the epipolar plane. A collection of these planes is called an epipolar pencil. 
-
-\item The \textbf{epipolar line}: The intersection of the epipolar plane and the image plane creates a line called epipolar line. The epipolar line always passes through the epipole in the 
-image plane.
-\end{itemize}
-
-(\textbf{FIGURE HERE FOR EPIPOLAR GEOMETRY TERMS}) 
-\newline 
-Knowing the concepts in epipolar geometry helps to better understand how stereo correspondence algorithms work. Based on the description of epipolar geometry, 
-we know that in order to find the correspondence of a particular point $P'$ in the second image plane, first the corresponding epipolar line must be found. 
-Therefore, there is a projective mapping from each point in the first image 
-to its corresponding epipolar line in the second image, which can be represented as a matrix that is independent of the scene and is related to the camera's properties.\cite{hart2000} As it can be
-seen in figure (\textbf{figure number}), mapping from point $P'$ to its correspondence, $P''$, in the other image plane requires certain transformations; rotation and translation. However, in order
-to make the scanning process for correspondences more efficient in stereo matching algorithms, 
-it is better to have the input image pairs warped first, i.e. {\it rectified} \cite{sze11}. The best way to accomplish this task is to
-rotate both cameras first so that their optical axis, the line passing through the camera centre which is perpendicular to the image plane, are parallel to each other; 
-i.e. their optical axis is perpendicular to the baseline. Furthermore, it is necessary to have the camera's {\it y} axis perpendicular to the optical axis. After these two steps,
-corresponding epipolar lines will be horizontal which constrains the process of searching for the corresponding points. 
-In this model, the disparity for points at infinity is also equal to 0 \cite{sze11}.
-The relation between particular geometrical parameters through which the depth of a certain point in 3D space is obtained, can be clearly defined based on the aforementioned rectified model. 
-This relation is presented as follows \cite{sze11}:
+It is now apparent that in order to find the correspondence of a particular point $P^{'}$ in the second image plane, 
+first the corresponding epipolar line, that is the back-project of the 
+ray passing through $P^{'}$ and the first camera centre, must be sought. 
+The projection from a point to its corresponding epipolar line can be obtains through certain transformations in space; normally a rotation and translation, \textbf {FIGNUMER}.
+These transformations can be expressed
+through a matrix, for further geometrical calculations, that is merely dependant on the camera's properties, not the scene \cite{hart2000}.
+However, dealing with these transformations while looking for corresponding points, can increase the complexity of stereo matching algorithms to certain levels; therefore, 
+in order to avoid this issue, many approaches are proposed based on the assumption that image pairs are first warped, i.e. {\it rectified} \cite{sze11}.
+This process is known as {\it image rectification} which is basically achieved by first having the cameras rotated in a way that their optical axis, 
+the line passing through the camera centre which is perpendicular to the image plane, are parallel to each other; 
+i.e. their optical axis is perpendicular to the baseline. Furthermore, it might also be necessary to have the cameras tilted so that their {\it y} axis is perpendicular to the optical axis. 
+After these two steps, horizontal scanlines are equivalent to the corresponding epipolar lines. This pre-processing step significantly constrains the process of searching 
+for corresponding points and eliminates certain complications in stereo matching algorithms \cite{sze11}. \newline 
+Using the rectification model and epipolar geometry described earlier illustrated in figure \textbf{FIGURENUM}, 
+derivation of the geometrical relation through which the depth of a certain point in 3D space 
+can be obtained, will be straightforward. This relation is presented as follows \cite{sze11}:
 \begin{equation}
 d = f\frac{B}{Z}
 \end{equation}
@@ -245,12 +238,13 @@ In this section, we are going to briefly describe the important specifications o
 Sparse correspondence algorithms, also known as feature-based algorithms, are the early stereo matching methods. In the 1980s, this class of algorithms received considerable attention by
 many researchers in computer vision \cite{dhon89}.
 In this type of methods, particular features in an image, such as edges, 
-points, line segments, or other distinctive features are extracted and therefore, the search for corresponding pixels is only applied to these regions. Consequently, algorithms of this
+points, line segments, or other distinctive features are extracted; therefore, the search for corresponding pixels is only applied to these regions. 
+Consequently, algorithms of this
 type result in a sparse disparity map \cite{matt89,hsie92, sze11}. The introduction of feature-based algorithms has mainly been motivated by three important factors \cite{bro03,sze11}:
 \begin{itemize}
-\item Limitation in computational resources.
+\item Lack of advanced hardware and technology for exhaustive computational tasks 
 \item Constraint of the search area in order to find more reliable matches.
-\item Images with different illumination, where edges or some other particular features preserves their photometric properties and therefore, are the only regions reliable enough to 
+\item Image pairs with different illumination, where edges or some other particular features preserve their photometric properties and therefore, are the only regions reliable enough to 
 be used for correspondence search.
 
 However, the requirement of having dense depth maps for many applications and also the emergence of efficient {\it dense correspondence algorithms}, have diverted the attention away
@@ -259,9 +253,10 @@ from this class of algorithms in the last 20 years.
 
 \subsection{Dense Correspondence Algorithms}
 Unlike feature-based methods, dense correspondence algorithms try to find the
-corresponding pixels in the whole image, and therefore, result in a dense disparity map. Most recent algorithms and studies have focused on this class of algorithms since many applications 
-nowadays, such as image-based rendering, modelling, or augmented reality require a dense depth map of the scene. However, this class of algorithms face many challenges that need to be properly
-addressed, such as finding the depth values in textureless areas, depth discontinuities, and occluded regions \cite{sch02,bro03}.
+correspondences for all the pixels in the image, and therefore, result in a dense disparity map. Most recent algorithms and studies have focused on this class of algorithms since many applications 
+nowadays, such as graphical rendering, 3D model construction, or augmented reality require a dense depth map of the scene. 
+However, this class of algorithms face many challenges that need to be properly
+addressed, such as finding the depth values in depth discontinuities, occluded regions and textureless areas \cite{sch02,bro03}.
 
 Dense correspondence algorithms can be classified in two groups based on how they assign
 disparities to pixels \cite{sze11}:
@@ -272,9 +267,8 @@ disparities to pixels \cite{sze11}:
 
 \subsubsection{Local Approaches} 
 
-Local methods tend to find the disparity of each pixel based on its local neighboring pixels. In
-other words, the disparity of a pixel is calculated in a finite window, based on the intensity values
-its of neighboring pixels in the same window \cite{sch02}.
+Local methods tend to find the disparity of each pixel based on its neighboring pixels. In
+other words, the disparity of a pixel is calculated in a finite window containing its neighboring pixels, based on a particular metric, e.g. the intensity values \cite{sch02}.
 
 These methods make an implicit smoothness assumption for the pixels in the search
 window, and therefore, assign the same disparity to all the pixels belonging to the same window which could result in incorrect disparity values in slanted surfaces or
@@ -290,52 +284,52 @@ However, a significant advantage of using local approaches is their high speed i
 
 \subsubsection{Global Approaches}
 Unlike local approaches, in global methods the disparity of a pixel depends on the information in
-the whole image. Global methods usually contain an optimization step of a global energy
-function\cite{roy98,bobi99,boyk01}. In this class of algorithms, an optimal disparity value for each pixel is sought that leads to minimization of a global cost
-function that normally combines a data term with an explicit smoothness assumption in form of:
+the whole image. Global methods usually include an optimization step of a global energy
+function\cite{roy98,bobi99,boyk01,hong10}. In this class of algorithms, an optimal disparity value for each pixel is sought that leads to minimization of a global cost
+function that normally combines a data term with an explicit smoothness assumption.
 
 \begin{equation}
 E(d)=E_{data}(d)+\lambda E_{smooth}(d)
 \end{equation}
-The term $E_{data}$ normally represents the difference in the intensity of the corresponding pixels and is denoted as follows:
+The term $E_{data}$ is normally represented as the difference of a common metric, e.g. the photometric property, between the corresponding pixels and is denoted as follows:
 
 \begin{equation}
 E_{data}(d) = \sum_{(x,y)}C(x,y,d(x,y))
 \end{equation}
 
-where C is the matching cost. The matching cost function can have various definitions depending on the algorithm; however, it is normally defined as sum of absolute difference 
+where C is a matching cost. The matching cost function can have various definitions depending on the algorithm; however, it is normally defined as sum of absolute difference 
 between the intensity of the corresponding pixels in two images \cite{sch02}.
 
-Due to the existence of the smoothness term, $E_{smooth}$, neighboring pixels tend to have similar disparity values. $\lambda$ is also a weight factor that can vary depending 
-on the implementation of the global function in the algorithm \cite{sze11}.
+The term, $E_{smooth}$, is the smoothness assumption based on which the disparity values in different regions are refined. The definition of this term can also vary in 
+different solutions. $\lambda$ is also a weighting factor, by which the effect of the smoothness assumption in the global function can be controlled in the algorithm \cite{sze11}.
 In order to find the minimum of the global function, common approaches in computer science have proved to be particularly useful. 
 To name some of these approaches, we can refer to dynamic programming, graph cut, and belief propagation. Many researchers have studied and addressed the problem of stereo matching
 by applying one of these approaches \cite{sch02,boy01,boy04,kim05,sun11}.
 
-The major drawback of global approaches is normally their high usage of computational resources and their low speed. However, 
+The major drawback of global approaches is normally their high usage of computational resources and low speed. However, 
 they usually result in more accurate disparity values \cite{hirsch02,sze11}. 
 
 It is also worthwhile to mention that in the past 12 years, another group of algorithms have emerged which cannot be explicitly classified in any of the previously mentioned groups.
 This group of methods, which are known as {\it Segmentation-based techniques}, first segment the image into regions and then, rather than searching for correspondences per pixel,
-attempt to find the corresponding disparity for each region. A more detailed review of these methods can be found in \cite{sze11}.
+they attempt to find the corresponding disparity for each region. A more detailed review of these methods can be found in \cite{sze11}.
 
 \subsection{Edge Detection}
 
 As mentioned earlier in the "Introduction", salient {\it edges} in the scene are one of the important features 
 that can be used in many applications, such as object detection, image stitching, or 3D model reconstruction \cite{sze11}.
-Due to their importance in defining the boundaries of objects and also their correspondence to occlusion occurrence and depth discontinuities in 3D, we have also 
-masked our input data based on the detected edges in the scene. 
+Due to their importance in defining the boundaries of objects and also their role in occlusion occurrence and depth discontinuities in 3D, we have also focused on employing them in our
+evaluation approach; therefore, we have masked our input data based on the detected edges in the scene. 
 In order to extract this feature in the images, i.e. edges, we have used 
-specific algorithms. Here, we will describe how it is possible to find the most salient edges in the scene using vision techniques and how closely it matches the human perception.
+specific algorithms. Here, we will describe how it is possible to find the most salient edges in the scene using vision techniques and how closely they match the human perception.
 
-
-In an image, the intersection of regions with different texture, color, or intensity define the edges; i.e. edges occure where there is a {\it dramatic variation of intensity} \cite{sze11}.
-Therefore, a reasonable approach to detect the edges in an image would be calculating the gradient of the intensity image. However, since an image normally contains a certain amount of
-noise which intensifies at higher frequencies, taking the derivatives of the image which makes high frequency signals more prominent to others, can lead to significant noise amplification.
+When looking at a scene, the concept of an edge is perceived in human visual system whenever there is a distinguishable difference in color, intensity or texture between 
+different regions. \cite{sze11}.
+Therefore, a reasonable mathematical approach to detect the edges in an image would be calculating the gradient of the intensity image. However, since an image normally contains a certain amount of
+noise which intensifies at higher frequencies, taking the derivatives of the image can lead to significant noise amplification, as it makes high frequency signals more prominent to others.
 Therefore, it is better to attenuate high frequencies prior to applying any edge detection approach. 
-There are a variety of low-pass filters for image smoothing (blurring), e.g. {\it Sobel, or Gaussian filter}. These types of filters are known as {\it linear filters} \cite{sze11}. 
-In linear filtering operators, for each pixel, a weighted combination of pixels in its neighborhood 
-is used in order to estimate its final value \cite{sze11}. This process can be easily modelled by convolution of the input signal with a particular kernel function. 
+There are a variety of filters for image smoothing (blurring); however, since we want to attenuate high frequencies, it is better to use a low-pass filter.
+A widely known class of image blurring filters in computer vision, are called {\it linear filters}. In linear filtering operators, for each pixel a weighted summation of its neighboring pixels
+is used in order to estimate its final value \cite{sze11}. In mathematics, this process can be modelled by convolution of the input signal with a particular function, known as kernel. 
 \begin{equation}
 g(i,j) = g(i,j)=\sum_{k,l}f(i+k,j+l)h(k,l)
 \end{equation}
@@ -343,23 +337,25 @@ which is equivalent to:
 \begin{equation}
 g=f\bigotimes h
 \end{equation}
-where $f$ and $g$ are the input and output signals respectively, and $h$ is the kernel function which can be different depending on the filter. 
+where $f$ and $g$ are the input and output signals respectively, and $h$ is the kernel function which can vary depending on the type of filter. 
 
 Therefore, each filter can modify the input signal differently based on its corresponding kernel function.
-Gaussian filter is commonly used for attenuating higher frequencies in an image and filtering out the noise. Since, edges in an image may be oriented along any arbitrary direction, 
-we do not want to apply a filter which is biased towards a particular direction in filtering out the noise. Instead, a 2 dimensional symmetric kernel is preferable. 
-This feature is particularly found in Gaussian filter, since it employs a 2D symmetric kernel. Therefore, Gaussian filter is normally used in most edge detection algorithms.
-An isotropic (i.e. circularly symmetric) Gaussian kernel has the following form \cite{sze11}:
+Gaussian filter is commonly used for attenuating higher frequencies in an image and filtering out the noise. Since edges in an image may be oriented along any arbitrary direction, 
+applying a filter which is biased towards a particular direction in filtering out the noise, will not be a prudent decision. Instead, a better choice would be choosing a filter 
+with a symmetric 2D kernel function. 
+This feature is particularly found in Gaussian filter, since it employs a 2D symmetric kernel. Because of this unique feature, 
+Gaussian filter is normally used in most edge detection algorithms as a pre-processing step.
+An isotropic, i.e. circularly symmetric, Gaussian kernel has the following form \cite{sze11}:
 \begin{equation}
 G(x,y)=\frac{1}{2\pi \sigma ^{2}} e^{-\frac{x^{2}+y^{2}}{2\sigma^{2}}}
 \end{equation}
 where $\sigma$ is the width of the kernel. 
-A thorough description of Gaussian and other types of filters can be found in chapter 3 of \cite{sze11}.
+A more thorough description of Gaussian and some other types of filters can be found in chapter 3 of \cite{sze11}.
 
 After smoothing the image with Gaussian filter, the gradient of the smoothed image should be taken in order to detect the edges. This can be done by convolving 
-the signal with a pair of convolution masks in each direction, to detect both horizontal and vertical edges. An edge extractor operator called {\it Sobel} is normally used
+the signal with a pair of convolution masks in each direction in order to detect the edges, both horizontally and vertically. An edge extracting operator called {\it Sobel} is normally used
 for this purpose \cite{sze11}. 
-Sobel convolution kernels for both x and y directions are as follows \cite{sze11}:
+Sobel convolution kernels for both x and y directions are defined as follows \cite{sze11}:
 
 \begin{align}
 G_{x} = \begin{bmatrix}
@@ -374,31 +370,36 @@ G_{y} = \begin{bmatrix}
 \end{bmatrix}
 \end{align}
 
-The derivative and the direction of the edge element can then be found by \cite{sze11}:
+Following the estimation of image gradients in each direction, the magnitude and the direction of an edge element can then be found by \cite{sze11}:
 \begin{align}
 G=\sqrt{G_{x}^{2} + G_{y}^{2}} \\
 \theta = \arctan (\frac{G_{y}}{G_{x}})
 \end{align}
 
-This process is equivalent to getting the first or second order directional derivative of the smoothed image and then look for zero crossings, i.e. where the sign of
-the function changes \cite{sze11}. 
-After finding the edge points, it is desirable to have them linked to form continuous contours. Since adjacent edge elements share common endpoints, this can be easily achieved by linking
+The process of applying Sobel operator masks to the smoothed image, is in fact equivalent to getting the first or second order directional derivative of the smoothed image 
+and then look for zero crossings, i.e. where the sign of
+the function changes \cite{sze11}. As a result of this process, edge elements can be obtained.
+After finding the edge points, it is desirable to have them linked to form continuous contours. Since adjacent edge elements are connected to each other, this can be easily achieved by linking
 a detected edge element with its neighbors in both direction \cite{sze11}. As a result, a continuous chain of edges can be detected in the image.
-{\it Canny} edge detector, proposed by John F. Canny in 1986 \cite{canny86}, is one of the most commonly used edge detection methods. There are also two different thresholds defined 
+{\it Canny} edge detector, proposed by John F. Canny in 1986 \cite{canny86}, is one of the most commonly used edge detection approaches; however, it should be mentioned that in addition 
+to the standard factors used in edge detection methods, there are also two different thresholds defined 
 in this approach that affect the edge linkage step. The purpose of having these two thresholds is elimination of streaks, i.e. certain breakage, that may appear along edge contours. 
-By employing these thresholds in the process of edge detection and linkage, any value above the higher threshold will be output as an edge element and when linking the edge element 
+By employing these thresholds in the process of edge detection and linkage, any value above the higher threshold will be output as an edge element and for linking the edge element 
 to its neighbor to form a continuous contour, only those 
-values above the lower threshold will be output \cite{canny86}. This process reduces the streaking effect to a significant amount \cite{canny86}. \newline
+values above the lower threshold will be accepted \cite{canny86}. This process has shown to reduce the streaking effect to a significant amount \cite{canny86}. \newline
 
 There is another type of filters known as {\it non-linear filters}. In this type of filtering, unlike linear filters, the final value of a pixel is not necessarily 
-a weighted combination of its neighboring pixels . 
-{\it Median filter, Bilateral filter, and anisotropic diffusion} are all known types of non-linear filters. Non-linear filters are normally used for image enhancement or processing binary
-images \cite{sze11}. Binary images, as their name indicates, consist of merely two values, 0 or 1. These images are usually the outcome of filtering an image by a threshold and are
-often used for {\it masking} operations \cite{sze11}. Operations on binary images that tend to manipulate and change the shape of the image are known as {\it morphological operations}.
+a weighted combination of its neighboring pixels \cite{sze11}. 
+{\it Median filter, Bilateral filter, and anisotropic diffusion} are all known types of non-linear filters. Non-linear filters are normally used for certain image manipulation and enhancement 
+tasks and they are commonly used with a type of image called {\it binary
+image} \cite{sze11}. Binary images, as their name indicates, consist of merely two values, either 0 or 1. These images are usually the outcome of filtering the image values by a certain threshold, 
+thus resulting in either 0 or 1 based on the comparison against the threshold. Binary images are
+widely used for {\it masking} operations in image processing \cite{sze11}. Due to extensive application of binary images, certain operations might be commonly used to manipulate them. 
+These operations are known as {\it morphological operations} \cite{sze11}.
 In morphological operations, the original image is convolved with a {\it structuring element}, also known as kernel. 
 Structuring element is a mask (i.e. binary image), normally smaller than the original image size, 
 through which different structures can be defined for later modification of the image. 
-{\it Dilation} and {\it Erosion} are two of the most basic morphological operations in binary image processing.
+{\it Dilation} and {\it Erosion} are two of the most basic and widely used morphological operations in binary image processing.
 These two operation are normally used for expansion and erosion of the shapes in the original image. 
 In dilation, the structure element which is usually in form of a circle or square with the origin located at its centre, is superimpose on top of the original binary image.
 By moving the structure element over the background pixel, each pixel belonging to the background which 
