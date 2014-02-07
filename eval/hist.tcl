@@ -1,20 +1,30 @@
 #!/usr/bin/env tclsh
 source ../params.tcl
 
-proc calhist {bnum width args} {
-	set fout [open "${::res_noc}histimgs.txt" "a+"]
+proc calhist {noc bnum width args} {
+	if {$noc} {
+		set fout [open "${::res_noc}histimgs.txt" "a+"]
+	} else {
+		set fout [open "${::res_occ}histimgs.txt" "a+"]
+	}
 	puts [list "Name" "binCenter" "binCount" "binSumValue"]
 	foreach f $args {
+		if {$noc} {
+			set f "${::res_noc}$f" 
+		} else {
+			set f "${::res_occ}$f" 
+		}
 		for {set i 0} {$i<$bnum} {set i [expr {$i+1}]} {
 			set bins($i) [expr {($i*$width)+$width/2}];
 			set bins(sum,$i) 0;
 			set bins(count,$i) 0;
-			puts "$i $bins($i) $bins(sum,$i) $bins(count,$i)"
+			#puts "$i $bins($i) $bins(sum,$i) $bins(count,$i)"
 		}
 		set fp [open "$f" r]
 		#set dir [split $f "/"]
 		set fname [file tail $f]
 		set name [lindex [split $fname "."] 0]
+		set name [string range $name 4 end]
 			
 		puts "dir: $name"
 		set f_data [read $fp]
