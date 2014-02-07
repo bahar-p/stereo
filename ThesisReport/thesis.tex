@@ -25,13 +25,13 @@ world scenes has proved to be an effective way of conveying information about th
 the user and can be useful in many applications such as gaming, medical surgeries, tourism, and other entertaining, informative or instructional tasks.
 
 Many mobile augmented reality systems have been built over the past decades, from touring machine in 1997 \cite{fei97} 
-to google AR glasses which was announced in 2013 \cite{google}; however, most of these prototypes have remained as laboratory prototypes
+to google AR glasses which was announced in 2013 \cite{google}; however, most of these prototypes have remained experimental
 due to certain difficulties and constraints of using them in practical applications \cite{dras96,liv05}. To name some of the most important constraints
 we can refer to:
 \begin{enumerate}
 \item The requirement of having more advanced hardware and technology
 \item Human factors in augmented reality 
-\item Optimization of computational resources in order to provide a real-time interaction between the user and the system
+\item High demand of computational resources in order to provide a real-time interaction between the user and the system
 \end{enumerate}
 
 AR systems overlay 2D or 3D virtual objects on real scenes. Therefore, depending on the application, certain accuracy is required for 
@@ -56,22 +56,24 @@ accuracy and in real-time for practical applications still remains a challenging
 
 Our motivation in this research is to study the possibility and usability of combining stereo vision approaches with AR systems considering the most important constraints that AR systems
 normally come across. Therefore, we have tried to propose an evaluation scheme that enables us to examine whether using stereo vision
-for obtaining 3D position of objects is potentially a good approach in an augmented reality application. A particular application that we have been aiming for in
+for obtaining 3D position of objects is potentially a practical approach in an augmented reality application. A particular application that we have been considered in
 this study, is a 3D mobile augmented reality system in urban settings. 
-In other words, our fundamental research question is: \newline
+In fact, our fundamental research question is: \newline
 
 \begin{quote}
-\textbf{"Can combination of stereo vision with augmented reality meet the requirements of an AR system?"} \newline
+\textbf{"Can combination of stereo matching techniques with augmented reality meet the requirements of an AR system?"} \newline
 \end{quote}
+
 In order to find the answer to this question, some other questions are raised:
 \begin{quote}
-\textbf {How can we evaluate stereo correspondence in augmented reality framework? What are the important factors we need to consider for this type of evaluation?}
-\textbf {In a combination of augmented reality with stereo vision, what would be considered as {\it accurate} depth result?}
-\textbf {What is the standard stereo acuity for human visual system? How would it affect an AR system?}
-\textbf {What is the requirement to provide the real-time sense for the user in an AR system?}
+\textbf {"How can we evaluate stereo correspondence in an augmented reality framework? What are the important factors we need to consider for this type of evaluation?"} \newline
+\textbf {"In a combination of augmented reality with stereo vision, what would be considered as \textbf{\it accurate} depth result?"} \newline
+\textbf {"How is the depth perception of surrounding environment in human visual system?"}\newline
+\textbf {"What is the standard stereo acuity for human visual system? How would it affect an AR system?"} \newline
+\textbf {"What are the requirements to maintain an interactive augmented reality application for the user"} \newline
 \end{quote}
 
-In order to pursue our goal for this research, we have designed and implemented a testbed for evaluation of
+In order to pursue our goal in this research, we have designed and implemented a testbed for evaluation of
 stereo matching solutions based on specific criteria which will be thoroughly described later in this report.
 
 
@@ -84,7 +86,7 @@ These studies show that the viewer perception of depth
 is inversely proportional to his/her distance from the object \cite{kru10,swa07,jer05,liv05}. For instance, in \cite{swa07} some experiments are designed to study and evaluate human
 perception of distance, which is the absolute depth of the objects from the observer, for an outdoor augmented reality application in urban settings. 
 However, what we are more interested in for this research, is the human perception of relative depth in stereo vision, which is the ability to perceive and distinguish 
-the depth of the objects relative to each other. This is known as {\it Stereoscopic Acuity} in binocular vision, which is the smallest depth difference between two points 
+the depth of different objects relative to each other. This is known as {\it Stereoscopic Acuity} in binocular vision, which is the smallest depth difference between two points 
 that can be detected in binocular vision \cite{pfa2000}. More detail about
 this metric will be provided in the following chapters.
 Therefore, we have investigated standard stereo acuity in human visual system and applied it to our evaluation in order to obtain the smallest detectable depth of 
@@ -110,7 +112,7 @@ In order to address the speed factor in augmented reality systems we have decide
 depth values.  
 This idea which originates from having a more efficient design for gaining speed up, 
 also addresses the computational resources used during the process and may lead to significant system speed up.
-It is also known that distinctive features such as {\it edges}, either in RGB or depth, in a scene play an important role in many computer vision applications, such as object detection and 
+It is also known that distinctive features such as {\it edges}, either in RGB or depth images from a scene, play an important role in many computer vision applications, such as object detection and 
 tracking, determination of a set of reliable correspondences to build a 3D model that helps with better perception of object locations in 3D space \cite{mart01,sze11}.
 
 Therefore, in an augmented reality application, wrong depth results, especially in those regions, which will lead to erroneous registration of virtual and real objects, 
@@ -118,19 +120,19 @@ can be perceived and picked out easier by the human eyes. This may cause poor pe
 the user and the augmented world. 
 Hence, in this research we have focused more on studying and evaluating the results of stereo correspondence algorithms in particular regions. Since the depth of the objects 
 in a scene and their perception by human visual system are more important in the AR application of our interest, we have 
-defined these regions to be depth edges and their surrounding region in the scene.
-Our hypothesis is that edges, which can also be good indicators of object boundarie and occlusion, are one of the important depth cues for the observer 
-to perceive the depth of different objects in the scene. 
+defined these regions to be depth edges and their surrounding region in the scene \cite{liv05,kru10}.
+Our hypothesis is that edges, which can also be good indicators of object boundaries and occlusion, are one of the important depth cues for the observer 
+to perceive the depth of different objects in the scene \cite{sze11}. 
 Moreover, inspection of the regions within a few pixels of the depth edges in the scene would also address the problem of occlusion and depth discontinuity, which are two of
 the most challenging regions in stereo matching algorithms \cite{sch02}.
 Finding correct depth values in these 
-regions can lead to more accurate combination of virtual and real objects in the scene and therefore a more reasonable augmented world from the user point of view to interact with. \newline
+regions can lead to a more accurate combination of virtual and real objects in the scene and therefore a more reasonable augmented world from the user point of view to interact with. \newline
 \newline
 
-Since our objective in this research is to study the combination of stereo vision and augmented reality systems, we have surveyed some of the existing approaches in stereo matching and the
-related geometry for 3D reconstruction from stereo pairs. We will go through these concepts and the related works in the field more in the next chapter. 
+Since our objective in this research is to study a hybrid system of stereo vision and augmented reality, we have surveyed some of the existing approaches in stereo matching and the
+related geometry of 3D reconstruction from stereo pairs. We will go through these concepts and the related works in the field more in the next chapter. 
 
-To evaluate our proposition in this research, we have decided to assess two stereo matching algorithms. These algorithms are as follows:
+To evaluate our proposition in this research, we have decided to assess two stereo matching algorithms. These algorithms are:
 \begin{enumerate}
 \item Semi-global block matching
 \item On building an accurate stereo matching system on graphics hardware \cite{mei11}
@@ -145,13 +147,13 @@ its implementation in OpenCV library has also made its usage more common and eas
 it has been designed in a way that
 can be ported to graphics processing unit (GPU) for acceleration and according to the Middlebury evaluation benchmark \cite{mideval}, it is currently ranked as one of the top algorithms for 
 stereo matching regardless of the running time.
-It should also be noted that this solution uses better and more sophisticated approaches to do stereo matching which makes it superior to many other solutions. \newline
+It should also be noted that this solution uses better and more sophisticated approaches to do stereo matching which makes it superior to many other solutions \cite{mideval}. \newline
 For our evaluation, we have used KITTI stereo training dataset as our stereo image data \cite{kitti}. 
 Images in this dataset are more realistic since they have been taken from outdoor scenes under different circumstances 
 and the ground truth disparity map is also provided for each of them, which is useful in the evaluation process. KITTI Vision project also provides a benchmark and an evaluation table
 for different stereo
 matching algorithms assessed in real outdoor scenes which makes it more relevant and applicable to an augmented reality application. 
-AdCensus currently does not exist in the KITTI evaluation table which is another reason for us to use it in our evaluation.
+AdCensus does not currently exist in the KITTI evaluation table which is another reason for us to use it in our evaluation.
 
 
 \chapter{Background and Related Works}
@@ -170,25 +172,26 @@ While the physical and geometrical approaches to this problem are well understoo
 and measuring the disparity to generate a dense depth map still remains a challenging task. \newline
 
 \section{Epipolar Geometry}
-Understanding the fandumental concepts of the corresponding geometry of stereo matching helps to better understand the functionality of the methods designed to addressing this problem, 
-thus comprehending how a 3D model can be constructed from stereo image pairs. Therefore, we will thoroughly describe the basic geometry of stereo matching in this section. \newline
-If we consider two cameras that are looking at a particular scene from slightly different view points, a back projection of a point in the 3D space through rays passing each camera centre
-would result in two distinct points on each image plane. From here on, we will call the point in space $P$ and its image on the first (left) and second (right) planes 
-$P^{'}$ and ${P}^{"}$ respectively. \newline
-As a result of $P$'s back projection on the image planes, an important property will form between the points and the camera centres, which is a plane, called {\it epipolar plane}, 
-that traverses $P^{'}$, $P^{"}$ and the camera centres, thus intersecting each image plane. 
-It should be emphasized that this property, from which the consequent properties are derived, is the building block of stereo matching algorithms. 
+Understanding the fundamentals in the underlying geometry of stereo matching helps to better understand the principal idea behind all the methods designed to address this problem, 
+thus facilitating the comprehension of 3D model reconstruction from stereo image pairs. Therefore, we will thoroughly describe the basic geometry of stereo matching in this section. \newline
+If we consider two cameras that are looking at a particular scene from slightly different view points, a back projection of any point in the 3D space via rays passing through each camera centre
+would result in two distinct points on each image plane. For simplicity, we will refer to the point in space as $P$, and its projection on the first (left) and second (right) image planes,
+as $P^{'}$ and ${P}^{"}$ respectively. \newline
+As a result of $P$'s back projection on the image planes, an important property will emerge between the points and the camera centres, which is coplanarity of all these points. 
+This plane, also referred to as {\it epipolar plane}, passes through $P^{'}$, $P^{"}$ and the camera centres, thus intersecting each image plane. 
+It should be noted that this property, from which the consequent properties are derived, is the building block of stereo matching methods. 
 Let us denote the specified plane by $S$ for further reference. 
-Since $S$ passes through the camera centres, it also passes through the line 
-that connects two camera centres. This line, which is known as the {\it baseline}, intersects each image plane at a point called the {\it the epipole}. 
+Since $S$ passes through the camera centres, it clearly traverses the line 
+that connects two camera centres. This line, which is known as the {\it baseline}, intersects each image plane at a point called the {\it epipole}. 
 Consequently, the intersection of the plane $S$ and each of the image planes, creates a line called {\it epipolar line} \cite{hart2000}. 
 The {\it epipolar line} always passes through the {\it epipole} in the image plane. 
 These concepts, illustrated in figure \textbf{FIGURENUM}, constitute the important components of the stereo correspondence geometry. \newline 
 (\textbf{FIGURE HERE FOR EPIPOLAR GEOMETRY TERMS}) \newline
 
-Now, we can define the problem of stereo correspondence as a case in which the location of $P^{'}$ in the image plane is clear, while the
-corresponding point $P^{"}$ is unknown; however, based on the aforementioned properties, we know that $P^{"}$ is located somewhere on the line (epipolar line) 
-created by the intersection of a plane traversing the ray passing through $P^{'}$ and the first camera centre and the {\it baseline}. This line is in fact, the projection of the ray going
+Now, we can define the problem of stereo correspondence as a case in which the location of $P^{'}$ in the image plane is known, while the
+corresponding point $P^{"}$ is unknown; therefore, the problem can be stated as an attempt to find the correspondence of $P^{'}$ in the second image plane. Based on the aforementioned 
+properties, we know that $P^{"}$ is located somewhere on the line, the epipolar line,
+created by the intersection of the plane traversing the ray that goes through $P^{'}$ and the first camera centre and the {\it baseline}. This line is in fact, the projection of the ray going
 through $P^{'}$ and the first camera centre, on the right image plane. Therefore, the search for the corresponding point, $P^{"}$, will be limited to merely scanning the corresponding 
 epipolar line on the second image plane rather than the whole image.
 
@@ -198,20 +201,19 @@ epipolar line on the second image plane rather than the whole image.
 %\includegraphics[width=1.5in,height=1.5in]{epipole}
 %\end{figure}
 
-It is now apparent that in order to find the correspondence of a particular point $P^{'}$ in the second image plane, 
-first the corresponding epipolar line, that is the back-project of the 
-ray passing through $P^{'}$ and the first camera centre, must be sought. 
-The projection from a point to its corresponding epipolar line can be obtains through certain transformations in space; normally a rotation and translation, \textbf {FIGNUMER}.
-These transformations can be expressed
-through a matrix, for further geometrical calculations, that is merely dependant on the camera's properties, not the scene \cite{hart2000}.
-However, dealing with these transformations while looking for corresponding points, can increase the complexity of stereo matching algorithms to certain levels; therefore, 
-in order to avoid this issue, many approaches are proposed based on the assumption that image pairs are first warped, i.e. {\it rectified} \cite{sze11}.
+It is now apparent that in order to find the correspondence of a particular point $P^{'}$, in the second image plane
+the corresponding epipolar line, must first be sought. 
+The projection from a point to its corresponding epipolar line can be obtained through certain transformations in space; normally a rotation and translation, \textbf {FIGNUMER}.
+For further geometrical calculations, these transformations can be represented
+with a matrix that is only dependant on the camera's properties, not the scene \cite{hart2000}.
+However, dealing with these transformations while looking for the corresponding points, can increase the complexity of stereo matching algorithms to certain levels \cite{sze11}; therefore, 
+in order to avoid this issue, many stereo matching approaches are proposed based on the assumption that image pairs are first warped, i.e. {\it rectified} \cite{sze11}.
 This process is known as {\it image rectification} which is basically achieved by first having the cameras rotated in a way that their optical axis, 
 the line passing through the camera centre which is perpendicular to the image plane, are parallel to each other; 
-i.e. their optical axis is perpendicular to the baseline. Furthermore, it might also be necessary to have the cameras tilted so that their {\it y} axis is perpendicular to the optical axis. 
-After these two steps, horizontal scanlines are equivalent to the corresponding epipolar lines. This pre-processing step significantly constrains the process of searching 
+i.e. their optical axis is perpendicular to the baseline. Furthermore, it might be necessary to have the cameras tilted so that their {\it y} axis also becomes perpendicular to the optical axis. 
+After these two steps, corresponding epipolar lines actually becomes horizontal scanlines \textbf{FIG}. This pre-processing step significantly constrains the process of searching 
 for corresponding points and eliminates certain complications in stereo matching algorithms \cite{sze11}. \newline 
-Using the rectification model and epipolar geometry described earlier illustrated in figure \textbf{FIGURENUM}, 
+Using the rectification model and epipolar geometry described earlier, 
 derivation of the geometrical relation through which the depth of a certain point in 3D space 
 can be obtained, will be straightforward. This relation is presented as follows \cite{sze11}:
 \begin{equation}
@@ -219,10 +221,10 @@ d = f\frac{B}{Z}
 \end{equation}
 where f is the {\it focal length} measured in pixels, B is the {\it baseline}, Z is the {\it 3D depths}, and d is {\it disparity}. The relationship between corresponding pixels in the left
 and right images according to disparity {\it d} is also as follows:
-\begin{equation}
-{P}''_{x}={P}'_{x}+d(x,y)\\
+\begin{align}
+{P}''_{x}={P}'_{x}+d(x,y) \\
 {P}''_{y} = {P}'_{y}
-\end{equation}
+\end{align}
 Therefore, based on the aforementioned formulas, the depth of points in 3D space can be easily calculated after finding the corresponding pixels in multiple views and consequently their
 disparities \cite{bol87,oku93,sch02}.
 
