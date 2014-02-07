@@ -85,7 +85,7 @@ int main (int argc, char** argv) {
 	std::string res1,res2,res3; 
 	if(!adcensus){
 		if(noc){
-			res1 =  "/home/bahar/Master/stereo/eval/results/noc/sgbm_rdep" + fname + ".txt";
+			res1 =  "/home/bahar/Master/stereo/eval/results/noc/sgst" + fname + ".txt";
 			res2 =  "/home/bahar/Master/stereo/eval/results/noc/sgbm_outliers.txt";
 			res3 =  "/home/bahar/Master/stereo/eval/results/noc/sgbm_avgerr.txt";
 		} else {
@@ -95,7 +95,7 @@ int main (int argc, char** argv) {
 		}
 	} else {
 		if(noc){
-			res1 =  "/home/bahar/Master/stereo/eval/results/noc/adcen_rdep" + fname + ".txt";
+			res1 =  "/home/bahar/Master/stereo/eval/results/noc/adst" + fname + ".txt";
 			res2 =  "/home/bahar/Master/stereo/eval/results/noc/adcen_outliers.txt";
 			res3 =  "/home/bahar/Master/stereo/eval/results/noc/adcen_avgerr.txt";
 		} else {
@@ -139,7 +139,7 @@ int main (int argc, char** argv) {
 				/*of1 << (depth/100) << "  "  << (dz_1729/100) << "  " << (dz_3049/100) << "  " << (dz_5069/100) << "  "  << (dz_7083/100) << "  " 
 					<< (depth_err==INF ? 1000000 : (depth_err/100)) <<  std::endl;*/
 				if(depth_err != INF){
-					of1 << (depth/100) << "  "  << (stAcuity_1729/60) << "  " << (stAcuity_3049/60) << "  " << (stAcuity_5069/60) << "  "  << (stAcuity_7083/60) << "  " 
+					of1 << (depth/1000) << "  "  << (stAcuity_1729/60) << "  " << (stAcuity_3049/60) << "  " << (stAcuity_5069/60) << "  "  << (stAcuity_7083/60) << "  " 
 					<< err_stAc <<  std::endl;
 				}
 				
