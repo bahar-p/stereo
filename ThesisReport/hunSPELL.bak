@@ -1,0 +1,27 @@
+\documentclass[dvips,letterpaper,12pt]{report}
+\usepackage[square,numbers]{natbib}
+\usepackage{url}
+\usepackage{thesis}
+\usepackage{graphicx}
+\usepackage{amsmath}
+%\numberwithin{equation}{section}
+\begin{document}
+\chapter{Introduction}
+
+Augmented reality (AR) systems combine standard video inputs with computer-generated objects and
+usually provide real-time interaction for the users. 
+In general, an augmented reality system can be defined with the following properties \cite{azuma01} :
+\begin{itemize}
+\item Combination of real and virtual environment
+\item Registration (alignment) of real and virtual objects
+\item Real-time interaction
+\end{itemize}
+This concept was pioneered in the 1960s by an American computer scientist named Ivan Sutherland
+who created the first head-mounted augmented reality
+system with the help of one of his students \cite{azuma01}.
+
+Combining virtual objects and annotations with real
+world scenes has proved to be an effective way of conveying information about the surrounding environment to
+the user and can be useful in many applications such as gaming, medical surgeries, tourism, and other entertaining, informative or instructional tasks.
+
+Many mobile augmented reality systems have been built over the past decades, from touring machine in 1997 \cite{fei97} 

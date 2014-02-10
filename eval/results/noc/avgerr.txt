@@ -1,2 +1,0 @@
-sgbm_avgerr avg_t_err: 6.5809782692307675 avg_v_err: 6.5809782692307675
-adcen_avgerr avg_t_err: 4.497588076923076 avg_v_err: 4.497588076923076
