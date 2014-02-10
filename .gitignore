@@ -14,3 +14,4 @@ build/
 ThesisReport/*.pdf
 *.blg
 *.bbl
+eval/results/
