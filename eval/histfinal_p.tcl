@@ -8,7 +8,7 @@ proc finalplot {f} {
 		set term x11
 		set xlabel \"Actual Depth(m)\"
 		set ylabel \"Stereo Acuity(arcmin)\"
-		plot \"$f\" every ::1 using 1:2 with points notitle, \
+		plot \[:\]\[0:2\] \"$f\" every ::1 using 1:2 with points notitle, \
 			\"$f\" every ::1 using 1:3 with lines notitle, \
 			\"$f\" every ::1 using 1:4 with lines notitle, \
 			\"$f\" every ::1 using 1:5 with lines notitle
