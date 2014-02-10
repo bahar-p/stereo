@@ -89,7 +89,7 @@ int main (int argc, char** argv) {
 			res2 =  "/home/bahar/Master/stereo/eval/results/noc/sgbm_outliers.txt";
 			res3 =  "/home/bahar/Master/stereo/eval/results/noc/sgbm_avgerr.txt";
 		} else {
-			res1 =  "/home/bahar/Master/stereo/eval/results/occ/sgbm_rdep" + fname + ".txt";
+			res1 =  "/home/bahar/Master/stereo/eval/results/occ/sgst" + fname + ".txt";
 			res2 =  "/home/bahar/Master/stereo/eval/results/occ/sgbm_outliers.txt";
 			res3 =  "/home/bahar/Master/stereo/eval/results/occ/sgbm_avgerr.txt";
 		}
@@ -99,7 +99,7 @@ int main (int argc, char** argv) {
 			res2 =  "/home/bahar/Master/stereo/eval/results/noc/adcen_outliers.txt";
 			res3 =  "/home/bahar/Master/stereo/eval/results/noc/adcen_avgerr.txt";
 		} else {
-			res1 =  "/home/bahar/Master/stereo/eval/results/occ/adcen_rdep" + fname + ".txt";
+			res1 =  "/home/bahar/Master/stereo/eval/results/occ/adst" + fname + ".txt";
 			res2 =  "/home/bahar/Master/stereo/eval/results/occ/adcen_outliers.txt";
 			res3 =  "/home/bahar/Master/stereo/eval/results/occ/adcen_avgerr.txt";
 		}
