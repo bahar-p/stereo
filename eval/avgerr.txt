@@ -1,0 +1,6 @@
+adcen_avgerr (Full) avg_t_err: 4.497588076923076 avg_v_err: 4.497588076923076
+adcen_avgerr (Masked) avg_t_err: 4.747486730769231 avg_v_err: 4.747486730769231
+sgbm_avgerr (Full) avg_t_err: 6.5809782692307675 avg_v_err: 6.5809782692307675
+sgbm_avgerr (Masked) avg_t_err: 7.811805576923078 avg_v_err: 7.811805576923078
+adcen_avgerr (noLR-Masked) avg_t_err: 5.5940973076923095 avg_v_err: 5.5940973076923095
+adcen_avgerr (noLR-Full) avg_t_err: 5.297048076923077 avg_v_err: 5.297048076923077

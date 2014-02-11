@@ -1,0 +1,7 @@
+adcen_outliers (Masked) stAc_1729 0.52 0.52 stAc_3049 0.50 0.50 stAc_5069 0.47 0.47 stAc_7083 0.27 0.27
+adcen_outliers (Full) stAc_1729 0.56 0.56 stAc_3049 $0.55 0.55 stAc_5069 0.52 0.52 stAc_7083 0.27 0.27
+sgbm_outliers (Masked) stAc_1729 0.36 0.36 stAc_3049 0.35 0.35 stAc_5069 0.32 0.32 stAc_7083 0.23 0.23
+sgbm_outliers (Full) stAc_1729 0.28 0.28 stAc_3049 $0.27 0.27 stAc_5069 0.24 0.24 stAc_7083 0.16 0.16
+
+adcen_outliers (Masked-NoLR) stAc_1729 0.53 0.53 stAc_3049 $0.51 0.51 stAc_5069 0.48 0.48 stAc_7083 0.28 0.28
+adcen_outliers (Full-NoLR) stAc_1729 0.57 0.57 stAc_3049 $0.56 0.56 stAc_5069 0.52 0.52 stAc_7083 0.27 0.27
