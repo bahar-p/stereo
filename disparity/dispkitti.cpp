@@ -103,7 +103,7 @@ int main(int argc, char **argv)
 	}
 	imwrite(fpath1 , disp8);
 	
-	if(argc==7){
+	if(argc>5){
 		Mat dmasked;
 		string fpath2; 
 		if(noc)

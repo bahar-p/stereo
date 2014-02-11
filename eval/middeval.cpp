@@ -32,7 +32,7 @@ int main (int argc, char** argv) {
 	}
 	
 	cv::Mat d_gt, d_adcgen, d_sgmgen, im_diff1,im_diff2,im_diff3;
-	im_gt.convertTo(d_gt, CV_32F, 1/16.);
+	im_gt.convertTo(d_gt, CV_32F,1/(4.));
 	//d_gt = im_gt;
 	im_adcgen.convertTo(d_adcgen, CV_32F,dmax/(16.*255)); 		//if it's AdCensus generated disparity
 	im_sgmgen.convertTo(d_sgmgen, CV_32F,dmax/(255.)); 			//if it's sgbm generate disparity
@@ -42,8 +42,8 @@ int main (int argc, char** argv) {
 	int height = d_gt.size().height;
 	int width = d_gt.size().width;
 	
-	float err_thr[4]={0.5,0.75,1,2};		//Different error thresholds
-	int arr_len = 4;
+	float err_thr[6]={0.5,0.75,1.0,1.25,1.5,1.75};		//Different error thresholds
+	int arr_len = 6;
 	//int arr_len = 10;
 	float err_total_pxs[2*arr_len];			//Number of incorrect pixels corresponding to each threshold
 	float err_valid_pxs[2*arr_len];			//Number of incorrect valid pixels in the result corresponding to each threshold
@@ -74,34 +74,30 @@ int main (int argc, char** argv) {
 			if(isValid(fd_gt)) {
 				pix_count++;
 				if(fd_sgmgen < 0 || fd_adcgen < 0) std::cout << "Negative value!" << std::endl;
-				float err1 = fabs(fd_gt - (fd_adcgen < 0. ? 0. : fd_adcgen));
-				float err2 = fabs(fd_gt - (fd_sgmgen < 0. ? 0. : fd_sgmgen));
+				float err1 = fabs(fd_gt - (fd_adcgen < 0 ? 0 : fd_adcgen));
+				float err2 = fabs(fd_gt - (fd_sgmgen < 0 ? 0 : fd_sgmgen));
 				float err3 = fabs( (fd_sgmgen <0 ? 0 : fd_sgmgen) - (fd_adcgen<0 ? 0 : fd_adcgen));
 				im_diff3.at<float>(j,i) = err3;
 				im_diff2.at<float>(j,i) = err2;
 				im_diff1.at<float>(j,i) = err1;
-				//std::cout << "disp_err: " << err << "  depth: " << depth_err << "  dz_1729: "  << dz_1729 << " dz_3049: " << dz_3049 << std::endl;
-				//Write to output file
-				
-				for(int k=0;k<4;k++){
+				for(int k=0;k<arr_len;k++){
 					if(err1 > err_thr[k])
 						err_total_pxs[k]++;
 					if(err2 > err_thr[k])
-						err_total_pxs[k+4]++;
+						err_total_pxs[k+arr_len]++;
 				}
-				if(isValid(fd_adcgen) && isValid(fd_sgmgen)){
+				if(mydValid(fd_adcgen) && mydValid(fd_sgmgen)){
 					pix_gen_count++;
-					for(int k=0;k<4;k++){
+					for(int k=0;k<arr_len;k++){
 						if(err1 > err_thr[k])
 							err_valid_pxs[k]++;
 						if(err2 > err_thr[k])
-							err_valid_pxs[k+4]++;
+							err_valid_pxs[k+arr_len]++;
 					}
 				}
 			}
 		}
 	}
-
 	if(pix_count==0){
 		std::cout << "fatal error: there's no valid disparity in grount truth!!" << std::endl;
 		return -2;
@@ -115,8 +111,8 @@ int main (int argc, char** argv) {
 	}
 	for(int i=0;i<arr_len;i++){
 		std::cout <<  "outliers for all and just valid disp results for threshold " <<  err_thr[i]  << " are: " << 
-		" adcensus: "   << err_total_pxs[i] <<  "  " <<  err_valid_pxs[i] << " sgbm: "<<  err_total_pxs[i+4] 
-		<<  "  " <<  err_valid_pxs[i+4] << std::endl;
+		" adcensus: "   << err_total_pxs[i] <<  "  " <<  err_valid_pxs[i] << " sgbm: "<<  err_total_pxs[i+arr_len] 
+		<<  "  " <<  err_valid_pxs[i+arr_len] << std::endl;
 	}
 	density = (float)pix_gen_count/std::max((float)pix_count,1.0f);
 	std::cout << "total valid pixs in gt: " << pix_count << " number of valid disp results in gen_disp: " << 

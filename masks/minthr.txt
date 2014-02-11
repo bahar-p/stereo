@@ -50,4 +50,3 @@ img: 000180.png min_thr: 23
 img: 000185.png min_thr: 11
 img: 000191.png min_thr: 9
 img: 000193.png min_thr: 12
-img: 000009.png min_thr: 4
