@@ -242,11 +242,11 @@ many researchers in computer vision \cite{dhon89}.
 In this type of methods, particular features in an image, such as edges, 
 points, line segments, or other distinctive features are extracted; therefore, the search for corresponding pixels is only applied to these regions. 
 Consequently, algorithms of this
-type result in a sparse disparity map \cite{matt89,hsie92, sze11}. The introduction of feature-based algorithms has mainly been motivated by three important factors \cite{bro03,sze11}:
+sort result in a sparse disparity map \cite{matt89,hsie92, sze11}. The introduction of feature-based algorithms has mainly been motivated by three important factors \cite{bro03,sze11}:
 \begin{itemize}
 \item Lack of advanced hardware and technology for exhaustive computational tasks 
 \item Constraint of the search area in order to find more reliable matches.
-\item Image pairs with different illumination, where edges or some other particular features preserve their photometric properties and therefore, are the only regions reliable enough to 
+\item Image pairs with different illumination, where edges or some other particular features preserve their photometric properties, and therefore, are the only regions reliable enough to 
 be used for correspondence search.
 
 However, the requirement of having dense depth maps for many applications and also the emergence of efficient {\it dense correspondence algorithms}, have diverted the attention away
@@ -257,10 +257,10 @@ from this class of algorithms in the last 20 years.
 Unlike feature-based methods, dense correspondence algorithms try to find the
 correspondences for all the pixels in the image, and therefore, result in a dense disparity map. Most recent algorithms and studies have focused on this class of algorithms since many applications 
 nowadays, such as graphical rendering, 3D model construction, or augmented reality require a dense depth map of the scene. 
-However, this class of algorithms face many challenges that need to be properly
-addressed, such as finding the depth values in depth discontinuities, occluded regions and textureless areas \cite{sch02,bro03}.
+However, these algorithms face many challenges that need to be properly
+addressed, such as finding the depth values in occluded regions, depth discontinuities, and textureless areas \cite{sch02,bro03}.
 
-Dense correspondence algorithms can be classified in two groups based on how they assign
+Dense correspondence algorithms are usually classified in two groups based on how they assign
 disparities to pixels \cite{sze11}:
 \begin{enumerate}
 \item Local approaches
@@ -278,7 +278,7 @@ depth discontinuities \cite{hirsch02}. This assumption can be considered as one 
 Another drawback of local methods is their dependency on the window size \cite{sch02}. A fixed window size can raise certain problems in these algorithms:
 \begin{enumerate}
 \item If too large of a window size is considered, due to aforementioned smoothness assumption, the algorithm may result in blurry object boundaries and inaccuracy near depth discontinuities.
-\item If the window size chosen is too small, the disparity values will be less accurate since little information has been considered for 
+\item If the selected window size is too small, the disparity values will be less accurate since little information has been considered for 
 finding the correspondences of pixels in the image.
 \end{enumerate}
 
@@ -293,43 +293,43 @@ function that normally combines a data term with an explicit smoothness assumpti
 \begin{equation}
 E(d)=E_{data}(d)+\lambda E_{smooth}(d)
 \end{equation}
-The term $E_{data}$ is normally represented as the difference of a common metric, e.g. the photometric property, between the corresponding pixels and is denoted as follows:
+The term $E_{data}$ is normally defined as the difference of a common metric, e.g. the photometric property, between the corresponding pixels and is denoted as follows:
 
 \begin{equation}
 E_{data}(d) = \sum_{(x,y)}C(x,y,d(x,y))
 \end{equation}
 
-where C is a matching cost. The matching cost function can have various definitions depending on the algorithm; however, it is normally defined as sum of absolute difference 
+where C is a matching cost. The matching cost function can have various definitions depending on the algorithm; however, as mentioned above, it is normally defined as sum of absolute difference 
 between the intensity of the corresponding pixels in two images \cite{sch02}.
 
 The term, $E_{smooth}$, is the smoothness assumption based on which the disparity values in different regions are refined. The definition of this term can also vary in 
 different solutions. $\lambda$ is also a weighting factor, by which the effect of the smoothness assumption in the global function can be controlled in the algorithm \cite{sze11}.
-In order to find the minimum of the global function, common approaches in computer science have proved to be particularly useful. 
+In order to find the minimum of the global function, certain approaches in computer science have proved to be particularly useful. 
 To name some of these approaches, we can refer to dynamic programming, graph cut, and belief propagation. Many researchers have studied and addressed the problem of stereo matching
 by applying one of these approaches \cite{sch02,boy01,boy04,kim05,sun11}.
 
 The major drawback of global approaches is normally their high usage of computational resources and low speed. However, 
 they usually result in more accurate disparity values \cite{hirsch02,sze11}. 
 
-It is also worthwhile to mention that in the past 12 years, another group of algorithms have emerged which cannot be explicitly classified in any of the previously mentioned groups.
-This group of methods, which are known as {\it Segmentation-based techniques}, first segment the image into regions and then, rather than searching for correspondences per pixel,
-they attempt to find the corresponding disparity for each region. A more detailed review of these methods can be found in \cite{sze11}.
+It is also worthwhile to mention that in the past twelve years, another group of algorithms have emerged which cannot be explicitly classified in any of the previously mentioned groups.
+These methods, which are known as {\it Segmentation-based techniques}, first segment the image into regions and then, rather than searching for correspondences per pixel,
+they attempt to find the corresponding disparity for each region. A more detailed review of these methods can be found in chapter 11 of \cite{sze11}.
 
 \subsection{Edge Detection}
 
 As mentioned earlier in the "Introduction", salient {\it edges} in the scene are one of the important features 
 that can be used in many applications, such as object detection, image stitching, or 3D model reconstruction \cite{sze11}.
-Due to their importance in defining the boundaries of objects and also their role in occlusion occurrence and depth discontinuities in 3D, we have also focused on employing them in our
+Due to their importance in defining the object boundaries and also their role in occlusion occurrence and depth discontinuities in stereo vision, we have also focused on studying them in our
 evaluation approach; therefore, we have masked our input data based on the detected edges in the scene. 
-In order to extract this feature in the images, i.e. edges, we have used 
-specific algorithms. Here, we will describe how it is possible to find the most salient edges in the scene using vision techniques and how closely they match the human perception.
+In order to extract edges in the image, we have used 
+specific algorithms. In this section, we will describe how it is possible to find the most salient edges in the scene using vision techniques.
 
-When looking at a scene, the concept of an edge is perceived in human visual system whenever there is a distinguishable difference in color, intensity or texture between 
+When looking at a scene, an edge is defined whenever the visual system can perceive a distinguishable variation in color, intensity or texture between 
 different regions. \cite{sze11}.
 Therefore, a reasonable mathematical approach to detect the edges in an image would be calculating the gradient of the intensity image. However, since an image normally contains a certain amount of
 noise which intensifies at higher frequencies, taking the derivatives of the image can lead to significant noise amplification, as it makes high frequency signals more prominent to others.
 Therefore, it is better to attenuate high frequencies prior to applying any edge detection approach. 
-There are a variety of filters for image smoothing (blurring); however, since we want to attenuate high frequencies, it is better to use a low-pass filter.
+There are a variety of filters for image smoothing (blurring); however, since we want to attenuate high frequencies, it is better to use a low-pass filter which only passes low frequencies.
 A widely known class of image blurring filters in computer vision, are called {\it linear filters}. In linear filtering operators, for each pixel a weighted summation of its neighboring pixels
 is used in order to estimate its final value \cite{sze11}. In mathematics, this process can be modelled by convolution of the input signal with a particular function, known as kernel. 
 \begin{equation}
@@ -342,7 +342,7 @@ g=f\bigotimes h
 where $f$ and $g$ are the input and output signals respectively, and $h$ is the kernel function which can vary depending on the type of filter. 
 
 Therefore, each filter can modify the input signal differently based on its corresponding kernel function.
-Gaussian filter is commonly used for attenuating higher frequencies in an image and filtering out the noise. Since edges in an image may be oriented along any arbitrary direction, 
+Gaussian filter is a filter commonly used for attenuating higher frequencies in an image and filtering out the noise. Since edges in an image may be oriented along any arbitrary direction, 
 applying a filter which is biased towards a particular direction in filtering out the noise, will not be a prudent decision. Instead, a better choice would be choosing a filter 
 with a symmetric 2D kernel function. 
 This feature is particularly found in Gaussian filter, since it employs a 2D symmetric kernel. Because of this unique feature, 
@@ -380,36 +380,103 @@ G=\sqrt{G_{x}^{2} + G_{y}^{2}} \\
 
 The process of applying Sobel operator masks to the smoothed image, is in fact equivalent to getting the first or second order directional derivative of the smoothed image 
 and then look for zero crossings, i.e. where the sign of
-the function changes \cite{sze11}. As a result of this process, edge elements can be obtained.
+the function changes \cite{sze11}. As a result of this process, edge elements are detected throughout the image.
 After finding the edge points, it is desirable to have them linked to form continuous contours. Since adjacent edge elements are connected to each other, this can be easily achieved by linking
 a detected edge element with its neighbors in both direction \cite{sze11}. As a result, a continuous chain of edges can be detected in the image.
 {\it Canny} edge detector, proposed by John F. Canny in 1986 \cite{canny86}, is one of the most commonly used edge detection approaches; however, it should be mentioned that in addition 
-to the standard factors used in edge detection methods, there are also two different thresholds defined 
+to the process described above for detecting the edges in the image, there are also two different thresholds defined 
 in this approach that affect the edge linkage step. The purpose of having these two thresholds is elimination of streaks, i.e. certain breakage, that may appear along edge contours. 
-By employing these thresholds in the process of edge detection and linkage, any value above the higher threshold will be output as an edge element and for linking the edge element 
+By employing these thresholds in the process of edge detection and linkage, any value above the higher threshold will be output as an edge element and when linking the edge element 
 to its neighbor to form a continuous contour, only those 
 values above the lower threshold will be accepted \cite{canny86}. This process has shown to reduce the streaking effect to a significant amount \cite{canny86}. \newline
 
-There is another type of filters known as {\it non-linear filters}. In this type of filtering, unlike linear filters, the final value of a pixel is not necessarily 
+\subsection{Non-linear filters}
+In addition to linear filters, there is another type of filters known as {\it non-linear filters}. In this type of filtering, unlike linear filters, the final value of a pixel is not necessarily 
 a weighted combination of its neighboring pixels \cite{sze11}. 
-{\it Median filter, Bilateral filter, and anisotropic diffusion} are all known types of non-linear filters. Non-linear filters are normally used for certain image manipulation and enhancement 
-tasks and they are commonly used with a type of image called {\it binary
-image} \cite{sze11}. Binary images, as their name indicates, consist of merely two values, either 0 or 1. These images are usually the outcome of filtering the image values by a certain threshold, 
-thus resulting in either 0 or 1 based on the comparison against the threshold. Binary images are
-widely used for {\it masking} operations in image processing \cite{sze11}. Due to extensive application of binary images, certain operations might be commonly used to manipulate them. 
+{\it Median filter, Bilateral filter}, and {\it anisotropic diffusion} are all different types of non-linear filters. Non-linear filters are used for certain image manipulation 
+and enhancement tasks, and are commonly used with a particular type of image called {\it binary
+image} \cite{sze11}. Binary images, as their name indicates, consist of merely two pixel values, 0 or 1. These images are usually the outcome of filtering the values in an image 
+by a certain threshold, thus changing each value to 0 or 1 based on the comparison against the threshold. Binary images are
+widely used for {\it masking} operations in image processing \cite{sze11}. Due to extensive application of binary images, certain operations are usually employed to manipulate them. 
 These operations are known as {\it morphological operations} \cite{sze11}.
 In morphological operations, the original image is convolved with a {\it structuring element}, also known as kernel. 
-Structuring element is a mask (i.e. binary image), normally smaller than the original image size, 
-through which different structures can be defined for later modification of the image. 
+Structuring element is a mask (i.e. binary image), normally smaller than the original image, 
+with which different structures can be defined for later modification of the image. 
 {\it Dilation} and {\it Erosion} are two of the most basic and widely used morphological operations in binary image processing.
 These two operation are normally used for expansion and erosion of the shapes in the original image. 
-In dilation, the structure element which is usually in form of a circle or square with the origin located at its centre, is superimpose on top of the original binary image.
-By moving the structure element over the background pixel, each pixel belonging to the background which 
-is overlain by the centre of structuring element is replaced by foreground value, if at least one of the elements of the structuring element coincide with any pixel marked as foreground.
+In dilation, the structure element which is usually in form of a circle or square with the origin located at its centre, is superimposed on top of the original binary image.
+By moving the structure element over the background pixels, each pixel belonging to the background, that 
+is overlain by the centre of structuring element, is replaced by foreground value if at least one of the pixels of the structuring element coincide with any pixel marked as foreground.
 Erosion, which can be considered as the complementary operation of dilation, follows a similar process, with only the difference that structuring element is moved over foreground pixels and any
-foreground pixels will be replaced by background value if at least one pixel of structuring element overlaps with a pixel marked as background.
+foreground pixels will be replaced by background value if at least one pixel of the structuring element overlaps with a pixel marked as background.
 Hence, we can state that dilation of the foreground is equivalent to erosion of the background \cite{ritt96}.
 \textbf {EXAMPLE IMAGE OF DILATION AND EROSION}
+
+\chapter{Binocular vision and Stereopsis}
+Binocular Vision is a term used for the visual system of animals with two eyes \cite{how95}, and therefore, applies to human visual system as well. 
+Possessing binocular vision not only lead to a better perception of depth
+of the surrounding environment, but also help to better perform many visual tasks such as reading, object detection, interaction with surrounding objects such as grabbing and other manipulative 
+tasks. However, the most significant advantage of possessing binocular vision is its influence on how the 3D environment, i.e. the depth of surrounding objects relative to each other, 
+is perceived by the two eyes. This visual perception of depth in binocular vision is referred to as {\it Stereoscopic Vision}.
+In the visual system, depth perception is a phenomenon that normally occurs though different types of cues and information existing in the surrounding environment. 
+These pieces of information, known as {\it depth cues} in stereo vision, can be either monocular or binocular depth cues \cite{how95}.
+To name a few instances of monocular depth cues, we can refer to motion parallax, lighting and shading, and apparent size. 
+However, as previously mentioned, binocular cues which can only be perceived
+by stereo vision, play the major role in the perception of depth. One of the most important binocular cues is {\it binocular disparity}, or {\it binocular parallax}. 
+It should be noted that the effect of binocular parallax and motion parallax on depth perception are very similar to each other. 
+In motion parallax, which is a monocular depth cue, the scene is viewed at different times by the observer movement from side to side, 
+whereas in binocular parallax, the scene is viewed from slightly different viewpoints at
+the same time by the observer standing at a fixed position \cite{how95}. \textbf{FIGURE to show this}
+
+Binocular disparity, which in fact arises from the spatial difference 
+between the images of the same scene in the two eyes, provides a relative perception of depth from the surrounding environment. This perception is known as {\it binocular stereopsis} \cite{how95}. 
+Another important binocular depth cue is the eyes {\it vergence}, which is the simultaneous movement of the pupils in opposite directions in order to obtain a single vision of an object with the
+two eyes. When focusing on an object, the optical axes of the eyes intersect on the object of interest resulting in an angle called vergence angle. Unlike many animals, human visual system 
+is capable of adjusting this angle based on the distance of the object.
+In stereo vision, the locus of the points that yields a single vision in the visual system is known as the {\it horopter}, and the point located on the horopter is usually referred to as
+{\it fixation point} \cite{binr83,how95}.
+An important property of an object on the horopter, no spatial difference
+exists between the images of the fixated object in the two eyes; i.e. the binocular disparity is zero \cite{how95}. The locus of the points in which 
+Exploiting this property, the disparity of any other object in the scene can be estimated relative to the fixated object by inspecting two important factors: 
+whether the object of interest is closer or further than the fixated object and then how much closer or further it relatively is.
+As a result, the binocular disparity provides a relative perception of depth of the surrounding environment.
+In the geometry of stereopsis, the relative disparity between two objects is usually presented as angular disparity in radiant, or seconds of arc.
+
+\section{Stereopsis Geometry and Angular Disparity}
+
+In the following section, we will describe how the angular disparity can be calculated utilizing the geometry of stereopsis \cite{binr83}.
+\textbf{FIGURE of Geometric Disparity and Formulas}
+According to the figure:
+
+\begin{align}
+\theta = \beta - \alpha \\
+\alpha = a/Z^{'} \\
+\beta = a/Z \\
+Z = Z^{'} + \Delta Z \\
+\Rightarrow \theta = a/Z - a/Z^{'} = a/Z - a/(Z+\Delta Z)
+\end{align}
+
+However, when $\Delta Z$ is very small compared to the values of $Z$, the term $\Delta Z$ in denominator can be neglected without significant loss of accuracy. This results in
+the approximate following formula:
+
+\begin{align}
+\theta = a/Z^{2}
+\end{align}
+
+This formula estimate the angular disparity in radiant. In order to convert $\theta$ to arcseconds it should be multiplied by:
+
+\begin{align}
+180/\pi = 57.296\times360=206.265
+\end{align}
+
+Studies show that the visual system capability to distinguish two objects at different distances relative to each other is limited to certain thresholds.
+This threshold, which is defined as the minimum detectable depth between two 
+objects at difference distances, is known as {\it stereo acuity} which can be different in various visual systems \cite{binr83,how95}. According to different
+experiments \cite{binr83}, the finest detectable angular disparity in human visual system can be about 10 arcsecond.
+
+
+
+
 
 \bibliographystyle{plain}
 \bibliography{reference} 
