@@ -64,7 +64,7 @@ std::condition_variable cvar;
 bool filled;
 bool rendered=true;
 Mat glLeftf;
-double LR_angle=271, UD_angle=5, ZOOM=3000.0;
+double LR_angle=270, UD_angle=5, ZOOM=1000;
 int dragging, drag_x_origin, drag_y_origin;
 bool PAUSE;
 int frameNum;
@@ -185,7 +185,8 @@ void display(){
 	gluPerspective(30.0, (GLfloat)win_w/(GLfloat)win_h, 1.0,8000.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(camX+200,camY+500,-camZ-1000, 0,0,-1000, 0.0,1.0,0.0);
+	//gluLookAt(camX+(imgCol/2),camY+(imgRow/2),camZ, imgCol/2,imgRow/2,-800, 0.0,1.0,0.0);
+	gluLookAt(camX-20,camY-50,camZ+600, 0,0,-100, 0.0,1.0,0.0);
 	
 	
 	
@@ -196,20 +197,20 @@ void display(){
 	rendered = false;
 	//cout << "RENDER: after: rendered: " << rendered << " filled: " << filled << endl;
 	
-	glBegin(GL_POINTS);
 	
 	for (int j = 0; j < imgRow ; j++){
 		for (int i= 0; i < imgCol; i++){
 			
-			if (Image3d.at<Vec3f>(j,i)[2]>0) { 
+			if (Image3d.at<Vec3f>(j,i)[2]>0 && Image3d.at<Vec3f>(j,i)[2]<500) { 
 				glColor3ub(glLeftf.at<Vec3b>(j,i)[2],glLeftf.at<Vec3b>(j,i)[1],glLeftf.at<Vec3b>(j,i)[0]);
 				//cout << Image3d.at<Vec3f>(j,i)[0] << " " << Image3d.at<Vec3f>(j,i)[1] << " " << Image3d.at<Vec3f>(j,i)[2] << endl;
-				glVertex3f( (int)Image3d.at<Vec3f>(j,i)[0],-(int)Image3d.at<Vec3f>(j,i)[1], -Image3d.at<Vec3f>(j,i)[2]);
+				glBegin(GL_POINTS);
+				glVertex3f(-(int)Image3d.at<Vec3f>(j,i)[0],-(int)Image3d.at<Vec3f>(j,i)[1], Image3d.at<Vec3f>(j,i)[2]);
+				glEnd();
 				//glVertex3f( imgCol-i,imgRow-j, Image3d.at<Vec3f>(j,i)[2]);
 			}
 		}
 	}
-	glEnd();
 	rendered = true;
 	//glutWireCube(1.0);
 	glFlush(); 
