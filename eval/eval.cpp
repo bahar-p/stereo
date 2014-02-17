@@ -22,7 +22,7 @@ int main (int argc, char** argv) {
 
 	int adcensus=0;
 	if(argc<6) {
-		std::cerr << "Usage: ./eval gt_disp gen_disp maxDisp focal baseline ?Adcensusflag? ?is_noc? ?mask?" << std::endl;
+		std::cerr << "Usage: ./eval gt_disp gen_disp maxDisp focal baseline pixErrThresh ?Adcensusflag? ?is_noc? ?mask?" << std::endl;
 		return -1;
 	}
 	cv::Mat im_gt = cv::imread(argv[1],-1);
@@ -35,14 +35,15 @@ int main (int argc, char** argv) {
 	int dmax = atoi(argv[3]);
 	float f = atof(argv[4]);
 	float bs = atof(argv[5]);
-	std::cout << "F: " << f << " BS: " << bs << std::endl;
-	if(argc>6) adcensus=atoi(argv[6]);
+	float pix_thr = atof(argv[6]);
+	std::cout << "F: " << f << " BS: " << bs <<" Pix_Thr: " << pix_thr << std::endl;
+	if(argc>7) adcensus=atoi(argv[7]);
 	bool masked = false;
 	int noc=1;
-	if(argc>7) {
-		noc = atoi(argv[7]);
-		if(argc==9){
-			mask = cv::imread(argv[8],0);
+	if(argc>8) {
+		noc = atoi(argv[8]);
+		if(argc==10){
+			mask = cv::imread(argv[9],0);
 			masked = true;
 		}
 	}
@@ -121,6 +122,7 @@ int main (int argc, char** argv) {
 				pix_count++;
 				if(fd_gen < 0) std::cout << "Negative value!" << std::endl;
 				float err = fabs(fd_gt - (fd_gen < 0 ? 0 : fd_gen));
+				if(err <= pix_thr){
 				float depth = (f*bs)/fd_gt;
 				float dz_1729 = ((depth*depth)*(stAcuity_1729/60))/(c*pupil_dist);
 				float dz_3049 = ((depth*depth)*(stAcuity_3049/60))/(c*pupil_dist);
@@ -140,7 +142,7 @@ int main (int argc, char** argv) {
 					<< (depth_err==INF ? 1000000 : (depth_err/100)) <<  std::endl;*/
 				if(depth_err != INF){
 					of1 << (depth/1000) << "  "  << (stAcuity_1729/60) << "  " << (stAcuity_3049/60) << "  " << (stAcuity_5069/60) << "  "  << (stAcuity_7083/60) << "  " 
-					<< err_stAc <<  std::endl;
+					<< err_stAc << "  " << fd_gt << "  " << fd_gen << "  " << depth << "  " << depth_gen << "  "<< pix_thr <<  std::endl;
 				}
 				
 				
@@ -176,6 +178,8 @@ int main (int argc, char** argv) {
 					else {
 						//std::cout << "depth out of defined ranges" << std::endl;
 					}
+				
+				}
 				}
 			}
 		}
