@@ -182,7 +182,7 @@ void display(){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	//glOrtho(-1, 10, -1,10, -1.0, 1.0);
-	gluPerspective(30.0, (GLfloat)win_w/(GLfloat)win_h, 1.0,8000.0);
+	gluPerspective(60.0, (GLfloat)win_w/(GLfloat)win_h, 1.0,8000.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	//gluLookAt(camX+(imgCol/2),camY+(imgRow/2),camZ, imgCol/2,imgRow/2,-800, 0.0,1.0,0.0);
@@ -231,10 +231,10 @@ void mouse_press(int bt, int state, int i, int j){
 		//exit(0);
 	if (bt == 3) 		//mouse wheel event
 	{
-		ZOOM-=20;
+		ZOOM-=5;
 	}
 	if(bt ==4){			//mouse wheel event
-	   ZOOM+=20;
+	   ZOOM+=5;
 	}
 	if(bt==GLUT_LEFT_BUTTON && state==GLUT_DOWN){
 		dragging=1;
@@ -248,16 +248,16 @@ void mouse_press(int bt, int state, int i, int j){
 void SpecialKeys(int key, int x, int y){
 	
 	if(key==GLUT_KEY_LEFT)
-		LR_angle +=1;
-		
-	if(key == GLUT_KEY_RIGHT)
 		LR_angle -=1;
 		
+	if(key == GLUT_KEY_RIGHT)
+		LR_angle +=1;
+		
 	if(key==GLUT_KEY_UP)
-		UD_angle +=1;
+		UD_angle -=1;
 		
 	if(key==GLUT_KEY_DOWN)
-		UD_angle -=1;
+		UD_angle +=1;
 	
 }
 
@@ -271,8 +271,8 @@ void keyboard_press(unsigned char key, int x, int y){
 
 void mouse_move(int x, int y){
 	if(dragging){
-		LR_angle += (x-drag_x_origin) * 0.2;
-		UD_angle += (y-drag_y_origin)* 0.2;
+		LR_angle -= (x-drag_x_origin) * 0.2;
+		UD_angle -= (y-drag_y_origin)* 0.2;
 		drag_x_origin = x;
 		drag_y_origin = y;
 		
