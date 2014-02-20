@@ -1,9 +1,10 @@
-\documentclass[dvips,letterpaper,12pt]{report}
+\documentclass[12pt]{report}
 \usepackage[square,numbers]{natbib}
 \usepackage{url}
 \usepackage{thesis}
 \usepackage{graphicx}
 \usepackage{amsmath}
+%\usepackage{epstopdf}
 %\numberwithin{equation}{section}
 \begin{document}
 \chapter{Introduction}
@@ -184,11 +185,17 @@ This plane, also referred to as {\it epipolar plane}, passes through $P^{'}$, $P
 It should be noted that this property, from which the consequent properties are derived, is the building block of stereo matching methods. 
 Let us denote the specified plane by $S$ for further reference. 
 Since $S$ passes through the camera centres, it clearly traverses the line 
-that connects two camera centres. This line, which is known as the {\it baseline}, intersects each image plane at a point called the {\it epipole}. 
+that connects two camera centres. This line, which is known as the {\it baseline}, intersects each image plane at a point called the {\it epipole}; points ${e}^{'}$ and ${e}^{"}$
+in figure \textbf{FIG}. 
 Consequently, the intersection of the plane $S$ and each of the image planes, creates a line called {\it epipolar line} \cite{hart2000}. 
 The {\it epipolar line} always passes through the {\it epipole} in the image plane. 
 These concepts, illustrated in figure \textbf{FIGURENUM}, constitute the important components of the stereo correspondence geometry. \newline 
-(\textbf{FIGURE HERE FOR EPIPOLAR GEOMETRY TERMS}) \newline
+
+\begin{figure}[h!]
+\centering
+\includegraphics[bb=0 -1 215 222]{epipole.pdf}
+\caption{Epipolar geometry}
+\end{figure} 
 
 Now, we can define the problem of stereo correspondence as a case in which the location of $P^{'}$ in the image plane is known, while the
 corresponding point $P^{"}$ is unknown; therefore, the problem can be stated as an attempt to find the correspondence of $P^{'}$ in the second image plane. Based on the aforementioned 
@@ -197,7 +204,6 @@ created by the intersection of the plane traversing the ray that goes through $P
 through $P^{'}$ and the first camera centre, on the right image plane. Therefore, the search for the corresponding point, $P^{"}$, will be limited to merely scanning the corresponding 
 epipolar line on the second image plane rather than the whole image.
 
-(\textbf {FIGURE  for epipolar planes similar to the figure in multipleview geometry page240}) \newline 
 %\begin{figure}{h!}
 %\centering
 %\includegraphics[width=1.5in,height=1.5in]{epipole}
@@ -209,12 +215,17 @@ The projection from a point to its corresponding epipolar line can be obtained t
 For further geometrical calculations, these transformations can be represented
 with a matrix that is only dependant on the camera's properties, not the scene \cite{hart2000}.
 However, dealing with these transformations while looking for the corresponding points, can increase the complexity of stereo matching algorithms to certain levels \cite{sze11}; therefore, 
-in order to avoid this issue, many stereo matching approaches are proposed based on the assumption that image pairs are first warped, i.e. {\it rectified} \cite{sze11}.
+in order to avoid this issue, many stereo matching approaches are proposed based on the assumption that image pairs are first warped \cite{sze11}.
 This process is known as {\it image rectification} which is basically achieved by first having the cameras rotated in a way that their optical axis, 
 the line passing through the camera centre which is perpendicular to the image plane, are parallel to each other; 
-i.e. their optical axis is perpendicular to the baseline. Furthermore, it might be necessary to have the cameras tilted so that their {\it y} axis also becomes perpendicular to the optical axis. 
+i.e. their optical axis is perpendicular to the baseline. As a result of this transformation, the epipoles are sent to infinity. 
+Furthermore, it might be necessary to have the cameras tilted so that their {\it y} axis also becomes perpendicular to the optical axis. 
 After these two steps, corresponding epipolar lines actually becomes horizontal scanlines \textbf{FIG}. This pre-processing step significantly constrains the process of searching 
 for corresponding points and eliminates certain complications in stereo matching algorithms \cite{sze11}. \newline 
+
+\textbf{FIG showing rectified images and property}
+
+
 Using the rectification model and epipolar geometry described earlier, 
 derivation of the geometrical relation through which the depth of a certain point in 3D space 
 can be obtained, will be straightforward. This relation is presented as follows \cite{sze11}:
@@ -392,7 +403,7 @@ By employing these thresholds in the process of edge detection and linkage, any 
 to its neighbor to form a continuous contour, only those 
 values above the lower threshold will be accepted \cite{canny86}. This process has shown to reduce the streaking effect to a significant amount \cite{canny86}. \newline
 
-\subsection{Non-linear filters}
+\subsection{Morphological Operations}
 In addition to linear filters, there is another type of filters known as {\it non-linear filters}. In this type of filtering, unlike linear filters, the final value of a pixel is not necessarily 
 a weighted combination of its neighboring pixels \cite{sze11}. 
 {\it Median filter, Bilateral filter}, and {\it anisotropic diffusion} are all different types of non-linear filters. Non-linear filters are used for certain image manipulation 
@@ -424,23 +435,23 @@ In the visual system, depth perception is a phenomenon that normally occurs thou
 These pieces of information, known as {\it depth cues} in stereo vision, can be either monocular or binocular depth cues \cite{how95}.
 To name a few instances of monocular depth cues, we can refer to motion parallax, lighting and shading, and apparent size. 
 However, as previously mentioned, binocular cues which can only be perceived
-by stereo vision, play the major role in the perception of depth. One of the most important binocular cues is {\it binocular disparity}, or {\it binocular parallax}. 
+by stereo vision, play a major role in the perception of depth. One of the most important binocular cues is {\it binocular disparity}, or {\it binocular parallax}. 
 It should be noted that the effect of binocular parallax and motion parallax on depth perception are very similar to each other. 
-In motion parallax, which is a monocular depth cue, the scene is viewed at different times by the observer movement from side to side, 
+In motion parallax, which is a monocular depth cue, the scene is viewed at different times by the observer moving from side to side, 
 whereas in binocular parallax, the scene is viewed from slightly different viewpoints at
-the same time by the observer standing at a fixed position \cite{how95}. \textbf{FIGURE to show this}
+the same time by the two eyes, while the observer standing at a fixed position \cite{how95}. \textbf{FIGURE to show this}
 
 Binocular disparity, which in fact arises from the spatial difference 
 between the images of the same scene in the two eyes, provides a relative perception of depth from the surrounding environment. This perception is known as {\it binocular stereopsis} \cite{how95}. 
 Another important binocular depth cue is the eyes {\it vergence}, which is the simultaneous movement of the pupils in opposite directions in order to obtain a single vision of an object with the
 two eyes. When focusing on an object, the optical axes of the eyes intersect on the object of interest resulting in an angle called vergence angle. Unlike many animals, human visual system 
-is capable of adjusting this angle based on the distance of the object.
-In stereo vision, the locus of the points that yields a single vision in the visual system is known as the {\it horopter}, and the point located on the horopter is usually referred to as
+is capable of adjusting this angle based on the distance from the object.
+In stereo vision, the locus of the points that yields a single vision in the visual system is known as the {\it horopter}, and any point located on the horopter is usually called a 
 {\it fixation point} \cite{binr83,how95}.
-An important property of an object on the horopter, no spatial difference
-exists between the images of the fixated object in the two eyes; i.e. the binocular disparity is zero \cite{how95}. The locus of the points in which 
+An important property of an object on the horopter is that no spatial difference
+exists between the images of the fixated object in the two eyes; i.e. the binocular disparity is zero \cite{how95}. 
 Exploiting this property, the disparity of any other object in the scene can be estimated relative to the fixated object by inspecting two important factors: 
-whether the object of interest is closer or further than the fixated object and then how much closer or further it relatively is.
+whether the object of interest is closer or further than the fixated object and then how much closer or further it is relative to the fixated object.
 As a result, the binocular disparity provides a relative perception of depth of the surrounding environment.
 In the geometry of stereopsis, the relative disparity between two objects is usually presented as angular disparity in radiant, or seconds of arc.
 
@@ -459,7 +470,7 @@ Z = Z^{'} + \Delta Z \\
 \end{align}
 
 However, when $\Delta Z$ is very small compared to the values of $Z$, the term $\Delta Z$ in denominator can be neglected without significant loss of accuracy. This results in
-the approximate following formula:
+an approximate formula as follows:
 
 \begin{align}
 \theta = a/Z^{2}
@@ -471,10 +482,10 @@ This formula estimate the angular disparity in radiant. In order to convert $\th
 180/\pi = 57.296\times360=206.265
 \end{align}
 
-Studies show that the visual system capability to distinguish two objects at different distances relative to each other is limited to certain thresholds.
+Studies show that the visual system capability to distinguish two objects at different distances relative to each other is limited to certain thresholds \cite{binr83,how95}.
 This threshold, which is defined as the minimum detectable depth between two 
-objects at difference distances, is known as {\it stereo acuity} which can be different in various visual systems \cite{binr83,how95}. According to different
-experiments \cite{binr83}, the finest detectable angular disparity in human visual system can be about 10 arcseconds.
+objects at difference distances, is known as {\it stereo acuity} which varies in different visual systems \cite{binr83,how95}. According to different
+experiments \cite{binr83}, the finest detectable angular disparity in human visual system is approximately 10 arcseconds.
 
 
 
