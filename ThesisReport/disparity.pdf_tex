@@ -1,0 +1,67 @@
+%% Creator: Inkscape inkscape 0.48.3.1, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'disparity.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{362.83464355bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.74999998)%
+    \put(0,0){\includegraphics[width=\unitlength]{disparity.pdf}}%
+    \put(0.40648853,0.12166032){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.17163647\unitlength}\centering baseline (B)\end{minipage}}}%
+    \put(0.27899501,0.31662534){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03578244\unitlength}\centering P'\end{minipage}}}%
+    \put(0.64408395,0.3148855){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03721374\unitlength}\centering P"\end{minipage}}}%
+    \put(0.45229007,0.7414122){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.04150763\unitlength}\centering P\end{minipage}}}%
+    \put(0.22007713,0.24289032){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.02862595\unitlength}\centering f\end{minipage}}}%
+    \put(0.68882714,0.24289032){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.02862595\unitlength}\centering f\end{minipage}}}%
+    \put(0.23187024,0.18034348){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.04007634\unitlength}\centering C'\end{minipage}}}%
+    \put(0.66746486,0.18044912){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.04007634\unitlength}\centering C"\end{minipage}}}%
+    \put(0.46578979,0.43042722){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03721374\unitlength}\centering Z\end{minipage}}}%
+    \put(0.33635497,0.73711831){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.04866412\unitlength}\centering XL\end{minipage}}}%
+    \put(0.54895164,0.73849591){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.05832538\unitlength}\centering XR\end{minipage}}}%
+    \put(0.241368,0.27635258){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.05733298\unitlength}\centering xl\end{minipage}}}%
+    \put(0.65106387,0.26998764){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.05045302\unitlength}\centering xr\end{minipage}}}%
+  \end{picture}%
+\endgroup%

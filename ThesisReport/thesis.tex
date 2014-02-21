@@ -3,7 +3,9 @@
 \usepackage{url}
 \usepackage{thesis}
 \usepackage{graphicx}
+\usepackage{svg}
 \usepackage{amsmath}
+\usepackage{mathtools}
 %\usepackage{epstopdf}
 %\numberwithin{equation}{section}
 \begin{document}
@@ -185,16 +187,17 @@ This plane, also referred to as {\it epipolar plane}, passes through $P^{'}$, $P
 It should be noted that this property, from which the consequent properties are derived, is the building block of stereo matching methods. 
 Let us denote the specified plane by $S$ for further reference. 
 Since $S$ passes through the camera centres, it clearly traverses the line 
-that connects two camera centres. This line, which is known as the {\it baseline}, intersects each image plane at a point called the {\it epipole}; points ${e}^{'}$ and ${e}^{"}$
-in figure \textbf{FIG}. 
+that connects two camera centres. This line, which is known as the {\it baseline}, intersects each image plane at a point called the {\it epipole}; denoted by ${e}^{'}$ and ${e}^{"}$
+in Figure \ref{fig:epg}. 
 Consequently, the intersection of the plane $S$ and each of the image planes, creates a line called {\it epipolar line} \cite{hart2000}. 
 The {\it epipolar line} always passes through the {\it epipole} in the image plane. 
-These concepts, illustrated in figure \textbf{FIGURENUM}, constitute the important components of the stereo correspondence geometry. \newline 
+These concepts, illustrated in Figure \ref{fig:epg}, constitute the important components of the stereo correspondence geometry.
 
 \begin{figure}[h!]
 \centering
-\includegraphics[bb=0 -1 215 222]{epipole.pdf}
+\includesvg{epipole}
 \caption{Epipolar geometry}
+\label{fig:epg}
 \end{figure} 
 
 Now, we can define the problem of stereo correspondence as a case in which the location of $P^{'}$ in the image plane is known, while the
@@ -211,7 +214,7 @@ epipolar line on the second image plane rather than the whole image.
 
 It is now apparent that in order to find the correspondence of a particular point $P^{'}$, in the second image plane
 the corresponding epipolar line, must first be sought. 
-The projection from a point to its corresponding epipolar line can be obtained through certain transformations in space; normally a rotation and translation, \textbf {FIGNUMER}.
+The projection from a point to its corresponding epipolar line can be obtained through certain transformations in space; normally a rotation and translation, Figure \ref{fig:rectify}.
 For further geometrical calculations, these transformations can be represented
 with a matrix that is only dependant on the camera's properties, not the scene \cite{hart2000}.
 However, dealing with these transformations while looking for the corresponding points, can increase the complexity of stereo matching algorithms to certain levels \cite{sze11}; therefore, 
@@ -220,18 +223,26 @@ This process is known as {\it image rectification} which is basically achieved b
 the line passing through the camera centre which is perpendicular to the image plane, are parallel to each other; 
 i.e. their optical axis is perpendicular to the baseline. As a result of this transformation, the epipoles are sent to infinity. 
 Furthermore, it might be necessary to have the cameras tilted so that their {\it y} axis also becomes perpendicular to the optical axis. 
-After these two steps, corresponding epipolar lines actually becomes horizontal scanlines \textbf{FIG}. This pre-processing step significantly constrains the process of searching 
+After these two steps, corresponding epipolar lines actually becomes horizontal scanlines; Figure \ref{fig:rectify}. This pre-processing step significantly constrains the process of searching 
 for corresponding points and eliminates certain complications in stereo matching algorithms \cite{sze11}. \newline 
 
-\textbf{FIG showing rectified images and property}
+\begin{figure}[h!]
+\centering
+\includesvg{disparity}
+\caption{Rectified image pairs and disparity geometry}
+\label{fig:rectify}
+\end{figure} 
 
 
 Using the rectification model and epipolar geometry described earlier, 
 derivation of the geometrical relation through which the depth of a certain point in 3D space 
 can be obtained, will be straightforward. This relation is presented as follows \cite{sze11}:
-\begin{equation}
-d = f\frac{B}{Z}
-\end{equation}
+\begin{align}
+X_{L}/Z=x_{l}/f \\
+-X_{r}/Z=-x_{r}/f  \Rightarrow B-X_{L}/Z=-x_{r}/f \\
+\intertext{By adding these two equations:} \Longrightarrow  B/Z=(x_{l}-x_{r})/f\\
+\text{if} && x_{l}-x_{r}=d \Rightarrow d=Bf/Z
+\end{align}
 where f is the {\it focal length} measured in pixels, B is the {\it baseline}, Z is the {\it 3D depths}, and d is {\it disparity}. The relationship between corresponding pixels in the left
 and right images according to disparity {\it d} is also as follows:
 \begin{align}
@@ -441,6 +452,7 @@ In motion parallax, which is a monocular depth cue, the scene is viewed at diffe
 whereas in binocular parallax, the scene is viewed from slightly different viewpoints at
 the same time by the two eyes, while the observer standing at a fixed position \cite{how95}. \textbf{FIGURE to show this}
 
+
 Binocular disparity, which in fact arises from the spatial difference 
 between the images of the same scene in the two eyes, provides a relative perception of depth from the surrounding environment. This perception is known as {\it binocular stereopsis} \cite{how95}. 
 Another important binocular depth cue is the eyes {\it vergence}, which is the simultaneous movement of the pupils in opposite directions in order to obtain a single vision of an object with the
@@ -458,14 +470,20 @@ In the geometry of stereopsis, the relative disparity between two objects is usu
 \section{Stereopsis Geometry and Angular Disparity}
 
 In the following section, we will describe how the angular disparity can be calculated utilizing the geometry of stereopsis \cite{binr83}.
-\textbf{FIGURE of Geometric Disparity and Formulas}
-According to the figure:
 
+\begin{figure}[h!]
+\centering
+\includesvg{binocular}
+\caption{Image}
+\label{fig:stereopsis}
+\end{figure} 
+
+According to Figure \ref{fig:stereopsis}, we have:
 \begin{align}
-\theta = \beta - \alpha \\
-\alpha = a/Z^{'} \\
-\beta = a/Z \\
-Z = Z^{'} + \Delta Z \\
+\theta = \beta - \alpha\\
+\alpha = a/Z^{'}\\
+\beta = a/Z\\
+Z = Z^{'} + \Delta Z\\
 \Rightarrow \theta = a/Z - a/Z^{'} = a/Z - a/(Z+\Delta Z)
 \end{align}
 
