@@ -1,0 +1,19 @@
+CC = g++
+CFLAGS = -c
+LIB = 
+LFLAGS = 
+BUILDPATH = ../build
+GLFLAGS = -lGL -lglut -lGLU -lm
+OPENCVINC = `pkg-config --cflags opencv`
+OPENCVLIB = `pkg-config --libs opencv`
+
+all: augreal
+
+augreal: AR.o
+	$(CC) -std=c++0x AR.o -g -o $(BUILDPATH)/AR $(OPENCVLIB) $(GLFLAGS)
+
+AR.o: AR.cpp
+	$(CC) -std=c++0x $(CFLAGS) $(GLFLAGS) $(OPENCVINC) AR.cpp
+
+clean:
+	rm -rf *.o *~
