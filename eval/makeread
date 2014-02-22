@@ -1,0 +1,19 @@
+CC = g++
+CFLAGS = -c
+LIB = 
+LFLAGS = 
+BUILDPATH = ../build
+GLFLAGS = -lGL -lglut -lGLU -lm
+OPENCVINC = `pkg-config --cflags opencv`
+OPENCVLIB = `pkg-config --libs opencv`
+
+all: read
+
+read: readimg.o
+	$(CC) -std=c++0x readimg.o -o $(BUILDPATH)/readimg $(OPENCVLIB) $(GLFLAGS)
+
+readimg.o: readimg.cpp
+	$(CC) -std=c++0x $(CFLAGS) $(GLFLAGS) $(OPENCVINC) readimg.cpp
+
+clean:
+	rm -rf *.o *~
