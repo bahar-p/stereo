@@ -3,6 +3,8 @@
 \usepackage{url}
 \usepackage{thesis}
 \usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
 \usepackage{svg}
 \usepackage{amsmath}
 \usepackage{mathtools}
@@ -452,6 +454,34 @@ In motion parallax, which is a monocular depth cue, the scene is viewed at diffe
 whereas in binocular parallax, the scene is viewed from slightly different viewpoints at
 the same time by the two eyes, while the observer standing at a fixed position \cite{how95}. \textbf{FIGURE to show this}
 
+\begin{figure}[!h]
+\centering
+\subcaptionbox{Motion Parallax}
+[.4\linewidth]{\includesvg{Mparallax}}%
+\subcaptionbox{Binocular Parallax}
+[.4\linewidth]{\includesvg{Bparallax}}%
+\caption{Motion parallax and binocular arallax difference}
+\label{fig:parallax}
+\end{figure}
+
+%\begin{figure}[!h]
+%\centering
+%\begin{subfigure}[b]{7cm}            
+%\frame{\includesvg[width=\textwidth]{Bparallax}}
+%\caption{Interpolation for Data 1}
+%\label{Fig:bp}
+%\end{subfigure}
+%
+%\hspace{1cm}
+%
+%\begin{subfigure}[b]{7cm}
+%\centering
+%\frame{\includesvg[width=\textwidth]{Mparallax}}
+%\caption{Interpolation for Data 2}
+%\label{fig:mparallax}
+%\end{subfigure}
+%\caption{blah blah}\label{fig:bpmp}
+%\end{figure}
 
 Binocular disparity, which in fact arises from the spatial difference 
 between the images of the same scene in the two eyes, provides a relative perception of depth from the surrounding environment. This perception is known as {\it binocular stereopsis} \cite{how95}. 
