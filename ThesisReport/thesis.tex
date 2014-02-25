@@ -96,7 +96,7 @@ However, what we are more interested in for this research, is the human percepti
 the depth of different objects relative to each other. This is known as {\it Stereoscopic Acuity} in binocular vision, which is the smallest depth difference between two points 
 that can be detected in binocular vision \cite{pfa2000}. More detail about
 this metric will be provided in the following chapters.
-Therefore, we have investigated standard stereo acuity in human visual system and applied it to our evaluation in order to obtain the smallest detectable depth of 
+Therefore, we have investigated standard stereoacuity in human visual system and applied it to our evaluation in order to obtain the smallest detectable depth of 
 objects in human binocular vision based on their distance from the observer.
 
 Moreover, providing real-time interaction in an AR system for the user requires the processing time and update rate of the whole system to keep up ideally with the standard video frame rate, 
@@ -514,17 +514,20 @@ According to Figure \ref{fig:stereopsis}, we have:
 \alpha = a/Z^{'}\\
 \beta = a/Z\\
 Z = Z^{'} + \Delta Z\\
-\Rightarrow \theta = a/Z - a/Z^{'} = a/Z - a/(Z+\Delta Z)
+\Rightarrow \theta = a/Z - a/Z^{'} = a/Z - a/(Z+\Delta Z) \\
+\Rightarrow \theta = aZ+a\Delta Z-aZ/Z(Z+\Delta Z) = a\Delta Z/Z^{2} 
 \end{align}
 
 However, when $\Delta Z$ is very small compared to the values of $Z$, the term $\Delta Z$ in denominator can be neglected without significant loss of accuracy. This results in
 an approximate formula as follows:
 
 \begin{align}
-\theta = a/Z^{2}
+\label{eq:stac}
+\theta = a \Delta Z/Z^{2}
 \end{align}
 
-This formula estimate the angular disparity in radiant. In order to convert $\theta$ to arcseconds it should be multiplied by:
+in which a is the distance between the center of the pupils of the two eyes, which is known as interpupillary distance.
+It should be noted that this formula estimates the angular disparity in radiant. In order to convert $\theta$ to arcseconds it should be multiplied by:
 
 \begin{align}
 180/\pi = 57.296\times360=206.265
@@ -532,12 +535,32 @@ This formula estimate the angular disparity in radiant. In order to convert $\th
 
 Studies show that the visual system capability to distinguish two objects at different distances relative to each other is limited to certain thresholds \cite{binr83,how95}.
 This threshold, which is defined as the minimum detectable depth between two 
-objects at difference distances, is known as {\it stereo acuity} which varies in different visual systems \cite{binr83,how95}. According to different
-experiments \cite{binr83}, the finest detectable angular disparity in human visual system is approximately 10 arcseconds.
+objects at difference distances, is known as {\it stereoacuity} which varies in different visual systems \cite{binr83,how95}. According to different
+experiments \cite{binr83}, the finest detectable angular disparity in human visual system is approximately 10-15 arcseconds. However, a more recent study on
+stereoacuity in 60 subjects \cite{garn06} for different age groups, from 17 to 83 using standard stereotests, 
+shows that the average stereoacuity for different age groups is as follows:
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{ |c|c| }
+\hline
+\textbf{Age Range} & \textbf{Stereo Acuity (arcsecs)} \\ \hline
+17-29 & 32 \\  \hline
+30-49 & 33.75 \\ \hline
+50-69 & 38.75 \\ \hline
+70-83 & 112.5 \\ \hline
+\end{tabular}
+\end{center}
+\caption{Average stereoacuity for subjects of age 17 to 83}
+\label{tab:stAcAge}
+\end{table}
 
+Furthermore, studies show that the average interpupillary distance in human is 64 mm \cite{how95}. 
+Using these values in stereoacuity equation \ref{eq:stac}, the threshold for minimum detectable relative depth 
+between two objects can be estimated based on their distance from the observer. 
+Studying these concepts and related works in stereo vision, we have designed and implemented our evaluation process based on standard
+stereoacuity measurements mentioned in table \ref{tab:stAcAge}.
 
-
-
+\chapter{Design and Implementation}
 
 \bibliographystyle{plain}
 \bibliography{reference} 
