@@ -1,0 +1,56 @@
+\chapter{Design of Evaluation Scheme}
+
+This chapter walks through the steps taken in order to build up our evaluation framework and justification of each decision taken during this design.
+
+\section{Stereo Correspondence Evaluation}
+
+As briefly mentioned in \ref{chap:Introduction}, there are already different evaluation schemes to assess stereo correspondence solutions. Middlebury Stereo Evaluation \cite{mideval} and 
+Kitti Stereo Evaluation \cite{kitti} are the most popular evaluation schemes among researchers and scientists in the field. 
+Middlebury and Kitti evaluation schemes are both based on defining certain pixel thresholds for the error between the ground truth disparity and the disparity found by the solution. 
+They also provide separate masks for depth discontinuities, occluded regions and the mask of all the area in the image for seperate error and outlier calculation.
+However, both of these widely used evaluation models take a general approach towards assessing stereo matching algorithms and have not been designed based on any particular application in which 
+stereo matching solutions might be used; therefore, they focus more on the fundamental aspects of designing a stereo matching algorithm as a solution per se to \textit{efficiently}
+find the \textit{best matches} of corresponding pixels in stereo pairs. 
+However, this perspective may raise some questions in the researcher's mind such as:
+
+\begin{enumerate}
+\item What is actually an \textit{efficient} solution? On what basis this \textit{efficienly} can be defined?
+\item What is a \textit{best match} of corresponding pixels? How can it be defined?
+\end{enumerate}
+
+As a matter of fact, these questions has mainly motivated us to study the evaluation scheme of stereo correspondence solutions from a different point of view. 
+In this approach, we have taken steps towards evaluating the stereo correspondence solutions based on the application in which they are going to be used, 
+thus better defining and tuning the criteria for \textit{efficiency} and 
+finding \textit{the best correspondence match} in the evaluation. Since augmented reality applications have more attracted the researchers's attention in the past few years, 
+we have decided to build our evaluation scheme based on an outdoor application in this area.
+
+\section{Testbed desgin}
+
+In an augmneted reality system, there are certain factors that would affect the functionality and effectiveness of the system \cite{dras96,liv05}. These factors may correspond to the surrounding 
+enivornment, technology and hardware constraints, or human factors which can be different for each individual. Therefore, in the evaluation of an augmented reality system 
+which employs stereo vision techniques in order to build a dense depth map of the surrounding environment, these factors should be carefully considered. 
+Since humans are an inseparable component of most of AR systems, due to the time constraint and the existence of many factors and issues that need to be thoroughly 
+examined while designing and evaluating the functionality and efficiecy of an AR system, we have mainly focused on the human factors, and the requirement of providing a real-time interaction for
+the users, which is actually related to technology constraints. 
+
+In order to be able to design an evaluation scheme for assessing stereo matching solutions in an AR application, we need to primarily understand the relation between these two systems and
+the aspects in which they would affect each other while building a practical AR system. Concentrating on the requirements of obtaining a real-time interaction between an AR system and the users, and
+also certain human factors which would affect both the augmented reality and stereo vision components of the system,
+has revealed the necessity of involving them in the evaluation of stereo correspondence solutions used for generation of the depth map in such systems; hence, in order to 
+determine whether a stereo correspondence algorithm can meet the requirements of an outdoor AR application we need to design an evaluation scheme which can properly assess 
+the \textit{efficiency} of the algorithm in the system and the accuracy of its disparity result based on the important human factors in an binocular vision and an AR system.
+These factors are in fact the concepts related to real-time interaction of an AR system mentioned in \ref{chap:Introduction}, and binocular vision, stereopsis, human perception of depth, 
+and stereoacuity as thoroughly described in \ref{chap:BinocularVision}.
+
+In other words, we have proposed and desgined an evaluation scheme to determine the suitability of using stereo matching solutions for generating disparity maps of the surrounding 
+environment in an augmented reality framework in terms of \textit{accuracy} and \textit{efficiency; i.e. speed}. 
+As a result, unlike Middlebury or Kitti evaluation schemes, we label a pixel in the disparity result as an \textit{outlier} if the stereoacuity
+of the relative depth error between the ground truth depth and the depth found by the stereo solution is more than the standard stereoacuity thresholds reported for human visual system based
+on standard stereo tests. 
+Moreover, since we have used the average stereoacuity for different age groups \cite{garn06}, we are able to determine the performance of the algorithm for users in aged differently; this
+makes the evaluation results more reliable and applicable to practical applications of AR and the users of an AR system might fit in different age groups.
+In terms of evluating the efficiency of the algorithm, from the perspective of meeting the requirements for being part of a real-time application, we have estimated and reported 
+the average execution time of the algorithm on generating a dense disparity map over the input dataset.
+
+
+
