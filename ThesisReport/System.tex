@@ -24,7 +24,7 @@ thus better defining and tuning the criteria for \textit{efficiency} and
 finding \textit{the best correspondence match} in the evaluation. Since augmented reality applications have more attracted the researchers's attention in the past few years, 
 we have decided to build our evaluation scheme based on an outdoor application in this area.
 
-\section{Testbed desgin}
+\section{New Evaluation Scheme}
 
 In an augmneted reality system, there are certain factors that would affect the functionality and effectiveness of the system \cite{dras96,liv05}. These factors may correspond to the surrounding 
 enivornment, technology and hardware constraints, or human factors which can be different for each individual. Therefore, in the evaluation of an augmented reality system 
@@ -34,7 +34,10 @@ examined while designing and evaluating the functionality and efficiecy of an AR
 the users, which is actually related to technology constraints. 
 
 In order to be able to design an evaluation scheme for assessing stereo matching solutions in an AR application, we need to primarily understand the relation between these two systems and
-the aspects in which they would affect each other while building a practical AR system. Concentrating on the requirements of obtaining a real-time interaction between an AR system and the users, and
+the aspects in which they would affect each other while building a practical AR system. An overview of different components of AR system is shown in \ref{fig:AR}.
+\textbf{FIG of AR}
+
+Concentrating on the requirements of obtaining a real-time interaction between an AR system and the users, and
 also certain human factors which would affect both the augmented reality and stereo vision components of the system,
 has revealed the necessity of involving them in the evaluation of stereo correspondence solutions used for generation of the depth map in such systems; hence, in order to 
 determine whether a stereo correspondence algorithm can meet the requirements of an outdoor AR application we need to design an evaluation scheme which can properly assess 
@@ -47,10 +50,43 @@ environment in an augmented reality framework in terms of \textit{accuracy} and 
 As a result, unlike Middlebury or Kitti evaluation schemes, we label a pixel in the disparity result as an \textit{outlier} if the stereoacuity
 of the relative depth error between the ground truth depth and the depth found by the stereo solution is more than the standard stereoacuity thresholds reported for human visual system based
 on standard stereo tests. 
-Moreover, since we have used the average stereoacuity for different age groups \cite{garn06}, we are able to determine the performance of the algorithm for users in aged differently; this
-makes the evaluation results more reliable and applicable to practical applications of AR and the users of an AR system might fit in different age groups.
-In terms of evluating the efficiency of the algorithm, from the perspective of meeting the requirements for being part of a real-time application, we have estimated and reported 
-the average execution time of the algorithm on generating a dense disparity map over the input dataset.
+Moreover, since we have used the average stereoacuity for different age groups \cite{garn06}, we are able to determine the performance of the algorithm for users 
+at different ages; this
+makes the evaluation results more reliable and applicable to practical applications of AR since the users of an AR system might be within different age groups.
+In terms of evluating the efficiency of the algorithms to investigate whether they meet the requirements of being part of a real-time application, 
+we have also integrated the estimation of the average execution time of the algorithm over the input data sets in the evaluation process.
+
+It should be noted that the input datasets we have used for evaluating two sample stereo matching algorithms mentioned in \ref{chap:Intorduction}
+to present the results of our evaluation framework and how they should be interpreted, 
+are selected from Kitti Stereo Dataset; we have used Kitti Stereo set because it consists of sample stereo images
+taken of outdoor scenes under real circumstances.
+
+\subsection{Architecture}
+A highlevel architecture of our evaluation scheme is shown in \ref{fig:architecture}.
+
+\textbf{FIG of Architecture}
+
+As it can be seen input data consisting of stereo images, ground truth disparity and calibration data
+are first passed to the evluation module along with required parameters and settings.
+After the evaluation process is over, various plots can
+be generated according to the paramaters and settings passed in. Plots can then be evaluated, and decisions are made on 
+whether the stereo corresponence solution is a proper method to be used in the augmented reality application of interest or not for the generation of depth map.
+\subsection{Modules}
+The evaluation module consists of different components that are dynamically created as part of the process. These components are:
+
+\begin{itemize}
+\item Edge masks generated based on input data 
+\item Masked ground-truth (occluded or non-occluded based on setting parameters passed in)
+\item Full and masked disparity maps generated by the algorithm 
+\end{itemize}
+
+The creation of these components is essential depending on the parameters passed in to the main module to successfully conduct 
+the evaluation process.
+
+\subsection{Platform, Technology}
+The evaluation process have been implemented on a Unix-based platform using C++ programming language as the language used for implementing 
+the core functions of the evaluation and Tool Command Language (TCL) for all the scripts.
+
 
 
 
