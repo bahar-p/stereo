@@ -32,9 +32,10 @@ Consequently, the intersection of the plane $S$ and each of the image planes, cr
 The {\it epipolar line} always passes through the {\it epipole} in the image plane. 
 These concepts, illustrated in Figure \ref{fig:epg}, constitute the important components of the stereo correspondence geometry.
 
-\begin{figure}[h!]
+\begin{figure}[!h]
 \centering
-\includesvg{epipole}
+\includegraphics[width=0.5\textwidth]{epipole}
+%\includesvg{epipole}
 \caption{Epipolar geometry}
 \label{fig:epg}
 \end{figure} 
@@ -63,11 +64,11 @@ the line passing through the camera centre which is perpendicular to the image p
 i.e. their optical axis is perpendicular to the baseline. As a result of this transformation, the epipoles are sent to infinity. 
 Furthermore, it might be necessary to have the cameras tilted so that their {\it y} axis also becomes perpendicular to the optical axis. 
 After these two steps, corresponding epipolar lines actually becomes horizontal scanlines; Figure \ref{fig:rectify}. This pre-processing step significantly constrains the process of searching 
-for corresponding points and eliminates certain complications in stereo matching algorithms \cite{sze11}. \newline 
+for corresponding points and eliminates certain complications in stereo matching algorithms \cite{sze11}.
 
-\begin{figure}[h!]
+\begin{figure}[!h]
 \centering
-\includesvg{disparity}
+\includegraphics[width=0.65\textwidth,trim=22mm 0mm 0mm 150mm,clip]{rectdisp}
 \caption{Rectified image pairs and disparity geometry}
 \label{fig:rectify}
 \end{figure} 
