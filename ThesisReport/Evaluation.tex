@@ -1,0 +1,42 @@
+\chapter{Evaluation}
+\label{chap:Evaluation}
+
+In this chapter, we will go through our experimental hypothesis, testing scenarios, experiments conducted on two sample 
+stereo matching algorithms, SGBM and ADCensus mentioned in chapter \ref{chap:Introduction}, and the results with our
+proposed evlaution system to assess the benefits of using our evaluation model for a 3D AR application over the general-purpose evluation models; 
+Middlebury and Kitti Evaluation stereo evaluation.
+
+\section{Stereo Dataset}
+It should be noted that the stereo dataset we have used to conduct the experiments on stereo matching algorithms in our system,
+are selected from Kitti Stereo Dataset.
+In contrary to Middlebury dataset, Kitti Stereo Project provides stereo images and ground truth disparity maps
+that are taken from outdoor scenes under real circumstances. This property of sample images makes them more appropriate 
+for evaluating the performance of the stereo algorithms in practical AR application, thus better meeting our objectives in this research.
+We have selected 52 samples image pairs among Kitti Stereo dataset based on different photometric and visual properties that are important
+in stereo vision and an AR application. Some 
+of these properties are listed as follows:
+\begin{itemize}
+\item light and shading; i.e. selecting scenes containing bright, dim, and dark regions
+\item Various depth ranges; i.e. selecting scenes that contains near field, medium field and far field objects  
+\item Depth discontinuity and Occlusion
+\item Well textured and textureless regions
+\end{itemize}
+
+
+\section{Methodoloy}
+Before going through the explanation of the experiments conducted to assess our evaluation model, we phrase our main research question in this
+study once more here to better justify the selected experiments. 
+As mentioned earlier in chapter \ref{chap:Introduction} our main objective is to investigate "whether using 
+stereo matching techniques to find the depth map of the 
+surrounding environment in an AR application can meet the requirement of a practical AR system". Therefore, our experiments focus 
+on assessing those aspects of our evaluation model that assist the designer of an AR system to better answer that question.
+As a result, our first attempt towards evaluating our model is to investigate and demonstrate whether the results of the evaluation process 
+are properly measured against the corresponding factors in binocular vision and augmented reality framework.
+After confirming the aforementioned property, which is the key property in our model, we investigate the effect of our proposed masking 
+procedure. We also demosntrate how the evaluation and comparison of methods occur through our model based the specific factors
+which have been the focus of this study, by conducting relevant experiments on sample stereo matching algorithms.
+
+\section{Settings}
+
+
+

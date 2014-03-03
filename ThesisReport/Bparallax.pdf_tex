@@ -50,6 +50,6 @@
   \makeatother%
   \begin{picture}(1,0.74999998)%
     \put(0,0){\includegraphics[width=\unitlength]{Bparallax.pdf}}%
-    \put(0.42739061,0.14238058){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.09732825\unitlength}\centering t = t₀\end{minipage}}}%
+    \put(0.42739061,0.14238058){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.09732824\unitlength}\centering t = t₀\end{minipage}}}%
   \end{picture}%
 \endgroup%

@@ -50,17 +50,17 @@
   \makeatother%
   \begin{picture}(1,0.74999998)%
     \put(0,0){\includegraphics[width=\unitlength]{disparity.pdf}}%
-    \put(0.40648853,0.12166032){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.17163647\unitlength}\centering baseline (B)\end{minipage}}}%
-    \put(0.27899501,0.31662534){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03578244\unitlength}\centering P'\end{minipage}}}%
-    \put(0.64408395,0.3148855){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03721374\unitlength}\centering P"\end{minipage}}}%
-    \put(0.45229007,0.7414122){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.04150763\unitlength}\centering P\end{minipage}}}%
+    \put(0.40648853,0.12166032){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.17163644\unitlength}\centering baseline (B)\end{minipage}}}%
+    \put(0.27899501,0.31662534){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03578245\unitlength}\centering P'\end{minipage}}}%
+    \put(0.64408395,0.3148855){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03721376\unitlength}\centering P"\end{minipage}}}%
+    \put(0.45229007,0.7414122){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.04150765\unitlength}\centering P\end{minipage}}}%
     \put(0.22007713,0.24289032){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.02862595\unitlength}\centering f\end{minipage}}}%
     \put(0.68882714,0.24289032){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.02862595\unitlength}\centering f\end{minipage}}}%
     \put(0.23187024,0.18034348){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.04007634\unitlength}\centering C'\end{minipage}}}%
     \put(0.66746486,0.18044912){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.04007634\unitlength}\centering C"\end{minipage}}}%
-    \put(0.46578979,0.43042722){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03721374\unitlength}\centering Z\end{minipage}}}%
-    \put(0.33635497,0.73711831){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.04866412\unitlength}\centering XL\end{minipage}}}%
-    \put(0.54895164,0.73849591){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.05832538\unitlength}\centering XR\end{minipage}}}%
+    \put(0.46578979,0.43042722){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03721373\unitlength}\centering Z\end{minipage}}}%
+    \put(0.33635497,0.73711831){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.04866413\unitlength}\centering XL\end{minipage}}}%
+    \put(0.54895164,0.73849591){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.0583254\unitlength}\centering XR\end{minipage}}}%
     \put(0.241368,0.27635258){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.05733298\unitlength}\centering xl\end{minipage}}}%
     \put(0.65106387,0.26998764){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.05045302\unitlength}\centering xr\end{minipage}}}%
   \end{picture}%

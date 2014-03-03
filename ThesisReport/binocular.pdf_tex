@@ -50,12 +50,12 @@
   \makeatother%
   \begin{picture}(1,0.74999998)%
     \put(0,0){\includegraphics[width=\unitlength]{binocular.pdf}}%
-    \put(0.4898645,0.14916116){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.05152671\unitlength}\centering a\end{minipage}}}%
-    \put(0.69561067,0.28912214){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03291985\unitlength}\centering Z'\end{minipage}}}%
-    \put(0.79604389,0.30543167){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03291985\unitlength}\centering Z\end{minipage}}}%
-    \put(0.49916889,0.58668166){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03291985\unitlength}\centering F\end{minipage}}}%
-    \put(0.48354388,0.41480665){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03291985\unitlength}\centering F'\end{minipage}}}%
-    \put(0.48056852,0.48842){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.04293893\unitlength}\centering α\end{minipage}}}%
-    \put(0.47420838,0.34791632){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.05152671\unitlength}\centering β\end{minipage}}}%
+    \put(0.4898645,0.14916116){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.05152672\unitlength}\centering a\end{minipage}}}%
+    \put(0.69561067,0.28912214){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03291984\unitlength}\centering Z'\end{minipage}}}%
+    \put(0.79604389,0.30543167){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03291984\unitlength}\centering Z\end{minipage}}}%
+    \put(0.49916889,0.58668166){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03291984\unitlength}\centering F\end{minipage}}}%
+    \put(0.48354388,0.41480665){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03291984\unitlength}\centering F'\end{minipage}}}%
+    \put(0.48056852,0.48842){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.04293894\unitlength}\centering α\end{minipage}}}%
+    \put(0.47420838,0.34791632){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.05152672\unitlength}\centering β\end{minipage}}}%
   \end{picture}%
 \endgroup%

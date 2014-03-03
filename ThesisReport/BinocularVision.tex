@@ -95,11 +95,11 @@ It should be noted that this formula estimates the angular disparity in radiant.
 180/\pi = 57.296\times360=206.265
 \end{align}
 
-Studies show that the visual system capability to distinguish two objects at different distances relative to each other is limited to certain thresholds \cite{binr83,how95}.
+Studies show that the visual system capability to distinguish two objects at different depths relative to each other is limited to certain thresholds \cite{binr83,how95}.
 This threshold, which is defined as the minimum detectable depth between two 
-objects at difference distances, is known as {\it stereoacuity} which varies in different visual systems \cite{binr83,how95}. According to different
-experiments \cite{binr83}, the finest detectable angular disparity in human visual system is approximately 10-15 arcseconds. However, a more recent study on
-stereoacuity in 60 subjects \cite{garn06} for different age groups, from 17 to 83 using standard stereotests, 
+objects at difference distances, is known as {\it stereoacuity} which varies in different visual systems \cite{binr83,how95}. According to standard
+stereo tests \cite{binr83}, the finest detectable disparity in human visual system is approximately 10-15 arcseconds.
+However, a more recent study on 60 subjects \cite{garn06} at different age groups, from 17 to 83 using standard stereotests, 
 shows that the average stereoacuity for different age groups is as follows:
 
 \begin{minipage}{\linewidth}
@@ -117,8 +117,11 @@ shows that the average stereoacuity for different age groups is as follows:
 \end{center}
 \end{minipage} \newline \newline
 
-Furthermore, studies show that the average interpupillary distance in human is 64mm \cite{how95}. 
-Using these values in equation \ref{eq:stac}, the threshold for minimum detectable relative depth 
-between two objects can be estimated based on their distance from the observer. \newline 
-Studying these concepts and related works in stereo vision, we have designed and implemented our evaluation framework based on standard
+ 
+Using these values in equation \ref{eq:stac} with the average interpupillary distance in humans which is measured to be equal to 64mm \cite{how95}, 
+we can estimate the threshold for minimum detectable disparity
+between two objects based on their distance from the observer. \newline 
+
+Studying these concepts in binocular vision, we have designed and implemented our evaluation framework based on standard
 stereoacuity measurements mentioned in table \ref{tab:stAcAge}.
+In the next chapter, we will describe the design of our system and its components in more details.

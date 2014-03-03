@@ -50,13 +50,13 @@
   \makeatother%
   \begin{picture}(1,0.74999998)%
     \put(0,0){\includegraphics[width=\unitlength]{epipole.pdf}}%
-    \put(0.51567359,0.67306981){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.10448474\unitlength}\raggedright P\end{minipage}}}%
-    \put(0.72904141,0.28769651){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03291986\unitlength}\raggedright P"\end{minipage}}}%
-    \put(0.2605166,0.29984858){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03291986\unitlength}\raggedright P'\end{minipage}}}%
-    \put(0.36000997,0.24843773){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03291986\unitlength}\raggedright e'\end{minipage}}}%
-    \put(0.63067149,0.24843773){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03291986\unitlength}\raggedright e"\end{minipage}}}%
+    \put(0.51567359,0.67306981){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.10448473\unitlength}\raggedright P\end{minipage}}}%
+    \put(0.72904141,0.28769651){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03291987\unitlength}\raggedright P"\end{minipage}}}%
+    \put(0.2605166,0.29984858){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03291987\unitlength}\raggedright P'\end{minipage}}}%
+    \put(0.36000997,0.24843773){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03291987\unitlength}\raggedright e'\end{minipage}}}%
+    \put(0.63067149,0.24843773){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03291987\unitlength}\raggedright e"\end{minipage}}}%
     \put(0.46950139,0.08418752){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{baseline}}}%
     \put(0.22025553,0.18998761){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{C'}}}%
-    \put(0.77498104,0.21082257){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03148855\unitlength}\raggedright C"\end{minipage}}}%
+    \put(0.77498104,0.21082257){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.03148858\unitlength}\raggedright C"\end{minipage}}}%
   \end{picture}%
 \endgroup%

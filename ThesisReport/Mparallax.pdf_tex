@@ -50,8 +50,8 @@
   \makeatother%
   \begin{picture}(1,0.74999998)%
     \put(0,0){\includegraphics[width=\unitlength]{Mparallax.pdf}}%
-    \put(0.40035028,0.15260697){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.12888584\unitlength}\centering Motion\end{minipage}}}%
-    \put(0.25906487,0.13740461){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.09732825\unitlength}\centering t = t₀\end{minipage}}}%
-    \put(0.56575143,0.13752041){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.19143607\unitlength}\centering t = t₀ + Δt\\ \end{minipage}}}%
+    \put(0.40035028,0.15260697){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.12888583\unitlength}\centering Motion\end{minipage}}}%
+    \put(0.25906487,0.13740461){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.09732824\unitlength}\centering t = t₀\end{minipage}}}%
+    \put(0.56575143,0.13752041){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.19143608\unitlength}\centering t = t₀ + Δt\\ \end{minipage}}}%
   \end{picture}%
 \endgroup%
