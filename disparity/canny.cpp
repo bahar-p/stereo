@@ -9,7 +9,7 @@ using namespace cv;
 using namespace std;
 
 Mat src, org_src, src_gray;
-Mat dst, detected_edges;
+Mat dst, detected_edges, compmsk, compdst;
 
 int edgeThresh = 1;
 int lowThreshold;
@@ -33,7 +33,9 @@ void CannyThreshold(int, void*)
 	dst = Scalar::all(0);
 	      
 	dilate(detected_edges,detected_edges, Mat(), Point(-1,-1), itr);
+	bitwise_not(detected_edges, compmsk);
 	org_src.copyTo( dst, detected_edges);	//Mask the src based on the detected edges
+	org_src.copyTo( compdst, compmsk);	//Mask the src based on the detected edges
 //	dst.convertTo(dst, -1,3,0);		
 	imshow( window_name, dst );
 	imshow( "detected_edges mask", detected_edges );
@@ -84,12 +86,14 @@ int main(int argc, char* argv[]){
 
 	/// Wait until user exit program by pressing a key
 	waitKey(0);
-	string fpath1, fpath2;
+	string fpath1, fpath2, fpath3,fpath4;
 	ofstream myfile;
 	if(noc) {
 		myfile.open("/home/bahar/Master/stereo/masks/minthr.txt", std::ios::out | std::ios::app);
 		fpath1 = "/home/bahar/Master/stereo/masks/disp_noc/" + fname;
 		fpath2 = "/home/bahar/Master/stereo/maskgt/disp_noc/" + fname;
+		fpath3 = "/home/bahar/Master/stereo/compmsk/disp_noc/" + fname;
+		fpath4 = "/home/bahar/Master/stereo/compmskgt/disp_noc/" + fname;
 	} else {
 		fpath1 = "/home/bahar/Master/stereo/masks/disp_occ/" + fname;
 		fpath2 = "/home/bahar/Master/stereo/maskgt/disp_occ/" + fname;
@@ -97,6 +101,8 @@ int main(int argc, char* argv[]){
 	myfile << "img: " << fname << " min_thr: " << lowThreshold << endl;
 	myfile.close();
 	imwrite(fpath1, detected_edges);
-	imwrite(fpath2 , dst);
+	imwrite(fpath1, detected_edges);
+	imwrite(fpath3 , compmsk);
+	imwrite(fpath4 , compdst);
 	return 0;
 }
