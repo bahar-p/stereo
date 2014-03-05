@@ -8,7 +8,7 @@ proc finalplot {f} {
 		set term x11
 		set xlabel \"Actual Depth(m)\"
 		set ylabel \"Stereo Acuity(arcmin)\"
-		set title \"Average Stereoacuity over different depth ranges\"
+		set title \"Average disparity error over distance\"
 		set key top right
 		plot \[:\]\[0:2\] \"$f\" every ::1 using 1:2 with points t \"Avg Error\", \
 			\"$f\" every ::1 using 1:3 with lines t \"Age:17-29\", \
