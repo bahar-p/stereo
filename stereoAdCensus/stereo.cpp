@@ -145,19 +145,21 @@ int main(int argc, char **argv)
 	imwrite(fpath1 , dispL16);
 	imwrite("/home/bahar/adcen_disp.png" , dispL8);
 	if(argc>5) {
-		Mat d_masked;
+		Mat d_masked, dmask8;
 		string fpath2; 
 		if(noc)
 			fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/noc/" + fname + ".png";
 		else
 			fpath2 = "/home/bahar/Master/stereo/Ex1/adcensus/dispmasked/occ/" + fname + ".png";
 		dispL16.copyTo(d_masked, mask);
+		dispL8.copyTo(dmask8, mask);
 		//Mat tmp;
 		//dispL.copyTo(tmp,mask);
 		//cout<< "tmp: " << tmp(Rect(500,150,80,1)) << endl;
 		//cout<< "d_masked: " << d_masked(Rect(500,150,80,1)) << endl;
 //		imshow( "DispMasked", d_masked );                   	
 		imwrite(fpath2, d_masked);
+		imwrite("/home/bahar/adc_dispmask.png" , dmask8);
 		d_masked.release();
 	}
 	//waitKey(0);
