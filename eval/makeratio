@@ -1,0 +1,19 @@
+CC = g++
+CFLAGS = -c
+LIB = 
+LFLAGS = 
+BUILDPATH = ../build
+GLFLAGS = -lGL -lglut -lGLU -lm
+OPENCVINC = `pkg-config --cflags opencv`
+OPENCVLIB = `pkg-config --libs opencv`
+
+all: pixrate
+
+pixrate: pixrate.o
+	$(CC) -std=c++0x pixrate.o -o $(BUILDPATH)/pixrate $(OPENCVLIB) $(GLFLAGS)
+
+pixrate.o: pixrate.cpp
+	$(CC) -std=c++0x $(CFLAGS) $(GLFLAGS) $(OPENCVINC) pixrate.cpp
+
+clean:
+	rm -rf *.o *~

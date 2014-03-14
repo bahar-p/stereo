@@ -6,46 +6,55 @@ This chapter walks through the steps taken in order to build up our evaluation f
 %Maybe should be moved to introduction?
 \section{Design Criteria}
 
-As briefly mentioned in chapter \ref{chap:Introduction}, there are already different evaluation schemes to assess stereo correspondence solutions. The Middlebury Stereo \cite{mideval} and 
-the Kitti Stereo benchmarks \cite{kitti} are two of the most popular and widely used evaluation models through which a solution can be evaluated and compared to others.
+Since outdoor AR applications are the focus of this study, we have designed our evaluation model within this framework. Moreover, all the evaluation
+metrics are measured based on the relevant factors described earlier in chapters \ref{chap:Introduction} and \ref{chap:BinocularVision}.
+%Move to Introduction Chapter
+%As briefly mentioned in chapter \ref{chap:Introduction}, there are already different evaluation schemes to assess stereo correspondence solutions. The Middlebury Stereo \cite{mideval} and 
+%the Kitti Stereo benchmarks \cite{kitti} are two of the most popular and widely used evaluation models through which a solution can be evaluated and compared to others.
+
+%%%
 %In these models, a pixel is considered as an \textit{outlier} if the error between the ground truth disparity and the disparity found by the solution is more than 
 %a specified pixel threshold in the system, such as 2 or 3 pixels.
 %They also provide separate masks for depth discontinuities and occluded regions, in addition to evaluating the whole image.
-However, both models take a general approach towards evaluating stereo algorithms; that is they have not been designed with an eye to the particular target 
-application.
-In other words, they mainly focus on the fundamental aspects of designing a stereo algorithm as a solution per se to \textit{efficiently}
-find the \textit{best matches} of corresponding pixels in stereo pairs. 
-This perspective may raise some questions for a punctilious researcher, such as:
+%%%
 
-\begin{enumerate}
-\item What actually is an \textit{efficient} solution and on what basis is this \textit{efficiency} defined?
-\item What is a \textit{best match} of corresponding pixels and how can it be defined?
-\end{enumerate}
+%However, both models take a general approach towards evaluating stereo algorithms; that is they have not been designed with an eye to the particular target 
+%application.
 
 
-In fact, these questions have compelled us to study the evaluation of the stereo matching solutions from a different point of view.
-In this approach, we take steps towards an evaluation design which is based on the potential applications of stereo methods.
-This enables us to better define and adjust the criteria for \textit{efficiency} and 
-\textit{the best correspondence matches} while doing the evaluation.
-Since AR has attracted more attention in the past few years, 
-the evaluation scheme proposed in this study is designed based on outdoor AR applications which take advantage of
-stereo vision techniques to obtain a depth map of the surrounding environment. This map will then be used to
-integrate virtual objects in the scene that respect the occlusion property and the depth of the real objects in the scene. 
-In other words, the motivation of this research is to study the possibility and usability of integrating stereo vision techniques in an AR system, while considering the most
-important constraints that AR systems normally encounter \cite{liv05}.
+%In other words, they mainly focus on the fundamental aspects of designing a stereo algorithm as a solution per se to \textit{efficiently}
+%find the \textit{best matches} of corresponding pixels in stereo pairs. 
+%This perspective may raise some questions for a punctilious researcher, such as:
+
+%\begin{enumerate}
+%\item What actually is an \textit{efficient} solution and on what basis is this \textit{efficiency} defined?
+%\item What is a \textit{best match} of corresponding pixels and how can it be defined?
+%\end{enumerate}
+
+
+%In fact, these questions have compelled us to study the evaluation of the stereo matching solutions from a different point of view.
+%In this design, we take steps towards an evaluation design which is based on the potential applications of stereo methods.
+%This enables us to better define and adjust the criteria for \textit{efficiency} and 
+%\textit{the best correspondence matches} while doing the evaluation.
+%Since AR has attracted more attention in the past few years, 
+%the evaluation scheme proposed in this study is designed based on outdoor AR applications which take advantage of
+%stereo vision techniques to obtain a depth map of the surrounding environment. This map will then be used to
+%integrate virtual objects in the scene that respect the occlusion property and the depth of the real objects in the scene. 
+%In other words, the motivation of this research is to study the possibility and usability of integrating stereo vision techniques in an AR system, while considering the most
+%important constraints that AR systems normally encounter \cite{liv05}.
+%Move to Introduction Chapter
 
 \section{New Evaluation Scheme}
 
-In an augmneted reality system, there are certain factors that would affect the functionality and effectiveness of the system \cite{liv05,kru10} and therefore, 
-should be carefully considered when designing and evaluating an augmented reality system. 
+In an augmented reality system, there are certain factors that would affect the functionality and effectiveness of the system \cite{liv05,kru10} and therefore, 
+should be carefully considered when designing and evaluating the system. 
 These factors may correspond to the surrounding 
-enivornment, technology and hardware constraints, or human factors. 
-In this study we have mainly focused on the human factors in AR and binocular vision as described in chapter \ref{chap:BinocularVision},
-and the requirement of having a real-time interactive AR system.
-
-In order to design an evaluation scheme for assessing stereo solutions in an AR application, the relevance of the aforementioned factors to the particular AR application
-should be first fully understood. Figure \ref{fig:AR} illustrates an overview of an AR system with its different component and their related factors.
+environment, technology and hardware constraints, or human factors. 
+Figure \ref{fig:AR} illustrates a high level architecture of an AR system with its key components and their related attributes.
 \textbf{(FIG of AR) - draw components and mention some of their related factors}
+
+In this study, we have mainly focused on the human factors in AR which were described in chapter \ref{chap:BinocularVision},
+and the requirement of having a real-time interactive AR system from the user point of view.
 
 %Concentrating on the requirements of providing a real-time interaction between an AR system and the users, along with
 %certain human factors that would affect the functionality of the system,
@@ -59,18 +68,19 @@ should be first fully understood. Figure \ref{fig:AR} illustrates an overview of
 %AR and stereo vision components, thus enabling the designers to better evaluate the stereo correspondence solutions that will be intergrated 
 %in the system.
 
-As a result in our design, unlike Middlebury or Kitti benchmarks, we label a pixel in the disparity results as an \textit{outlier} if the corresponding angular
-measurement of the depth error between the ground truth depth and the depth value found by the algorithm is more than the standard stereoacuities
+In our design, unlike the Middlebury or Kitti benchmarks, we label a pixel in the disparity results as an \textit{outlier} if the angular
+measurement, that is the stereoacuity, corresponding to the depth error between the ground truth and the estimated depth value by the 
+algorithm is more than the standard stereoacuities
 for the human visual system as determined
 by standard stereo tests \cite{binr83,garn06}. 
 Moreover, we use the average stereoacuity for different age groups \cite{garn06} in our design to evaluate the performance of the algorithm for users 
 at different ages; this makes the evaluation results more reliable and applicable to practical applications of AR.
 In order to evaluate the efficiency of an algorithm to investigate whether it meets the requirements for being part of a real-time application, 
-we have integrated a module in the evaluation process that can report on the average execution time of the algorithm over the input data.
+we have integrated a module in the evaluation process that reports on the average execution time of the algorithm for the input data.
 The average number of outliers for the specified stereoacuity thresholds, and the average disparity error are also estimated during the evaluation process.
 
-In addition, our model takes an approach which can be of specific value to practical AR applications. In this approach, we suggest that
-it is prudent to focus the evaluation procedure on particular regions of the disparity map rather than the whole image. The main hypothesis
+In addition, our model employs a particular approach which can be of specific value to practical AR applications. In this approach, we suggest that
+it is prudent to focus the evaluation process on the particular regions of the disparity map rather than the whole image. The main hypothesis
 is that salient edges caused by depth continuities, which also represent object boundaries and occlusion, are important depth cues for the human
 visual system to better perceive the location of different objects in the 3D environment.
 This permits a higher quality combination of the depth map of the real world with the virtual depth of the synthetic objects that are part of the AR scene.
@@ -79,7 +89,7 @@ This permits a higher quality combination of the depth map of the real world wit
 
 \subsection{Design Overview}
 
-Our evaluation scheme consists of the following components:
+Our evaluation model consists of the following key components:
 
 \begin{itemize}
 \item Stereo pairs, calibration data, ground truth disparity as inputs
@@ -87,32 +97,32 @@ Our evaluation scheme consists of the following components:
 \item Masked ground-truth disparity (occluded or non-occluded)
 \item Full and masked disparity maps generated by the algorithm 
 \item Main evaluation module
-\item Evaluation results in form of data files and plots
+\item Evaluation results as outputs
 \end{itemize}
 
-A block diagram of these components is shown figure \ref{fig:architecture}.
+Figure \ref{fig:architecture} shows a block diagram of our design.
 
 \textbf{FIG of Architecture}
 
-It should be noted that some of these components, such as masked ground truth, and masked disparity maps 
-can be optionally generated during the process depending on the paramaters passed in at each step.
+It should be noted that some of these components, such as the masked ground truth, or the masked disparity maps 
+can optionally be built during the process depending on the specific parameters set at the run time in each step.
 
 As can be seen in the figure \ref{fig:architecture}, first the input data consisting of stereo images, ground truth disparity and calibration data is passed
-to the system.
-Afterwards, the specified masks can be generated using a \textit{Canny} edge detector and a \textit{Dilation} operation with the appropriate parameters 
-selected by the user.
+in to the system.
+Afterwards, the specified masks are created using a \textit{Canny} edge detector and a \textit{Dilation} operation with the appropriate parameters 
+selected when building the mask of each image.
 After the corresponding disparity maps have been generated by the stereo algorithm and stored on the disk, 
-they are passed to the evaluation module with the essential and optional arguments.
-Finally, the specified results are output and stored as data files and visual plots to facilitate the evaluation of the examined algorithm for the application
+they are passed to the evaluation module with the specified arguments.
+Finally, the evaluation metrics are estimated and output through data files and plots to facilitate the evaluation of the stereo algorithm in the application
 of interest.
 
 A lower level architecture of our evaluation system is shown in figure \ref{fig:lowarch}. This figure illustrates the 
-sequence of operations and calls during the whole process. 
+sequence of the operations running during the whole process. 
 
 \textbf{LOW ARCH FIG - showing underlying modules}
 
-\subsection{Evaluation block}
-In this section, we break down the main evaluation component into its underlying modules. We will then look at the purpose and functionality of each
+\subsection{Evaluation}
+In this section, we break down the main evaluation component to its underlying modules. We will then look at the functionality of each
 module in the more detail.
 
 As previously mentioned in this chapter, the results of the evaluation are presented through specific metrics which are as follows:
@@ -124,73 +134,73 @@ As previously mentioned in this chapter, the results of the evaluation are prese
 \item{The average stereoacuity of the generated disparity}
 \end{itemize}
 
-An evaluation of these metrics in the framework of an outdoor AR application will then allow for a parctical analysis of the performance of the stereo algorithm.
-We will now explain how each of these metrics have been calculated in our system.
+The analysis of these metrics in the framework of an outdoor AR application will then allow for a practical evaluation of the stereo algorithm performance.
+We will now explain how each of these metrics are measured in our system.
 
 \subsection{The average execution time}
 For each image pair, the time spent on generating the disparity results is estimated using the C++ function, \textit{clock()}. 
 This function returns the number of clock ticks elapsed
-since a program starts execution. A division by the system-specific value \textit{CLOCK\_PER\_SECOND}, the number of clock ticks in a second, 
-converts the returned value by \textit{clock} function into the time consumed by the CPU in seconds.
+since a program starts running. A division by the system-specific value \textit{CLOCK\_PER\_SECOND}, the number of clock ticks in a second, 
+converts the value returned by \textit{clock} function into the time consumed by the CPU in seconds.
 Getting the difference between the \textit{clock} values taken before and after a function call results in the execution time
 of the particular function. 
-We have appllied this method in our implementation to estimate the execution time of the algorithm for each image pair. In the end, the mean of all
-the values corresponding to different image pairs is taken to obtain the average execution time of the algorithm over the input dataset.
+We have applied this method in our implementation to estimate the execution time of the algorithm for each image pair. In the end, the mean of all
+the values corresponding to different image pairs is taken to obtain the average execution time of the algorithm for the input dataset.
 
 \subsection{The average disparity error}
-In our model, two average disparity errors are calculated. One is for the valid pixels in the ground truth, depending on what value is considered valid
-in the ground truth disparity, and the other is for
+Two average disparity errors are calculated in our evaluation. One corresponds to the valid pixels in the ground truth, depending on what value is considered valid
+in the ground truth disparity, and the other to
 the valid pixels in the generated disparity which depends on the implementation of the stereo matching algorithm.
-In our evaluation, the valid ground truth disparity, based on the Kitti stereo document, is a value greater than 0 and in the testing solutions, SGBM and ADCensus, 
+The valid ground truth disparity for the Kitti disparity maps, is a value greater than 0 and in the testing solutions, SGBM and ADCensus, 
 values equal to or greater than 0 are considered valid.
 To this end, for each validity criteria, the mean error between the ground truth disparity and the one found by the algorithm
-is estimated for all the pixels or the masked pixels depending on the availability of a mask.  
+is estimated for all the pixels in the image or merely the masked pixels depending on the availability of a mask.  
 
 \subsection{The average number of outliers}
-Similar to the average disparity error, based on the validity criteria for disparity values, 
-two values are reported for this metric as a result of evaluation. For this estimation, the relative depth error is calculated by finding the corresponding depth values
-from the ground truth disparity and the disparity generated by the algorithm in the equation \ref{eq:dispeq}, and then is compared to the relative 
-detectable depth threshold for the human visual system that is estimated by using the standard stereoacuity thresholds
-in the stereoacuity formula \ref{eq:stac}. If the relative depth error is equal to or more than the detectable relative depth threshold in the human visual system,
-the corresponding pixel will be labeled as an outlier. Since we are using four different thresholds of stereoacuity corresponding to different
+Similar to the average disparity error, based on the validity criteria for disparity, 
+two values are reported for this metric as a result of evaluation. For this measurement, the relative depth error is first calculated by finding the corresponding depth values
+from the ground truth disparity and the disparity generated by the algorithm in equation \ref{eq:dispeq}, and then is compared to the relative 
+detectable depth threshold for the human visual system that is estimated through
+equation \ref{eq:stac}. If the relative depth error is equal to or more than the detectable threshold in the human visual system,
+the corresponding pixel is labeled as an outlier. Since we are using four different thresholds of stereoacuity corresponding to different
 age groups in our evaluation, the estimated error is compared against each of these thresholds and therefore,
-four different values for the average is estimated. This process is repeated for all the pixels in the image or 
+four different values for the average are eventually estimated. This process is repeated for all the pixels in the image or 
 the pixels in the masked regions depending on the availability of a mask.
-Considering the two validity criteria of pixels, eight values are reported at the end of evaluation for the average number of outliers.
+Considering the two validity criteria of pixels, eight values are reported at the end of the evaluation for the average number of outliers.
 
 \subsection{The average stereoacuity of the generated disparity}
-The estimation of the average stereoacuity can be divided into 3 steps:
+The estimation of the average stereoacuity can be broken down into 3 steps:
 
 \begin{enumerate}
-\item Stereoacuity estimation for the generated disparity for each image pair
+\item Stereoacuity estimation from the generated disparity for each image pair
 \item Averaging the stereoacuity results over certain depth ranges for each image
-\item Taking the average of the results from the previous step over all the images
+\item Averaging of the results from the previous step over all the images
 \end{enumerate}
 Related plots are generated after the third step based on the final results.
 
-Since the standard stereoacuities used in our implementation correspondes to specific age ranges, different values are reported for the average stereoacuity
+Since the standard stereoacuities used in our implementation corresponds to specific age ranges, different values are reported for the average stereoacuity
 at the end of evaluation. 
 In order to estimate this metric, the depth values corresponding to both ground truth and the generated disparity by the algorithm are first
-obtained using the equation \ref{eq:dispeq}. Subsequently, the difference between the depth values is used in the equation \ref{eq:stac} to calculate
-the corresponding stereoacuity. This process is done for all the pixels in the image; or if a mask has been optionally passed in, 
-it will be only done for the pixels in the maskd areas. Finally the results are output and stored in a separate data file for each image.
-After conducting the first step on all the disparity maps corresponding to input dataset, second step starts by calculating a histogram of
+calculated using equation \ref{eq:dispeq}. Subsequently, the difference between the depth values is used in the equation \ref{eq:stac} to calculate
+the corresponding stereoacuity. This process is done for all the pixels in the image; or if a mask has been provided, 
+it will be only applied to the pixels in the masked areas. Finally the results are output and stored in a separate data file for each image.
+After conducting the first step on all the disparity maps corresponding to input image pairs, second step starts by calculating a histogram of
 the stereoacuity values over specific depth ranges. Using the output file containing the stereoacuity values 
 from the first step for each disparity image, the corresponding histogram is constructed by defining the number of bins and their width.
-In our design, the width of each bin corresponds to the depth range mentioned previously and is kept constant for all the bins.
-Moreover, the numebr of bins relatively determine the total distance over which the results
-are being examined.
+In our design, the width of each bin determines the aforementioned depth range and is kept constant for all the bins.
+Moreover, the number of bins relatively defines the total distance over which the results
+are estimated and subsequently examined.
 \begin{equation}
 \centering
 Total\_distance = Number\_of\_bins * Width
 \end{equation}
 For outdoor applications of AR, these parameters are normally set to certain values so that the total distance can cover the medium to far 
 depth fields; extending from 1.5 meters to more than 30 meters \cite{swa07}.
-The results of the previous step, which are all stored in a single data file, are then passes to the last step. 
+The results of the previous step, which are all stored in a single data file, are then passed to the last step. 
 In this step, a histogram is built over the data from all the disparity images, which results in the average stereocuity
-values within each specified depth range over all images. 
+values within each specified depth range over all the images. 
 It should be noted that the number of bins and their corresponding width at this point, are
-similar to histogram constructed in the the previous step.
+similar to the histogram constructed in the the previous step.
 
 \subsection{Platform, Technology}
 The evaluation system was implemented on a Linux platform with Core(TM) i7 3.20GHz CPU. 
@@ -198,7 +208,7 @@ We have used C++ as the high level language for implementing
 the core functions within the system, such as the main evaluation function, 
 the masking process and the other fundamental operations that are the building blocks of the system.
 Furthermore, the Tool Command Language (TCL) has been used for all the scripts that wrap around the main functions,
-to facilitate and accelarate the execution of each step in the process.
+to facilitate and accelerate the execution of each step in the process.
 
 \subsection{User Interface}
 ?

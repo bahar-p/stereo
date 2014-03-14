@@ -50,3 +50,4 @@ img: 000180 Execution_Time: 279.81 sec
 img: 000185 Execution_Time: 205.58 sec
 img: 000191 Execution_Time: 280.05 sec
 img: 000193 Execution_Time: 240.68 sec
+img: 000005 Execution_Time: 213.83 sec

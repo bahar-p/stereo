@@ -12,6 +12,8 @@ build/
 *.log
 *.toc
 ThesisReport/*.pdf
+ThesisReport/*.dvi
+ThesisReport/*.ps
 *.blg
 *.bbl
 eval/results/

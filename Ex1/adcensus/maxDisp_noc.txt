@@ -50,3 +50,4 @@ img: 000180 Maxdisp_used: 112
 img: 000185 Maxdisp_used: 80
 img: 000191 Maxdisp_used: 112
 img: 000193 Maxdisp_used: 96
+img: 000005 Maxdisp_used: 80
