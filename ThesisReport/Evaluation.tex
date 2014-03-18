@@ -41,7 +41,7 @@ real-time interactive AR systems.
 We also explain how the evaluation and comparison of the methods is done in our model through some
 experiments on the sample stereo matching algorithms.
 
-\subsection{Hypotheses}
+\section{Hypotheses}
 
 We have defined a set of hypotheses to evaluate our proposed design. These hypotheses are as follows:
 
@@ -176,13 +176,13 @@ The averaging operations at this step are implemented by building histogram over
 In our experiments, we set the number of bins to $100$ and the width of each bin to $0.5$. Therefore, the first averaging is conducted over distances of half a meter in each image and the maximum distance over which the results are 
 being examined is 50m.
 
-\subsection{Assumption}
+\section{Assumption}
 \textbf{Talk about camera quality and display resolution}
 
-\subsection{Experiments}
+\section{Experiments}
 In this section we discuss the experiments conducted to evaluate the system and investigate the validity of the hypotheses.
 
-\subsection{Evaluation results in augmented reality framework}
+\subsection{Evaluation in Augmented Reality Framework}
 
 In this experiment, the disparity maps 
 were generated for fifty-two image pairs with both SGBM and ADCensus algorithms. 
@@ -340,15 +340,6 @@ within our model.
 In either case, we argue that, due to the importance of occlusion and areas near depth discontinuities to the HVS in AR applications, 
 it is reasonable to focus more on the depth edges and their surroundings when designing or employing a stereo matching technique for an AR application.
 
-\subsection{Real-time execution}
-In another experiment we estimated the average execution time for both algorithms. Results show that the average execution time over all the images 
-for SGBM and ADCensus are $0.54$ and $272.82$ seconds, respectively.
-Considering the requirements of having an interactive real-time AR system \cite{hertz00}, the processing time of each frame should not be more than 0.06-0.08 seconds.
-Although the current implementation of SGBM could be used when the real world scene remains stable for approximately one second, it can be safely concluded that
-none of these algorithms meet the requirements of a real-time interactive system.
-This suggests that the GPU-based solutions are better techniques to achieve the processing speed required for the real-time 
-interactive applications of AR.
-
 \subsection{The average Outlier}
 In this experiment the average number of outliers were measured for both algorithms. 
 The values for both validity criteria mentioned in chapter \ref{chap:System} (valid pixels in the ground truth and generated disparity), were the same; therefore,
@@ -396,21 +387,22 @@ Algorithm & Age & Average Outlier \\ \hline
 & 70-83 & 0.27 \\ \hline
 \end{tabular}
 \end{center}
-\end{minipage} \newline \newline
+\end{minipage} \newline
 
-According to the results, in SGBM the number of outliers over for the masked regions are more than the outliers over the whole image. 
-However, ADCensus shows the opposite behavior; that is the number of outliers over the masked regions are less than 
-the whole image. This implies that ADCensus performs better than SGBM in the areas of depth edges and their surrounding. 
-Therefore, it is a better solution
-in applications, such as AR applications in outdoor environments, 
-where finding more accurate disparity results near depth discontinuities, object boundaries and occluded areas
-is more important than the other regions in the image. However, this metric per se
-cannot be an indicator of a proper solution for the particular application of interest and should be considered along with the other
-important metrics. 
+Results show that in both cases, the masked regions and the whole image, SGBM has less number of outliers than ADCensus, indicating that
+SGBM generates a more accurate disparity map as perceived by the human visual system.
+Furthermore, in SGBM the number of outliers over the masked regions are more than the outliers over the whole image, whereas in ADCensus the
+opposite pattern is observed; that is the number of outliers over the masked regions are less than 
+the whole image. This implies that ADCensus performs better in the areas of depth edges and their surroundings than other regions.
+Therefore, it is better to be employed in applications, 
+where preserving the object boundaries and occluded areas
+is more important than the other regions in the image, such as 3D layering of objects \textbf{(NOTE CHECK THE CORRECT TERM)}. However, this metric per se
+cannot be an indicator of a proper solution for any target application and should be considered along with the other
+relevant metrics. 
 
 \subsection{The average disparity error}
 The average disparity error have also been estimated in the evaluation process for both pixel validity criteria. However, the resulting values
-were similar for both cases, and therefore, only one number is reported in the following table for this metric.
+were similar for both cases, and therefore, only one number is reported in the following table for this metric. \newline
 
 \begin{minipage}{0.8\linewidth}
 \begin{center}
@@ -427,11 +419,29 @@ Algorithm & Region & error \\ \hline
 & Masked & 4.74 \\ \hline
 \end{tabular}
 \end{center}
-\end{minipage} \newline \newline
-
+\end{minipage} \newline
 
 As can be seen, ADCensus results in less average disparity error than SGBM. This difference is likely caused by the various refinement steps
 implemented in ADCensus algorithm which do not exist in SGBM.
 As a result, despite the larger number of outliers in ADCensus than SGBM as measured in the previous experiments,
 ADCensus attempts to decrease the difference between the resulting disparity value and the ground truth disparity, thus generating a smoother disparity patches
 within different regions of the image.
+
+\subsection{Real-time execution}
+In another experiment we estimated the average execution time for both algorithms. Results show that the average execution time over all the images 
+for SGBM and ADCensus are $0.54$ and $272.82$ seconds, respectively.
+Considering the requirements of having an interactive real-time AR system \cite{hertz00}, the processing time of each frame should not be more than 0.06-0.08 seconds.
+Although the current implementation of SGBM could be used when the real world scene remains stable for approximately one second, it can be safely concluded that
+none of these algorithms meet the requirements of a real-time interactive system.
+This suggests that the GPU-based solutions are better techniques to achieve the processing speed required for the real-time 
+interactive applications of AR.
+
+\subsection{Effect of Refinement}
+In this experiment, we intended to study the effect of the post processing steps, also referred to as the \textit{refinement steps}, 
+in the stereo algorithms on the accuracy of the results in our evaluation criteria. 
+To this end, we modified our implementation 
+of the ADcensus algorithm by taking out each independant refinement step, generating the disparity results for the image pairs, and evaluating the results.
+The results over both the masked and the whole image are shown below.
+
+
+Next, we will review the hypotheses mentioned earlier in this chapter and will discuss their validity based on our experiments and their results.
