@@ -39,7 +39,7 @@ proc avgoutl {noc f imgcount} {
 	} else {
 		set fout [open "${::res_occ}avgOutl.txt" "a+"]
 	}
-	set fm "%s %s %.2f %.2f %s $%.2f %.2f %s %.2f %.2f %s %.2f %.2f"
+	set fm "%s %s %.2f %.2f %s %.2f %.2f %s %.2f %.2f %s %.2f %.2f"
 	puts $fout [format $fm $name "stAc_1729" $stAc(Toutl,0) $stAc(Voutl,0) "stAc_3049" $stAc(Toutl,1) $stAc(Voutl,1) "stAc_5069" \
 		$stAc(Toutl,2) $stAc(Voutl,2) "stAc_7083" $stAc(Toutl,3) $stAc(Voutl,3)]
 }
