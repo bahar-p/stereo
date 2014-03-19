@@ -1,2 +1,3 @@
 adcexeTime avg_Extime: 4.5473621794871795
 sgExeTime avg_Extime: 0.009195512820512819
+exeTime avg_Extime (NoLR): 2.4640416666666667
