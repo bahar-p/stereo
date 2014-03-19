@@ -65,10 +65,18 @@ errors in these regions can be detected easier by the HVS. Therefore, we argue t
 to an outdoor AR application.
 
 \item \textbf{Hypothesis 3:} \emph{Our system is better than other evaluation models for assessing the performance of the algorithm in
-eal-time AR applications.}
+real-time AR applications.}
 Other evaluation models, the Kitti and Middlebury benchmarks, do not evaluate and report on the efficiency of the algorithms
 with respect to their execution time. On the other hand, our system is capable of examining and evaluating an algorithm 
 based on its execution time and therefore, can report its efficiency for real-time AR applications.
+
+\item \textbf{Hypothesis 4:} \emph{The trade-off between the accuracy and the running time of the stereo algorithms can be effectively evaluated 
+in the framework of an outdoor AR application through our system.} 
+Nearly all the solutions to the problem of stereo correspondence have been dealing with the trade-off between the accuracy of the results and their running time.
+Therefore, most of the solutions focus only on improving one of these aspects in the final results. Some methods use certain post processing techniques to refine the 
+disparity results in the end, thus improving the accuracy, whereas the others propose particular approaches that can be implemented on the GPU.
+Due to the importance of both metrics in an outdoor AR application, we argue that the trade-off between these metrics can be effectively analyzed in our evaluation system.
+
 
 \end{itemize}
 
@@ -303,7 +311,9 @@ In these plots, a cross point below a stereoacuity threshold (straight lines) im
 by the stereo matching 
 algorithm is imperceptible to the human visual system. However, a value higher than the threshold indicates that
 the error cannot be ignored and should be resolved to achieve a better alignment between the virtual and the 
-real world in the AR application of interest.
+real world in the AR application of interest. Moreover, as can be seen most of the errors
+fall below the standard stereoacuity value corresponding to older ages; indicating that they are not perceptible to the visual system of the people at these 
+ages.
 
 The zero values in the plots imply that either there is no object within the corresponding range or the disparity value estimated by the algorithm
 is equal to the ground truth disparity; however, since the average of the results has been taken over all the images, it is more likely that 
@@ -343,27 +353,28 @@ it is reasonable to focus more on the depth edges and their surroundings when de
 
 \subsection{The average Outlier}
 In this experiment the average number of outliers were measured for both algorithms. 
-The values for both validity criteria mentioned in chapter \ref{chap:System} (valid pixels in the ground truth and generated disparity), were the same; therefore,
-only one value is presented in the tables \ref{tab:outlmsk} and \ref{tab:outlfull} for each age group. \newline
+The values for both validity criteria mentioned in chapter \ref{chap:System}, valid pixels in the ground truth and generated disparity, 
+are presented in the tables \ref{tab:outlmsk} and \ref{tab:outlfull} for each age group. For simplicity, we have labelled the valid pixels
+in the ground truth and the disparity results with \textbf{vG} and \textbf{vD}, respectively. \newline
 
 %{\footnotesize
 \begin{minipage}{0.8\linewidth}
 \begin{center}
 \captionof{table}{The average outliers for the masked regions}
 \label{tab:outlmsk}
-\begin{tabular}{ |c|c|c| }
+\begin{tabular}{ |c|c|c|c| }
 \hline
-\multicolumn{3}{ |c| }{Average outliers} \\
+\multicolumn{4}{ |c| }{Average outliers} \\
 \hline
-Algorithm & Age & Average Outlier \\ \hline
-\multirow{4}{*}{SGBM} & 17-29 & 0.12 \\
-& 30-49 & 0.11 \\
-& 50-69 & 0.09 \\
-& 70-83 & 0.001 \\ \hline
-\multirow{4}{*}{ADCensus} & 17-29 & 0.23 \\
-& 30-49 & 0.22 \\
-& 50-69 & 0.18 \\
-& 70-83 & 0.003 \\ \hline
+Algorithm & Age & Average Outlier(vG) & Average Outlier(vD) \\ \hline
+\multirow{4}{*}{SGBM} & 17-29 & 0.12 & 0.16 \\
+& 30-49 & 0.11 & 0.15 \\
+& 50-69 & 0.09 & 0.12 \\
+& 70-83 & 0.0012 & 0.0016 \\ \hline
+\multirow{4}{*}{ADCensus} & 17-29 & 0.23 & 0.32 \\
+& 30-49 & 0.22 & 0.31 \\
+& 50-69 & 0.18 & 0.27 \\
+& 70-83 & 0.002 & 0.003 \\ \hline
 \end{tabular}
 \end{center}
 \end{minipage} \newline \newline
@@ -373,19 +384,19 @@ Algorithm & Age & Average Outlier \\ \hline
 \begin{center}
 \captionof{table}{The average outliers for the whole image}
 \label{tab:outlfull}
-\begin{tabular}{ |c|c|c| }
+\begin{tabular}{ |c|c|c|c| }
 \hline
-\multicolumn{3}{ |c| }{Average outliers} \\
+\multicolumn{4}{ |c| }{Average outliers} \\
 \hline
 Algorithm & Age & Average Outlier \\ \hline
-\multirow{4}{*}{SGBM} & 17-29 & 0.11 \\
-& 30-49 & 0.10 \\
-& 50-69 & 0.08 \\
-& 70-83 & 0.005 \\ \hline
-\multirow{4}{*}{ADCensus} & 17-29 & 0.27 \\
-& 30-49 & 0.26 \\
-& 50-69 & 0.22 \\
-& 70-83 & 0.002 \\ \hline
+\multirow{4}{*}{SGBM} & 17-29 & 0.11 & 0.14 \\
+& 30-49 & 0.10 & 0.12 \\
+& 50-69 & 0.08 & 0.09 \\
+& 70-83 & 0.005 & 0.007 \\ \hline
+\multirow{4}{*}{ADCensus} & 17-29 & 0.27 & 0.39 \\
+& 30-49 & 0.26 & 0.37 \\
+& 50-69 & 0.22 & 0.32 \\
+& 70-83 & 0.002 & 0.003 \\ \hline
 \end{tabular}
 \end{center}
 \end{minipage} \newline
@@ -393,14 +404,21 @@ Algorithm & Age & Average Outlier \\ \hline
 Results show that in both cases, the masked regions and the whole image, SGBM has less number of outliers than ADCensus, indicating that
 SGBM generates a more accurate disparity map as perceived by the human visual system.
 Furthermore, in SGBM the number of outliers over the masked regions are more than the outliers over the whole image, whereas in ADCensus the
-opposite pattern is observed; that is the number of outliers over the masked regions are less than 
+opposite behavior is observed; that is the number of outliers over the masked regions are less than 
 the whole image. This implies that ADCensus performs better in the areas of depth edges and their surroundings than other regions.
-Therefore, it is better to be employed in applications, 
-where preserving the object boundaries and occluded areas
-is more important than the other regions in the image, such as image compositing in case of layering visual elements, such as signage 
-on the scene which requires the information of the location of the edges. However, this metric per se
+Therefore, it is better to be employed in the applications where preserving the object boundaries and occluded areas
+is more important than the other regions in the image, such as image compositing for layering visual elements, such as signage
+on the scene. However, this metric per se
 cannot be an indicator of a proper solution for any target application and should be considered along with the other
 relevant metrics. 
+
+We should note that the reason the number of outliers for the valid pixels in the generated disparity is more than the outliers for the valid pixels
+in the ground truth is that in our implemention, the total number of pixels for the ground truth image 
+is incremented whenever a disparity pixel in the ground truth is labelled as valid, regardless of other conditions in the process; 
+however, the total number of pixels in the generated disparity
+is only incremented whenever the disparity value is valid and the amount of disparity error is less than the specified threshold in the evaluation process, thus resulting
+in a smaller denominator of the fraction in the estimation of the average outliers for the criteria of valid pixels in the generated disparity map and therefore, a larger 
+average value in the end.
 
 \subsection{The average Disparity Error}
 The average disparity error have also been estimated in the evaluation process for both pixel validity criteria. However, the resulting values
@@ -485,7 +503,7 @@ are not significantly different from the results of the algorithm when LR check 
 and only a few average values have slightly changed. We have marked a few of these values a blue circle in figures \ref{fig:adcmnoLR} and \ref{fig:adcfnoLR}.
 
 We also estimated the average execution time, the average disparity error, and the average number of outliers in this experiment. The results for 
-the average error and outliers are shown in the tables below.
+the average error and outliers are shown in the tables below. \newline
 
 \begin{minipage}{0.8\linewidth}
 \begin{center}
@@ -504,19 +522,19 @@ Full & 5.29 \\ \hline
 \begin{center}
 \captionof{table}{ADCensus average outliers - no refinement}
 \label{tab:outlfull}
-\begin{tabular}{ |c|c|c| }
+\begin{tabular}{ |c|c|c|c| }
 \hline
-\multicolumn{3}{ |c| }{Average outliers} \\
+\multicolumn{4}{ |c| }{Average outliers} \\
 \hline
 Region & Age & Average Outlier \\ \hline
-\multirow{4}{*}{Masked} & 17-29 & 0.23 \\
-& 30-49 & 0.22 \\
-& 50-69 & 0.18 \\
-& 70-83 & 0.002 \\ \hline
-\multirow{4}{*}{Full} & 17-29 & 0.27 \\
-& 30-49 & 0.26 \\
-& 50-69 & 0.23 \\
-& 70-83 & 0.001 \\ \hline
+\multirow{4}{*}{Masked} & 17-29 & 0.23 & 0.33 \\
+& 30-49 & 0.22 & 0.31 \\
+& 50-69 & 0.18 & 0.27 \\
+& 70-83 & 0.002 & 0.003 \\ \hline
+\multirow{4}{*}{Full} & 17-29 & 0.27 & 0.39 \\
+& 30-49 & 0.26 & 0.37 \\
+& 50-69 & 0.23 & 0.32 \\
+& 70-83 & 0.001 & 0.002 \\ \hline
 \end{tabular}
 \end{center}
 \end{minipage} \newline
@@ -560,8 +578,8 @@ In the experiments, we evaluated the running time of the two sample stereo match
 a real-time augmented reality application. Through this property, we can claim that the evaluation results through our system is more beneficial to AR applications
 than the conventional evaluation models which do not take this important aspect of the solutions into account.
 
-\item \textbf{Hypothesis 4:} \emph{The trade-off between the important factors to the human visual system in an outdoor AR application 
-can be effectively analyzed through our system.} 
+\item \textbf{Hypothesis 4:} \emph{The trade-off between the accuracy and the running time of the stereo algorithms can be effectively evaluated 
+in the framework of an outdoor AR application through our system.} 
 In one of the experiments we focused on the trade-off between the accuracy of the results and the running time of the algorithm by studying the effect
 of the post processing steps, also referred to as refinement steps, on the evaluation metrics. Results on ADCensus showed that integrating these steps in the algorithm
 does not significantly improve the accuracy of the results in the framework of an outdoor AR system; on the other hand, it results in a considerable increase in the execution
