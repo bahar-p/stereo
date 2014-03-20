@@ -18,7 +18,7 @@ world scenes has proved to be an effective way of conveying information about th
 the user and can be useful in many applications such as gaming, medical surgeries, tourism, and other entertaining, informative or instructional tasks.
 
 Many mobile augmented reality systems have been built over the past decades, from the Touring Machine in 1997 by Feiner et al. \cite{fei97} 
-to google AR glasses which was announced in 2013 \cite{google}; however, most of these prototypes have remained experimental
+to Google AR glasses which was announced in 2013 \cite{google}; however, most of these prototypes have remained experimental
 due to certain difficulties and constraints of using them in practical applications \cite{dras96,liv05}. To name two of the most important constraints
 we can refer to:
 \begin{enumerate}
@@ -35,8 +35,8 @@ Tracking sensors such as gyroscope and accelerometer along with video sensors ca
 In order to find the position of the objects in the scene, a depth map of the surrounding environment at each time is required. To obtain the depth of the 
 objects in the scene several depth sensing technologies can be used such as 3D laser scanner, depth cameras or regular cameras. However, in order to have a mobile AR
 system that is easy to carry around, the weight of the whole system will be more of a concern, hence, 
-3D laser scanners and depth cameras are not good choices for such systems.
-Depth cameras, such as Kinect, or DS325 have a strong limitation in the viewing range; Kinect, 0.8m t0 4m \cite{mkinect}; and DS325, 0.15 to 1m \cite{skinetic}. 
+3D laser scanners and depth cameras are not proper choices for such systems.
+Depth cameras, such as Kinect, or DS325 have a strong limitation in the viewing range; Kinect, 0.8m t0 4m \cite{mkinect}; and DS325, 0.15m to 1m \cite{skinetic}. 
 On the other hand, 3D laser scanners can
 generate very accurate depth maps; however, they are normally expensive and their price ranges from \$3K to \$300K+, 
 depending on their accuracy and range.
@@ -88,7 +88,7 @@ In order to find the answer to this question, some other questions are raised:
 \textbf {``What is the standard angular disparity for human visual system? How would it affect an AR system?''} \newline
 \textbf {``How can we evaluate stereo vision in an augmented reality framework? What are the important factors we need to consider for 
 	this type of evaluation?''} \newline
-\textbf {``In a combination of augmented reality with stereo vision, what is considered as \textbf{\textit {accurate}} depth result?''} \newline
+\textbf {``In a combination of augmented reality with stereo vision, what is considered an \textbf{\textit {accurate}} depth result?''} \newline
 \textbf {``How can a three dimensional model be built from stereo images using computer vision techniques?''}\newline
 \textbf {``What are the requirements to maintain an interactive augmented reality application for the user?''} \newline
 \end{quote}
@@ -103,7 +103,7 @@ For our research, we decided to narrow down our study to the effect of using ste
 on two of the most important constraints of an AR system mentioned earlier in this chapter: 
 {\it human factors} and {\it real-time interaction}. {\newline}
 Human perception of depth can vary depending on the environment and under different circumstances. Many studies have focused on the evaluation of human perception of depth within different frameworks
-and in different applications, such as virtual reality, and augmented reality which have recently 
+and in different applications, such as virtual reality and augmented reality, which have recently 
 attracted more attention \cite{wann95,dras96,liv05,jer05,swa07,kru10}.
 These studies show that the viewer perception of depth
 is inversely proportional to his/her distance from the object \cite{kru10,swa07,jer05,liv05}. For instance, in \cite{swa07} some experiments are designed to study and evaluate human
@@ -123,7 +123,7 @@ However, studies show that in practice to build a reasonable interactive augment
 There are different approaches to speed up a system. Acceleration of a system is possible in two ways:
 \begin{enumerate}
 \item Using more advanced technology and hardware
-\item More sophisticated and achieving efficient software design
+\item More sophisticated and efficient software design
 \end{enumerate}
 However, having access to advanced technology and hardware is not always feasible and even the most advanced 
 technologies have some limitation in their memory space and computational capability
@@ -151,7 +151,7 @@ on the depth edges in the scene and their surrounding regions \cite{liv05,kru10}
 Our hypothesis is that salient edges caused by depth discontinuities, which can also represent the object boundaries and occlusion, and their surroundings
 are one of the most important depth cues for the observer 
 to perceive the depth of different objects in the scene \cite{sze11}. 
-Furthermore, the areas of depth discontinuity and occlusion are known as two of the most challenging regions 
+Furthermore, the areas of depth discontinuity and occlusion are known as two of the most challenging regions in the scene
 in the stereo correspondence problem \cite{sch02}.
 Finding correct depth values in these 
 regions can lead to a higher quality combination of the virtual and real objects in the scene, thus providing a more reasonable augmented world 
