@@ -119,8 +119,8 @@ d &= \frac{Bf}{Z} \label{eq:dispeq}
 where f is the {\it focal length} measured in pixels, B is the {\it baseline}, Z is the {\it 3D depth}, and d is the {\it disparity}. The relationship between corresponding pixels in the left
 and right images according to disparity {\it d} is also as follows:
 \begin{align}
-{P}^{"}_{x}={P}^{'}_{x}+d(x,y) \\
-{P}^{"}_{y} = {P}^{'}_{y}
+{P}^{"}_{x} &= {P}^{'}_{x}+d(x,y) \\
+{P}^{"}_{y} &= {P}^{'}_{y}
 \end{align}
 Therefore, based on the aforementioned formulas, the depth of points in 3D space can be easily calculated after finding the corresponding pixels in multiple views and consequently their
 disparities \cite{bol87,oku93,sch02}.
@@ -299,7 +299,23 @@ to the process described above for detecting the edges in the image, there are a
 in this approach that affect the edge linkage step. The purpose of having these two thresholds is elimination of streaks, i.e. certain breakage, that may appear along edge contours. 
 By employing these thresholds in the process of edge detection and linkage, any value above the higher threshold will be output as an edge element and when linking the edge element 
 to its neighbor to form a continuous contour, only those 
-values above the lower threshold will be accepted \cite{canny86}. This process has shown to reduce the streaking effect to a significant amount \cite{canny86}. \newline
+values above the lower threshold will be accepted \cite{canny86}. 
+This process has shown to reduce the streaking effect to a significant amount \cite{canny86}. \newline
+Figure \ref{fig:edgenodil} shows the detected edges obtained by applying the canny operation on the image \ref{fig:imggt5}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{imggt5}
+\caption{Canny edge detection in an image}
+\label{fig:imggt5}
+\end{figure} 
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{mask5nodil}
+\caption{Canny edge detection in an image}
+\label{fig:edgenodil}
+\end{figure} 
 
 \subsection{Morphological Operations}
 In addition to linear filters, there is another type of filters known as {\it non-linear filters}, whose output is a non-linear function of their input. 
@@ -322,7 +338,7 @@ is overlain by the centre of the structuring element, is replaced by foreground 
 Erosion, which can be considered as the complementary operation of dilation, follows a similar process, with only the difference that structuring element is moved over foreground pixels and any
 foreground pixels will be replaced by the background value if at least one pixel of the structuring element overlaps with a pixel marked as background.
 Hence, we can state that dilation of the foreground is equivalent to erosion of the background \cite{ritt00}.
-The dilation and erosion operations are illustrated in figures \ref{fig:} and \ref{fig:}, respectively.
+The dilation and erosion operations are illustrated in figures \ref{fig:dilate} and \ref{fig:erode}, respectively.
 
 \begin{figure}[H]
 \centering
@@ -334,8 +350,18 @@ The dilation and erosion operations are illustrated in figures \ref{fig:} and \r
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.8]{erodbin}
-\caption{Dilation operation}
-\label{fig:dilate}
+\caption{Erosion operation}
+\label{fig:erode}
+\end{figure} 
+
+The sample image shown in figure \ref{fig:edgenodil} is presented below after applying dilation on the detected edges in the image to expand the 
+detected regions.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.35]{mask5dil}
+\caption{Dilation of the detected edges in an image}
+\label{fig:edgedil}
 \end{figure} 
 
 
