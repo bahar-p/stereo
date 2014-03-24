@@ -36,9 +36,9 @@ In order to find the position of the objects in the scene, a depth map of the su
 objects in the scene several depth sensing technologies can be used such as 3D laser scanner, depth cameras or regular cameras. However, in order to have a mobile AR
 system that is easy to carry around, the weight of the whole system will be more of a concern, hence, 
 3D laser scanners and depth cameras are not proper choices for such systems.
-Depth cameras, such as Kinect, or DS325 have a strong limitation in the viewing range; Kinect, 0.8m t0 4m \cite{mkinect}; and DS325, 0.15m to 1m \cite{skinetic}. 
+Depth cameras, such as Kinect, or DS325 have a strong limitation in the viewing range; Kinect, 0.8m to 4m \cite{mkinect}; and DS325, 0.15m to 1m \cite{skinetic}. 
 On the other hand, 3D laser scanners can
-generate very accurate depth maps; however, they are normally expensive and their price ranges from \$3K to \$300K+, 
+generate very accurate depth maps; however, they are normally expensive and their price ranges from \$3,000 to \$300,000 or more, 
 depending on their accuracy and range.
 Therefore, among all these technologies, using several 
 cameras to generate a depth map of the surrounding environment seems to be a more practical approach for outdoor mobile augmented reality systems. {\newline}
@@ -129,7 +129,7 @@ However, having access to advanced technology and hardware is not always feasibl
 technologies have some limitation in their memory space and computational capability
 which may not meet the requirement for some real-time applications. 
 Therefore, we have decided to focus more on the second approach while designing our evaluation system which also looks into one of the
-key properties of an AR system mentioned earlier, i.e, real-time user interaction.
+key properties of an AR system mentioned earlier, that is real-time user interaction.
 
 One of the most important features that makes our evaluation unique and different from the others is that we have 
 designed the evaluation process of the stereo matching solutions with an eye to augmented 
@@ -182,4 +182,15 @@ for solving the problem of stereo correspondence regardless of the running time 
 In addition, AdCensus does not currently exist in the KITTI evaluation table which motivates us to evaluate its performance
 under real world circumstances with outdoor stereo images.
 
+\section{Organization of Thesis}
+This report is organized in the following structure.
+We discuss a background of the related work and concepts in Chapter 2. The geometry of stereo vision, 
+stereo correspondence problem, and a survey of the stereo solutions will be reviewed. 
+Moreover, we will introduce some of the key computer vision techniques employed
+during this research work. Chapter 3 introduces some of the relevant concepts in binocular vision to this study.
+In Chapter 4, we will explain our system and its design and components in detail. Chapter 5, discusses the experiments
+conducted for the evaluation of the proposed system in the framework of an outdoor AR application.
+In Chapter 6, we will discuss the shortcomings and benefits of our system in summary based on the results from Chapter 5. 
+Consequently, a discussion of the potential aspects of improvement 
+and future research will also be provided.
 
