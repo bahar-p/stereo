@@ -9,8 +9,8 @@ the Middlebury and Kitti Stereo Evaluation.
 
 \section{Stereo Dataset}
 It should be noted that the stereo images we have used to conduct the experiments on stereo algorithms in our system,
-are selected from Kitti Stereo Dataset.
-In contrary to the Middlebury dataset, Kitti Stereo Project provides stereo images and ground truth disparity maps
+are selected from the Kitti Stereo Dataset.
+In contrary to the Middlebury dataset, the Kitti Stereo Project provides stereo images and ground truth disparity maps
 that are taken from outdoor scenes under real circumstances. This property of sample images makes them more appropriate 
 for evaluating the performance of the algorithms in outdoor AR applications, thus better meeting the objectives of this study.
 We have selected 52 image pairs from the Kitti Stereo dataset based on different photometric and visual properties that are important
@@ -20,13 +20,13 @@ of these properties are listed as follows:
 \item Light and shading; that is the scenes including bright, dim, and dark regions
 \item Various depth ranges; that is including near field, medium field and far field objects  
 \item Depth discontinuity and occlusion
-\item Well textured and textureless regions
+\item Well textured and not properly textured regions
 \end{itemize}
 
 
 \section{Methodology}
 
-Before going through the explanation of the experiments conducted to assess our evaluation model, we restate our main research question in this
+Before going through the explanation of the experiments to assess our evaluation model, we restate our main research question in this
 study to better justify our hypotheses and the experiments defined for their validation. 
 As mentioned earlier in chapter \ref{chap:Introduction}, our main objective is to investigate whether using 
 stereo matching techniques to generate the depth map of the 
@@ -38,7 +38,7 @@ are properly measured and presented in the framework of the important factors in
 After confirming this property, which is the key property of our model, we investigate the effect of our proposed masking 
 approach on the evaluation results. Moreover, we present how the methods are evaluated in the framework of 
 real-time interactive AR systems.
-We also explain how the evaluation and comparison of the methods is done in our model through some
+We also explain how the evaluation and comparison of the methods is done in our model with some
 experiments on the sample stereo matching algorithms.
 
 \section{Hypotheses}
@@ -48,7 +48,7 @@ We have defined a set of hypotheses to evaluate our proposed design. These hypot
 \begin{itemize}
 \item \textbf{Hypothesis 1}: \emph{Our model evaluates and demonstrates 
 the performance of the stereo matching algorithm in the framework of 
-outdoor augmented reality applications.} 
+the outdoor augmented reality applications.} 
 Unlike the Middlebury and Kitti benchmarks which are considered general-purpose evaluation models, 
 our system can particularly evaluate the algorithms in the framework of an 
 outdoor augmented reality application to facilitate the process of determining
@@ -61,18 +61,19 @@ Salient edges caused by depth discontinuities,
 which can also represent the object boundaries and occlusion, are one of the 
 most important depth cues that helps the observer to better perceive the depth of different objects in the scene. In other words, the areas near the edges corresponding to depth discontinuities
 in a scene are more important to the human visual system for perception of depth in an AR application and therefore, the disparity 
-errors in these regions can be detected easier by the HVS. Therefore, we argue that in our model, the evaluation of the disparity results in these regions can be of great value 
-to an outdoor AR application.
+errors in these regions can be detected easier by the HVS. Therefore, we argue that in our model, which has the property of masking and evaluating the results for
+these particular regions,
+the evaluation results can be of great value to an outdoor AR application.
 
 \item \textbf{Hypothesis 3:} \emph{Our system is better than other evaluation models for assessing the performance of the algorithm in
 real-time AR applications.}
 Other evaluation models, the Kitti and Middlebury benchmarks, do not evaluate and report on the efficiency of the algorithms
 with respect to their execution time. On the other hand, our system is capable of examining and evaluating an algorithm 
-based on its execution time and therefore, can report its efficiency for real-time AR applications.
+based on its execution time, and therefore, can report on its efficiency for real-time AR applications.
 
 \item \textbf{Hypothesis 4:} \emph{The trade-off between the accuracy and the running time of the stereo algorithms can be effectively evaluated 
 in the framework of an outdoor AR application through our system.} 
-Nearly all the solutions to the problem of stereo correspondence have been dealing with the trade-off between the accuracy of the results and their running time.
+Nearly all the solutions to the problem of stereo correspondence have been dealing with the trade-off between the accuracy of the results and the running time.
 Therefore, most of the solutions focus only on improving one of these aspects in the final results. Some methods use certain post processing techniques to refine the 
 disparity results in the end, thus improving the accuracy, whereas the others propose particular approaches that can be implemented on the GPU.
 Due to the importance of both metrics in an outdoor AR application, we argue that the trade-off between these metrics can be effectively analyzed in our evaluation system.
@@ -87,7 +88,7 @@ Experiments were carried out on a Linux machine with Intel Core(TM) i7 3.20GHz C
 Although ADCensus is proposed as a GPU-based solution to the problem of stereo correspondence, 
 we have used the CPU implementation of both algorithms in all the experiments.
 The set of parameters used at different steps of the evaluation are presented in the following sections.
-It should be noted that these parameters were kept constant for all the images and experiments. However, if a parameter is changed during an experiment for certain
+It should be noted that these parameters were kept constant for all the images and experiments. However, if a parameter is changed during an experiment for specific
 reasons, it will be explicitly mentioned in the description of the experiment.
 
 \subsection{Masking}
@@ -96,7 +97,7 @@ Canny have been used to detect the depth edges in the ground truth disparity map
 for expanding the detected edge regions in the masking process. The extent to which the regions are expanded
 is determined by the number of iterations in the dilation operation. Table \ref{tab:candilparam} shows the parameters used in the Dilation
 and the Canny edge detection. However, the \textit{minimum threshold} in Canny is tuned and selected separately for each image 
-since the threshold can change depending on the scene.
+since the threshold should change depending on the scene.
 
 {\footnotesize
 \begin{minipage}{\linewidth}
@@ -115,22 +116,22 @@ Canny\_EdgeStrength\_ratio & 3 \\ \hline
 
 The ground truth disparity maps in the Kitti stereo dataset are generated by a 3D laser scanner, thereby resembling
 a point cloud map of discrete disparity values. This property of the disparity images 
-can be problematic for the masking process since it can result in generating many small streaks as the edges.
+can be problematic for the masking process since it can result in many small streaks as the edges.
 Therefore, before applying any edge
 detection on the image, we need to first fill the gaps by interpolating the values and obtain a smoothed ground truth disparity.
 This can be achieved by applying a dilation operation.
 In our implementation, we have used the OpenCV dilation operation with different number of iterations for each image, that is set depending on the scene 
 and the original ground truth disparity, to obtain a fully dense disparity map. 
-The new disparity images are then stored on the disk. 
+The new disparity images are then stored on the disk for further use.
 However, it should be noted that the dilated disparity images are only used in the construction of the masks when detecting the depth
 edges in the image.
 %However, it should be noted that the ground truth disparities used for the related comparisons and calculations 
 %in the evaluation process, are the original disparity images before being dilation.
 
-\subsection{Stereo algorithms settings}
-The parameters for each algorithm that were used in our experiments to generate the disparity
-maps were kept constant over all the images in the dataset. These parameters are presented in tables \ref{tab:sgbmparams} and \ref{tab:adcparams} 
-for SGBM and ADCensus respectively. \newline
+\subsection{Stereo Algorithms Settings}
+The parameters for each algorithm used in our experiments to generate the disparity
+maps are kept constant over all the images in the dataset. These parameters are presented in tables \ref{tab:sgbmparams} and \ref{tab:adcparams} 
+for SGBM and ADCensus, respectively. \newline
 
 {\footnotesize
 \begin{minipage}{0.8\linewidth}
@@ -148,8 +149,7 @@ P2 & speckleWindowSize & speckleRange \\ \hline
 \end{minipage} \newline \newline
 }
 
-Other parameters not mentioned in the table were considered with their default values. \newline
-
+Other parameters not mentioned in the table are considered with their default values. \newline
 
 {\footnotesize
 \begin{minipage}{0.8\linewidth}
@@ -167,29 +167,30 @@ $\pi_{1}$ & $\pi_{2}$ & $\tau_{SO}$ & $\tau_{S}$ & $\tau_{H}$ & \\  \hline
 \end{minipage} \newline
 }
 
-The minimum and maximum disparity values were also kept constant for each image pair in both algorithms; however, the maximum 
+The minimum and maximum disparity values are also kept constant for each image pair in both algorithms; however, the maximum 
 disparity differ for each image pair as the scenes are different
 and objects are located at different depth fields.
-The minimum disparity was set to $0$ for both algorithms. The maximum disparity for each image pair was selected based on the maximum value in their
-corresponding ground truth disparity. The only restriction to consider here was to choose a value greater than or equal to 
+The minimum disparity is set to $0$ for both algorithms. The maximum disparity for each image pair is selected based on the maximum value in their
+corresponding ground truth disparity. The only restriction to consider here is to choose a value greater than or equal to 
 the maximum disparity of the ground truth that is a multiplication of 16. This constraint
 is implied by the implementation of SGBM algorithm.
 
 \subsection{Evaluation Params}
 In our evaluation model, due to the large amount of data which grows as more images are added to the input selection, 
 plots are generated by taking the average of the results over all the images. As mentioned in the previous chapter, this average results from two steps; 
-first, getting an average of the relative depth error over specific
+first, getting the average of the stereoacuity over specific
 depth ranges for each image and then getting the average of the values from the previous step over all of the images. This operation finally results in a single plot
-that demonstrates the average error of relative depth within specific distance.
+that demonstrates the average stereoacuity within specific distance.
 The averaging operations at this step are implemented by building histogram over the resulting data. 
-In our experiments, we set the number of bins to $100$ and the width of each bin to $0.5$. Therefore, the first averaging is conducted over distances of half a meter in each image and the maximum distance over which the results are 
-being examined is 50m.
+In our experiments, we set the number of bins to $100$ and the width of each bin to $0.5$. Therefore, the first averaging is conducted over distances of $0.5m$ 
+in each image and the maximum distance over which the results are 
+examined is $50m$.
 
 \section{Assumption}
 \textbf{Talk about camera quality and display resolution}
 
 \section{Experiments}
-In this section we discuss the experiments conducted to evaluate the system and investigate the validity of the hypotheses.
+In this section, we discuss the experiments conducted to evaluate the system and investigate the validity of our hypotheses.
 
 \subsection{Evaluation in Augmented Reality Framework}
 
@@ -207,7 +208,7 @@ over the masked areas are displayed in figures \ref{fig:imgmsk5} and \ref{fig:im
 [.5\linewidth]{\includegraphics[scale=0.21]{000005L}}%
 \subcaptionbox{Right image}
 [.5\linewidth]{\includegraphics[scale=0.21]{000005R}}%
-\caption{Sample stereo image from Kitti}
+\caption{Sample stereo image from the Kitti dataset}
 \label{fig:img5}
 \end{figure}
 
@@ -275,12 +276,12 @@ Figures \ref{fig:mskmapsgbm} and \ref{fig:mskmapadc} show the average results ov
 \label{fig:mskmapadc}
 \end{figure} 
 
-As can be seen, the average results displayed in the previous plots, contain sparse points and 
+As can be seen, the average results displayed in the previous plots contain sparse points and 
 do not demonstrate any consistent pattern. When we investigated the cause of this large variation, we found that in
-the results of both algorithms, there are some disparity values which differ from the ground truth disparity 
+the results of both algorithms, there are some disparity values which differ from the ground truth 
 by a considerable amount and yet have not been invalidated by the
 algorithm. We assume that these types of outliers can be easily removed from the set by applying a post processing filter, or 
-they will be culled out by the 3D renderer in the AR system in the end. 
+they will be eventually culled out by the 3D renderer in the AR system. 
 %Therefore, we have added another filtering condition to our evaluation module is similar to the approach employed by the
 %Kiiti and Middlebury stereo evaluation. 
 In order to filter out the disparity values which largely differ from the ground truth disparity, we have integrated another 
@@ -340,22 +341,22 @@ Results of SGBM are shown in figure \ref{fig:sgbmfull3} and \ref{fig:sgbmmsk3}.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.8]{sgbmfull3}
-\caption{Average disparity error over all the regions by SGBM}
+\caption{Average disparity error over the whole image by SGBM}
 \label{fig:sgbmfull3}
 \end{figure} 
 
 The plots show that the average error over the masked regions, that is near the depth edges, is very similar to the results over the whole image. 
 This may imply that there is no additional benefit in the inspection of these regions. 
-However, this might be merely an indication of the performance of the selected algorithms, and can be better analyzed by evaluating more algorithms 
+However, this might be merely an indication of the performance of the selected algorithms and can be better analyzed by evaluating more algorithms 
 within our model.
 In either case, we argue that, due to the importance of occlusion and areas near depth discontinuities to the HVS in AR applications, 
 it is reasonable to focus more on the depth edges and their surroundings when designing or employing a stereo matching technique for an AR application.
 
-\subsection{The average Outlier}
+\subsection{The Average Outlier}
 In this experiment the average number of outliers were measured for both algorithms. 
 The values for both validity criteria mentioned in chapter \ref{chap:System}, valid pixels in the ground truth and generated disparity, 
-are presented in the tables \ref{tab:outlmsk} and \ref{tab:outlfull} for each age group. For simplicity, we have labelled the valid pixels
-in the ground truth and the disparity results with \textbf{vG} and \textbf{vD}, respectively. \newline
+are presented in tables \ref{tab:outlmsk} and \ref{tab:outlfull} for each age group. For simplicity, we have labelled the valid pixels
+in the ground truth and the generated disparity with \textbf{vG} and \textbf{vD}, respectively. \newline
 
 %{\footnotesize
 \begin{minipage}{0.8\linewidth}
@@ -407,22 +408,22 @@ Furthermore, in SGBM the number of outliers over the masked regions are more tha
 opposite behavior is observed; that is the number of outliers over the masked regions are less than 
 the whole image. This implies that ADCensus performs better in the areas of depth edges and their surroundings than other regions.
 Therefore, it is better to be employed in the applications where preserving the object boundaries and occluded areas
-is more important than the other regions in the image, such as image compositing for layering visual elements, such as signage
+is more important than the other regions in the image, such as image compositing for layering visual elements
 on the scene. However, this metric per se
 cannot be an indicator of a proper solution for any target application and should be considered along with the other
 relevant metrics. 
 
 We should note that the reason the number of outliers for the valid pixels in the generated disparity is more than the outliers for the valid pixels
-in the ground truth is that in our implemention, the total number of pixels for the ground truth image 
+in the ground truth is that in our implemention, the counter for the number of pixels in the ground truth image 
 is incremented whenever a disparity pixel in the ground truth is labelled as valid, regardless of other conditions in the process; 
-however, the total number of pixels in the generated disparity
-is only incremented whenever the disparity value is valid and the amount of disparity error is less than the specified threshold in the evaluation process, thus resulting
-in a smaller denominator of the fraction in the estimation of the average outliers for the criteria of valid pixels in the generated disparity map and therefore, a larger 
+however, the counter for the number of pixels in the generated disparity
+is only incremented whenever the disparity value is valid and the amount of disparity error is less than the specified pixel threshold in the evaluation process, thus resulting
+in a smaller denominator of the fraction in the estimation of the average outliers for the criteria of valid pixels in the generated disparity map, and therefore, a larger 
 average value in the end.
 
-\subsection{The average Disparity Error}
+\subsection{The Average Disparity Error}
 The average disparity error have also been estimated in the evaluation process for both pixel validity criteria. However, the resulting values
-were similar for both cases, and therefore, only one number is reported in the following table for this metric. \newline
+were similar for both cases, and therefore, only one value is reported in the following table for this metric. \newline
 
 \begin{minipage}{0.8\linewidth}
 \begin{center}
@@ -442,17 +443,17 @@ Algorithm & Region & error \\ \hline
 \end{minipage} \newline
 
 As can be seen, ADCensus results in less average disparity error than SGBM. This difference is likely caused by the various refinement steps
-implemented in ADCensus algorithm which do not exist in SGBM.
+implemented in the ADCensus algorithm which do not exist in SGBM.
 As a result, despite the larger number of outliers in ADCensus than SGBM as measured in the previous experiments,
 ADCensus attempts to decrease the difference between the resulting disparity value and the ground truth disparity, thus generating a smoother disparity patches
 within different regions of the image.
 
 \subsection{Real-time Execution}
-In another experiment we estimated the average execution time for both algorithms. Results show that the average execution time over all the images 
+In another experiment, we estimated the average execution time for both algorithms. Results show that the average execution time over all the images 
 for SGBM and ADCensus are $0.54$ and $272.82$ seconds, respectively.
 Considering the requirements of having an interactive real-time AR system \cite{hertz00}, the processing time of each frame should not be more than 0.06-0.08 seconds.
 Although the current implementation of SGBM could be used when the real world scene remains stable for approximately one second, it can be safely concluded that
-none of these algorithms meet the requirements of a real-time interactive system.
+none of these algorithms meet the requirements of a real-time interactive AR system.
 This suggests that the GPU-based solutions are better techniques to achieve the processing speed required for the real-time 
 interactive applications of AR.
 
@@ -461,14 +462,23 @@ In this experiment, we studied the effect of the post processing steps, also ref
 in the stereo algorithms on the accuracy of the results in our evaluation criteria. 
 
 Refinement is usually the last step in a stereo correspondence algorithm because it attempts to decrease the 
-number of wrong matches or the errors after the disparity results have been found, thus requiring the outliers to be first detected in the results. 
-The detection of the outliers occurs through a check known as left-right consistency check in a stereo matching algorithm. For simplicity, we will refer
-to it as LR check in this report.
+number of wrong matches or the error after the disparity results have been found, thus requiring the outliers to be first detected in the results. 
+The detection of the outliers occurs through a check known as left-right consistency check in a stereo matching algorithm. In this check, the disparity map for both
+the left and right image is first calculated. Then, if a pixel in the left image, based on its disparity value, corresponds to a pixel in the right image
+that does not map back to it, it will be labeled as an outlier. This description can be formulated as follows:
+\begin{align}
+D_{L}(p) \neq D_{R}(p-(D_{L},0))
+\end{align}
+\noindent
+Where $D_{L}(p)$ is the disparity function for the left image and $D_{R}$ is the disparity function for the right image.
+
+For simplicity, we will refer
+to this check as LR check in this report.
 In our implementation of ADCensus, we have the LR check and its subsequent refinement steps triggered with a flag.
 Therefore, when the flag is not set, neither the check nor the refining steps are triggered in the algorithm.
-To investigate the effect of the refinement on the final results, we modified our implementation 
-of ADcensus in this experiment by setting the LR flag to zero, generating the disparity results for the image pairs, and evaluating the results.
-The results for both cases, when the results are refined and when they are not, over the masked regions and the whole image are shown below.
+To investigate the effect of the refinement on the final results, we used 
+ADcensus in this experiment with the LR flag set to zero, generating the disparity results for the image pairs, and evaluating the results.
+The results for both cases, refined and not refined, over the masked regions and the whole image are shown below.
 
 \begin{figure}[H]
 \centering
@@ -500,7 +510,7 @@ The results for both cases, when the results are refined and when they are not, 
 
 As can be seen in the plots, the evaluation results in our specific criteria 
 are not significantly different from the results of the algorithm when LR check and refinement were triggered
-and only a few average values have slightly changed. We have marked a few of these values a blue circle in figures \ref{fig:adcmnoLR} and \ref{fig:adcfnoLR}.
+and only a few average values have slightly changed. We have marked a few of these values with a blue circle in figures \ref{fig:adcmnoLR} and \ref{fig:adcfnoLR}.
 
 We also estimated the average execution time, the average disparity error, and the average number of outliers in this experiment. The results for 
 the average error and outliers are shown in the tables below. \newline
@@ -508,7 +518,7 @@ the average error and outliers are shown in the tables below. \newline
 \begin{minipage}{0.8\linewidth}
 \begin{center}
 \captionof{table}{ADCensus average disparity error - no refinement}
-\label{tab:adcparams}
+\label{tab:adcerrNref}
 \begin{tabular}{|c|c|}
 \hline
 Region & Average Disparity Error \\ \hline
@@ -521,7 +531,7 @@ Full & 5.29 \\ \hline
 \begin{minipage}{0.8\linewidth}
 \begin{center}
 \captionof{table}{ADCensus average outliers - no refinement}
-\label{tab:outlfull}
+\label{tab:adcoutlNref}
 \begin{tabular}{ |c|c|c|c| }
 \hline
 \multicolumn{4}{ |c| }{Average outliers} \\
@@ -540,7 +550,7 @@ Region & Age &  Average Outlier(vG) & Average Outlier(vD)  \\ \hline
 \end{minipage} \newline
 
 The average execution time was approximately $147.84$ seconds which is nearly half the running time of the algorithm with the LR check and refinements triggered. 
-Comparing these results to the ones presented in tables \ref{tab:avgerr}, \ref{tab:outlmsk}, and \ref{tab:outlfull}, a slight decrease in the amount of errors and 
+Comparing these results to the ones presented in tables \ref{tab:outlmsk}, \ref{tab:outlfull}, and \ref{tab:avgerr} a slight decrease in the amount of errors and 
 almost no change in the number of outliers is observed.
 Analyzing the results in this experiment, we can conclude that despite the considerable rise in the execution time of the algorithm, no significant
 accuracy is achieved in our evaluation criteria through refinement of the disparity results; therefore, the execution of ADCensus without any LR check and
@@ -554,10 +564,10 @@ Next, we will review our hypotheses mentioned earlier in this chapter and discus
 outdoor augmented reality applications.} 
 As can be seen in the results of the experiments, our system employs a systematic approach for the measurement and demonstration of different 
 evaluation metrics in the framework of an outdoor augmented reality application. 
-In our system, the average disparity error, which is the most important metric for the accuracy of the disparity results, 
+In our system, the disparity error, which is the most important metric for the accuracy of the disparity results, 
 is converted to a certain measurement, stereoacuity, that is relevant and applicable to the human visual
 system and its perception of depth. We evaluated two stereo matching methods in our system and analyzed their performance in terms of
-the accuracy of the depth map for an outdoor AR application. Due to the application-oriented scheme of the system, we could comment on the suitability of each method
+the accuracy of the depth map for an outdoor AR application. Due to the application-oriented design of the system, we could comment on the suitability of each method
 for an AR application in outdoor environments. As a result, we can claim that our evaluation model is more appropriate for the evaluation of the solutions 
 in an outdoor AR system than the conventional evaluation systems.
 
@@ -566,9 +576,9 @@ refining the areas near the depth edges in an image are more important in an AR 
 The results of our experiments on two sample stereo matching solutions showed no significant difference between the evaluation metrics corresponding to the whole image and
 the regions of the depth edges and their surroundings, thereby implying that there may be no specific benefit into the analysis of these particular regions 
 in an outdoor AR application.
-However, due to the importance of these regions as depth cues to the human visual system for the perception of the 3D position of the surrounding 
+However, due to the importance of these regions as depth cues to the human visual system for the perception of the 3D location of the surrounding 
 objects in an environment, we argue that more solutions should be tested within our evaluation model 
-to able to certainly approve or disapprove this hypothesis. 
+to be able to certainly approve or disapprove this hypothesis. 
 
 \item \textbf{Hypothesis 3:} \emph{Our system performs better than the the conventional evaluation models for assessing the performance of a stereo algorithm in
 Real-time AR applications.}
@@ -580,12 +590,12 @@ than the conventional evaluation models which do not take this important aspect 
 
 \item \textbf{Hypothesis 4:} \emph{The trade-off between the accuracy and the running time of the stereo algorithms can be effectively evaluated 
 in the framework of an outdoor AR application through our system.} 
-In one of the experiments we focused on the trade-off between the accuracy of the results and the running time of the algorithm by studying the effect
+In one of the experiments, we focused on the trade-off between the accuracy of the results and the running time of the algorithm by studying the effect
 of the post processing steps, also referred to as refinement steps, on the evaluation metrics. Results on ADCensus showed that integrating these steps in the algorithm
-does not significantly improve the accuracy of the results in the framework of an outdoor AR system; on the other hand, it results in a considerable increase in the execution
-time of the algorithm which is not beneficial to a real-time interactive AR system. The results of this evaluation indicates that the trade-off between the accuracy 
-of the results and the execution time of the algorithm which normally exists in nearly all the stereo matching solutions can be effectively analyzed 
-through our evaluation system. The conventional evaluation models lack this property which is of great importance to certain application such as application of AR.
+does not significantly improve the accuracy of the results in the framework of an outdoor AR system; on the other hand, it causes a considerable increase in the execution
+time of the algorithm which is not beneficial to a real-time and interactive AR system. The results of this evaluation indicates that the trade-off between the accuracy 
+of the results and the execution time of the algorithm, which normally exists in nearly all the stereo matching solutions, can be effectively analyzed 
+through our evaluation system. The conventional evaluation models lack this property which is of great importance to certain applications, such as applications of AR.
 
 \end{itemize}
 

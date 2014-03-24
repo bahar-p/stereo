@@ -46,10 +46,16 @@ by the human visual system.
 
 In an augmented reality system, there are certain factors that would affect the functionality and effectiveness of the system \cite{liv05,kru10}, and therefore, 
 should be carefully considered when designing and evaluating the system.
-These factors may correspond to the surrounding 
-environment, technology and hardware constraints, or human factors in AR. 
-Figure \ref{fig:AR} illustrates a high level architecture of an AR system with its key components and some of their attributes.
-\textbf{(FIG of AR) - draw components and mention some of their related factors}
+These factors, which correspond to the different components in an AR system, are related to the surrounding 
+environment, technology and hardware constraints, or human factors in AR.
+Figure \ref{fig:AR} illustrates a high level architecture of an AR system with its key components.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{AR}
+\caption{High-level architecture of an AR system}
+\label{fig:AR}
+\end{figure} 
 
 %Concentrating on the requirements of providing a real-time interaction between an AR system and the users, along with
 %certain human factors that would affect the functionality of the system,
@@ -96,14 +102,23 @@ Our evaluation model consists of the following key components:
 \item Evaluation metrics output as data files and plots
 \end{itemize}
 
-Figure \ref{fig:architecture} shows the block diagram of our design.
-
-\textbf{FIG of Architecture}
-
 It should be noted that some of these components, such as the masked ground truth, or the masked disparity maps 
 can optionally be built during the process depending on the specific parameters set at the run time of each step.
 
-As can be seen in the figure \ref{fig:architecture}, first the input data consisting of the stereo images, the ground truth disparity and 
+Figure \ref{fig:archigh} shows the high level block diagram of our design.
+
+\begin{figure}[H]
+\centering
+\includegraphics{EvalSyshigh}
+\caption{High-level block diagram of the evaluation system}
+\label{fig:archigh}
+\end{figure} 
+
+A lower level architecture of our evaluation system is shown in figure \ref{fig:lowarch}. This figure illustrates the 
+sequence of the operations during the whole process. 
+
+
+As can be seen in the figure \ref{fig:lowarch}, first the input data consisting of the stereo images, the ground truth disparity and 
 the calibration data is passed to the system.
 Afterwards, the specified masks are created using a \textit{Canny} edge detector and a \textit{Dilation} operation with the appropriate parameters 
 selected separately for each image.
@@ -112,8 +127,6 @@ they are passed to the evaluation module with the specified arguments.
 Finally, the evaluation metrics are estimated and output through data files and plots to facilitate the evaluation of the stereo algorithm in the application
 of interest; outdoor AR system.
 
-A lower level architecture of our evaluation system is shown in figure \ref{fig:lowarch}. This figure illustrates the 
-sequence of the operations during the whole process. 
 
 \textbf{LOW ARCH FIG - showing underlying modules}
 
