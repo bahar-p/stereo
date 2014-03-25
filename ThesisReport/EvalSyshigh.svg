@@ -14,7 +14,7 @@
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="New document 2"
+   sodipodi:docname="EvalSyshigh.svg"
    version="1.0">
   <defs
      id="defs4">
@@ -40,7 +40,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.540463"
-     inkscape:cx="112.52029"
+     inkscape:cx="-1.7310747"
      inkscape:cy="170.07874"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
@@ -101,7 +101,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -118,7 +118,7 @@
        x="319.07086"
        y="726.56055" />
     <rect
-       style="fill:#ffd5d5;stroke:#28220b;stroke-width:0.99921262000000000;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:#ffd5d5;stroke:#28220b;stroke-width:0.9992126;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect3867"
        width="113.38583"
        height="141.73228"
@@ -126,14 +126,14 @@
        y="28.346447"
        transform="translate(-4.149475e-6,698.0315)" />
     <rect
-       style="fill:none;stroke:#28220b;stroke-width:0.99921262;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:#ac9393;stroke:#28220b;stroke-width:0.99921262000000000;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect2995"
        width="85.039368"
        height="55.124115"
        x="28.346455"
-       y="747.63782" />
+       y="751.63782" />
     <rect
-       style="fill:none;stroke:#28220b;stroke-width:0.71653384;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:#ac9393;stroke:#28220b;stroke-width:0.71653383999999998;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect2995-5"
        width="85.039368"
        height="28.346487"
@@ -152,8 +152,10 @@
            y="63.617237" /></flowRegion><flowPara
          id="flowPara3789"
          style="font-size:10px;font-weight:bold;-inkscape-font-specification:Sans Bold">Images</flowPara><flowPara
-         style="font-size:9px;font-weight:normal;-inkscape-font-specification:Sans"
-         id="flowPara3875">(stereo pairs, ground truth)</flowPara></flowRoot>    <flowRoot
+         style="font-size:8px;font-weight:bold;-inkscape-font-specification:Sans Bold"
+         id="flowPara3875">(stereo pairs, ground truth,</flowPara><flowPara
+         style="font-size:8px;font-weight:bold;-inkscape-font-specification:Sans Bold"
+         id="flowPara4763">calibration files)</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot3791"
        style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
@@ -174,7 +176,7 @@
            height="48.686661"
            x="148.6566"
            y="84.390213" /></flowRegion><flowPara
-         id="flowPara3805"></flowPara></flowRoot>    <flowRoot
+         id="flowPara3805" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot3807"
        style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:11px;line-height:125%;letter-spacing:0px;word-spacing:0px;-inkscape-font-specification:Sans;font-stretch:normal;font-variant:normal;text-anchor:middle;text-align:center;writing-mode:lr"><flowRegion
@@ -184,7 +186,7 @@
            height="50.634129"
            x="246.67908"
            y="83.741058" /></flowRegion><flowPara
-         id="flowPara3813"></flowPara></flowRoot>    <flowRoot
+         id="flowPara3813" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot3815"
        style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
@@ -196,13 +198,13 @@
            x="46.090038"
            y="143.46336" /></flowRegion><flowPara
          id="flowPara3821"
-         style="font-weight:bold;-inkscape-font-specification:Sans Bold;font-size:10px">Parameters</flowPara></flowRoot>    <rect
-       style="fill:#afafe9;stroke:#28220b;stroke-width:1.27819693000000001;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         style="font-size:10px;font-weight:bold;-inkscape-font-specification:Sans Bold">Settings</flowPara></flowRoot>    <rect
+       style="fill:#afafe9;stroke:#28220b;stroke-width:0.9992126;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect3823"
        width="99.212601"
-       height="63.77951"
+       height="141.7323"
        x="177.16534"
-       y="759.81104" />
+       y="726.37793" />
     <flowRoot
        xml:space="preserve"
        id="flowRoot3825"
@@ -226,19 +228,24 @@
            height="49.335815"
            x="254.46895"
            y="70.75795" /></flowRegion><flowPara
-         id="flowPara3841"></flowPara></flowRoot>    <text
+         id="flowPara3841" /></flowRoot>    <text
        xml:space="preserve"
        style="font-size:13.69708633px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
-       x="374.03082"
-       y="728.49628"
+       x="378.12103"
+       y="720.67279"
        id="text3869"
        sodipodi:linespacing="125%"
        transform="scale(0.97794442,1.022553)"><tspan
          sodipodi:role="line"
          id="tspan3871"
-         x="374.03082"
-         y="728.49628"
-         style="font-size:11px;font-weight:bold;-inkscape-font-specification:Sans Bold">Output</tspan></text>
+         x="378.12103"
+         y="720.67279"
+         style="font-size:11px;font-weight:bold;-inkscape-font-specification:Sans Bold">Output</tspan><tspan
+         sodipodi:role="line"
+         x="378.12103"
+         y="731.43256"
+         style="font-size:8px;font-weight:bold;-inkscape-font-specification:Sans Bold"
+         id="tspan3048">(evaluation metrics)</tspan></text>
     <flowRoot
        xml:space="preserve"
        id="flowRoot3877"
@@ -262,7 +269,14 @@
            x="43.493416"
            y="33.10693" /></flowRegion><flowPara
          id="flowPara3891"
-         style="font-weight:bold;-inkscape-font-specification:Sans Bold">Input</flowPara></flowRoot>    <flowRoot
+         style="font-weight:bold;-inkscape-font-specification:Sans Bold">Input</flowPara></flowRoot>    <rect
+       style="fill:#80ffb3;stroke:#28220b;stroke-width:0.99921262000000000;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3911"
+       width="56.692913"
+       height="21.259842"
+       x="340.33072"
+       y="763.07086" />
+    <flowRoot
        xml:space="preserve"
        id="flowRoot3893"
        style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
@@ -274,7 +288,14 @@
            x="351.84229"
            y="87.635986" /></flowRegion><flowPara
          id="flowPara3899"
-         style="font-size:10px;font-weight:bold;-inkscape-font-specification:Sans Bold">Plots</flowPara></flowRoot>    <flowRoot
+         style="font-size:10px;font-weight:bold;-inkscape-font-specification:Sans Bold">Plots</flowPara></flowRoot>    <rect
+       style="fill:#80ffb3;stroke:#28220b;stroke-width:0.99921262000000000;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3909"
+       width="70.866142"
+       height="21.259842"
+       x="333.24408"
+       y="805.59052" />
+    <flowRoot
        xml:space="preserve"
        id="flowRoot3901"
        style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
@@ -286,21 +307,7 @@
            x="353.78973"
            y="131.77856" /></flowRegion><flowPara
          id="flowPara3907"
-         style="font-size:10px;font-weight:bold;-inkscape-font-specification:Sans Bold">Data files</flowPara></flowRoot>    <rect
-       style="fill:none;stroke:#28220b;stroke-width:0.99921262;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       id="rect3909"
-       width="70.866142"
-       height="21.259842"
-       x="333.24408"
-       y="805.59052" />
-    <rect
-       style="fill:none;stroke:#28220b;stroke-width:0.99921262;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       id="rect3911"
-       width="56.692913"
-       height="21.259842"
-       x="340.33072"
-       y="763.07086" />
-    <path
+         style="font-size:10px;font-weight:bold;-inkscape-font-specification:Sans Bold">Data files</flowPara></flowRoot>    <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
        d="m 127.55906,92.125975 49.60629,0"
        id="path3913"
