@@ -235,8 +235,10 @@ Due to their importance and application in this research, we review some of the 
 \subsection{Edges}
 When looking at a scene, an edge is defined whenever the visual system can perceive a distinguishable variation in color, intensity or texture between 
 different regions \cite{sze11}.
-Therefore, a reasonable mathematical approach to detect the edges in an image would be calculating the gradient of the intensity image. However, since an image normally contains a certain amount of
-noise which intensifies at higher frequencies, taking the derivatives of the image can lead to significant noise amplification, as it makes high frequency signals more prominent to others.
+Therefore, a reasonable mathematical approach to detect the edges in an image would be calculating the gradient of the intensity image and then looking for the maximum
+values. Another alternative would be getting the second derivative of the image and then looking for zero values. However, since an image is normally affected by a 
+certain amount of noise which intensifies at higher frequencies, taking the derivatives of the image can lead to significant noise amplification, 
+as it makes high frequency signals more prominent to others.
 Therefore, it is better to attenuate high frequencies prior to applying any edge detection approach. 
 There are a variety of filters for image smoothing (blurring); however, since we want to attenuate high frequencies, it is better to use a low-pass filter, which only passes low frequencies.
 A widely known class of image blurring filters in computer vision are called {\it linear filters}, whose output is a linear function of their input. 
@@ -289,17 +291,15 @@ Following the estimation of image gradients in each direction, the magnitude and
 \theta &= \arctan (\frac{G_{y}}{G_{x}})
 \end{align}
 
-The process of applying the Sobel operator mask \cite{sobel78} to the smoothed image, is in fact equivalent to getting the first or second order directional derivative of the smoothed image 
-and then look for zero crossings, i.e. where the sign of
-the function changes \cite{sze11}. As a result of this process, edge elements are detected throughout the image.
-After finding the edge points, it is desirable to have them linked to form continuous contours. Since adjacent edge elements are connected to each other, this can be easily achieved by linking
-a detected edge element with its neighbors in both directions \cite{sze11}. As a result, a continuous chain of edges can be detected in the image.
-The {\it Canny} edge detector, proposed by John F. Canny in 1986 \cite{canny86}, is one of the most commonly used edge detection approaches; however, it should be mentioned that in addition 
-to the process described above for detecting the edges in the image, there are also two different thresholds defined 
-in this approach that affect the edge linkage step. The purpose of having these two thresholds is elimination of streaks, i.e. certain breakage, that may appear along edge contours. 
-By employing these thresholds in the process of edge detection and linkage, any value above the higher threshold will be output as an edge element and when linking the edge element 
-to its neighbor to form a continuous contour, only those 
-values above the lower threshold will be accepted \cite{canny86}. 
+The process of applying the Sobel operator mask \cite{sobel78} to the smoothed image, is in fact equivalent to getting 
+the first or second order directional derivative of the smoothed image \cite{sze11}. As a result of this process, edge elements are detected throughout the image.
+After finding the edge points, the next step would moving along the edge direction and suppressing, setting to zero, any point which is not an edge.
+
+The {\it Canny} edge detector, proposed by John F. Canny in 1986 \cite{canny86}, is one of the most commonly used edge detection approaches. In addition 
+to the process described above for detecting the edges in the image, two different thresholds are defined in the process. 
+The purpose of having these two thresholds is the elimination of streaks, which are the breakage along an edge contour, which is caused by the signal fluctuating around the threshold.
+Using these thresholds in the process of edge detection, any value above the higher threshold will be output as an edge element and while inspecting other pixels along 
+the edge direction, only those values above the lower threshold will be accepted \cite{canny86}.
 This process has shown to reduce the streaking effect to a significant amount \cite{canny86}. \newline
 Figure \ref{fig:edgenodil} shows the detected edges obtained by applying the canny operation on the image \ref{fig:imggt5}.
 
