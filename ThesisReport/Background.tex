@@ -293,13 +293,19 @@ Following the estimation of image gradients in each direction, the magnitude and
 
 The process of applying the Sobel operator mask \cite{sobel78} to the smoothed image, is in fact equivalent to getting 
 the first or second order directional derivative of the smoothed image \cite{sze11}. As a result of this process, edge elements are detected throughout the image.
-After finding the edge points, the next step would moving along the edge direction and suppressing, setting to zero, any point which is not an edge.
+After finding the edge points, the next step would moving along the edge direction and suppressing, setting to zero, any point which is not an edge;
+a pixel with the gradient less than a specified threshold is a non-edge element.
 
 The {\it Canny} edge detector, proposed by John F. Canny in 1986 \cite{canny86}, is one of the most commonly used edge detection approaches. In addition 
-to the process described above for detecting the edges in the image, two different thresholds are defined in the process. 
-The purpose of having these two thresholds is the elimination of streaks, which are the breakage along an edge contour, which is caused by the signal fluctuating around the threshold.
-Using these thresholds in the process of edge detection, any value above the higher threshold will be output as an edge element and while inspecting other pixels along 
-the edge direction, only those values above the lower threshold will be accepted \cite{canny86}.
+to the process described above for detecting the edges in the image, two different thresholds are defined in the Canny edge detection. This
+additional property makes Canny prior to other techniques since it reduces the error in edge detection; that is, it attempts
+not to miss any edges in the image and not to mistakenly label any non-edge elements as one.
+The purpose of having the two specified thresholds is, in fact, the elimination of streaks, which are the breakage along an edge contour.
+If an image is affected by certain amount of noise, the operator outputs values that fluctuate around the single defined threshold, thus
+causing many streaks along an edge.
+However, by using two thresholds in the process of edge detection, 
+any value above the higher threshold will be output as an edge element and while inspecting other pixels along 
+the edge direction, only those values above the lower threshold will be accepted as neighboring edge elements.
 This process has shown to reduce the streaking effect to a significant amount \cite{canny86}. \newline
 Figure \ref{fig:edgenodil} shows the detected edges obtained by applying the canny operation on the image \ref{fig:imggt5}.
 
