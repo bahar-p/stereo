@@ -70,7 +70,7 @@ However, dealing with these transformations while looking for the corresponding 
 in order to avoid this issue, many stereo matching approaches are proposed based on the assumption that image pairs are first warped \cite{sze11}.
 This process is known as {\it image rectification} which is basically achieved by first having the cameras rotated in a way that their optical axis, 
 the line passing through the camera centre which is perpendicular to the image plane, are parallel to each other; 
-that is their optical axis is perpendicular to the baseline. As a result of this transformation, the epipoles are sent to infinity. 
+that is, their optical axis is perpendicular to the baseline. As a result of this transformation, the epipoles are sent to infinity. 
 Furthermore, it might be necessary to have the cameras tilted so that their {\it y} axis also becomes perpendicular to the optical axis. 
 After these two steps, corresponding epipolar lines actually become horizontal scanlines; Figure \ref{fig:rectify}. This pre-processing step significantly constrains the process of searching 
 for corresponding points and eliminates certain complications in stereo matching algorithms \cite{sze11}.

@@ -4,7 +4,7 @@
 \textit{Binocular vision} is a term used for the visual system of animals with two eyes \cite{how95}, and therefore, applies to the human visual system as well. 
 Possessing binocular vision not only leads to a better perception of depth
 of the surrounding environment, but also helps to better perform many visual tasks such as reading, object detection, interaction with surrounding objects such as grabbing and other manipulative 
-tasks. The most significant advantage of possessing binocular vision is its influence on how the 3D environment, that is the 
+tasks. The most significant advantage of possessing binocular vision is its influence on how the 3D environment; that is, the 
 depth of surrounding objects relative to each other, 
 is perceived by the visual system. This visual perception of depth in binocular vision is referred to as {\it Stereoscopic Vision}.
 In the visual system, depth perception is a phenomenon that normally occurs though different types of cues and information existing in the surrounding environment. 
@@ -15,7 +15,7 @@ by stereo vision, play a major role in the perception of depth. One of the most 
 It should be noted that the effect of binocular parallax and motion parallax on depth perception are very similar to each other. 
 In motion parallax, which is a monocular depth cue, the scene is viewed at different times by the observer moving from one side to the other, 
 whereas in binocular parallax, the scene is viewed from slightly different viewpoints at
-the same time by the two eyes, while the observer is standing at a fixed position \cite{how95}.
+the same time by the visual system, while the observer is standing at a fixed position \cite{how95}.
 
 \begin{figure}[!h]
 \centering
@@ -47,15 +47,16 @@ the same time by the two eyes, while the observer is standing at a fixed positio
 %\end{figure}
 
 Binocular disparity, which in fact arises from the spatial difference 
-between the images of the same scene in the two eyes, provides a relative perception of depth from the surrounding environment. This perception is known as {\it binocular stereopsis} \cite{how95}. 
-Another important binocular depth cue is the eyes {\it vergence}, which is the simultaneous movement of the pupils in opposite directions in order to obtain a single vision of an object with the
-two eyes. When focusing on an object, the optical axes of the eyes intersect on the object of interest resulting in an angle called vergence angle. Unlike many animals, the human visual system 
+between the images of the same scene in the visual system, provides a relative perception of depth 
+from the surrounding environment. This perception is known as {\it binocular stereopsis} \cite{how95}. 
+Another important binocular depth cue is the eyes {\it vergence}, which is the simultaneous movement of the pupils in opposite directions in order to obtain a single vision of an object in the visual system. 
+When focusing on an object, the optical axes of the eyes intersect on the object of interest resulting in an angle called vergence angle. Unlike many animals, the human visual system 
 is capable of adjusting this angle based on the distance from the object.
 In stereo vision, the locus of the points that yield a unified view of an object in the visual system is 
 known as the {\it horopter}, and any point located on the horopter is usually called a 
 {\it fixation point} \cite{binr83,how95}.
 An important property of an object on the horopter is that no spatial difference
-exists between the images of the fixated object in the two eyes; i.e. the binocular disparity is zero \cite{how95}. 
+exists between the images of the fixated object between the two eyes; that is, the binocular disparity is zero \cite{how95}. 
 Exploiting this property, the disparity of any other object in the scene can be estimated relative to the fixated object by inspecting two important factors: 
 whether the object of interest is closer or further than the fixated object and then how much closer or further it is relative to the fixated object.
 As a result, the binocular disparity provides a relative perception of depth of the surrounding environment.
@@ -101,7 +102,7 @@ the approximate formula as follows:
 Here, $a$ is the distance between the center of the pupils of the two eyes, which is known as interpupillary distance.
 It should be noted that $a$, $Z$ and $ \Delta Z$ must all have the same units in this formula. 
 This equation estimates the angular disparity in radian; in order to convert $\theta$ to arcseconds, 
-according to the conversion rules presented in equation \ref{eq:arcsec}, it should be multiplies by:
+according to the conversion rules presented in equation \ref{eq:arcsec}, it should be multiplied by:
 
 \begin{align}
 \frac {648000} {\pi} = 206,265
@@ -129,13 +130,14 @@ shows that the average stereoacuity for different age groups is as follows:
 \end{center}
 \end{minipage} \newline \newline
 
-As can be seen, the stereoacuity for the the human visual system increases with aging, that is the amount of errors in the depth results 
-is less perceptible in the visual system of the older people than younger ones.
+As can be seen, the stereoacuity for the the human visual system increases with the growth of the person's age; that is, 
+the amount of error in the depth results 
+is less perceptible in the visual system of the elders than the younger ones.
 Using the values in equation \ref{eq:stac} along with the average interpupillary distance in the human visual system 
-that is reported to be approximately 64mm \cite{how95}, 
+that is reported to be approximately $64$mm \cite{how95}, 
 we can estimate the threshold for minimum detectable depth
 between two objects based on their distance from the observer. \newline 
 
-We have employed the concepts introduced in this chapter in the design of our evaluation model for an augmneted reality system 
+We have employed the concepts introduced in this chapter in the design of our evaluation model for an augmented reality system 
 in outdoor environments.
-In the next chapter, we will describe the design of our system and its components in more details.
+In the next chapter, we will describe the design of our system and its components in more detail.
