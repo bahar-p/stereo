@@ -155,9 +155,9 @@ sort result in a sparse disparity map \cite{matt89,hsie92, sze11}. The introduct
 \begin{itemize}
 \item Lack of advanced hardware and technology for exhaustive computational tasks.
 \item Constraint of the search area in order to find more reliable matches.
-\item Stability of particular features to look for correspondences under certain circumstances where the image pairs are affected by external factors, 
-such as illumination variations; in other words, when there is a considerable difference in photometric properties between the images pairs, 
-particular features such as the edges may be more reliable to start the correspondence search.
+\item Stability of particular features to look for correspondences under certain circumstances when the image pairs are affected by external factors, 
+such as illumination variations; in other words, when there is a considerable difference in photometric properties between the images, 
+particular features, such as the edges, may be more reliable to start the correspondence search.
 \end{itemize}
 
 However, the requirement of having dense depth maps for many applications and also the emergence of efficient {\it dense correspondence algorithms}, have diverted the attention away
@@ -230,7 +230,8 @@ they attempt to find the corresponding disparity for each region. A more detaile
 
 As mentioned earlier in the ``Introduction'', salient {\it edges} in the scene are one of the important features 
 that can be used in many applications, such as object detection, image stitching, or 3D model reconstruction.
-Due to their importance and application in this research, we review some of the relevant concepts and techniques in computer vision in this section.
+Due to their importance and application in this research, we review some of the relevant concepts and techniques to edge detection
+in computer vision in the following section.
 
 \subsection{Edges}
 When looking at a scene, an edge is defined whenever the visual system can perceive a distinguishable variation in color, intensity or texture between 
@@ -240,7 +241,8 @@ values. Another alternative would be getting the second derivative of the image 
 certain amount of noise which intensifies at higher frequencies, taking the derivatives of the image can lead to significant noise amplification, 
 as it makes high frequency signals more prominent to others.
 Therefore, it is better to attenuate high frequencies prior to applying any edge detection approach. 
-There are a variety of filters for image smoothing (blurring); however, since we want to attenuate high frequencies, it is better to use a low-pass filter, which only passes low frequencies.
+There are a variety of filters for image smoothing (blurring); however, since we want to attenuate high frequencies, it is better to use a low-pass filter,
+which only passes low frequencies.
 A widely known class of image blurring filters in computer vision are called {\it linear filters}, whose output is a linear function of their input. 
 In linear filtering operators, for each pixel a weighted summation of its neighboring pixels
 is used in order to estimate its final value \cite{sze11}. In mathematics, this process can be modelled by convolution of the input signal with a particular function, known as kernel. 
@@ -251,7 +253,7 @@ which is denoted as:
 \begin{equation}
 g=f\bigotimes h
 \end{equation}
-where $f$ and $g$ are the input and output signals respectively, and $h$ is the kernel function which can vary depending on the type of filter. 
+where $f$ and $g$ are the input and output signals respectively, and $h$ is the kernel function which varies depending on the type of filter. 
 
 Therefore, each filter can modify the input signal differently based on its corresponding kernel function.
 The Gaussian filter is a filter commonly used for attenuating higher frequencies in an image and filtering out the noise \cite{wells86}. 
@@ -265,12 +267,22 @@ An isotropic, i.e. circularly symmetric, the Gaussian kernel has the following f
 G(x,y)=\frac{1}{2\pi \sigma ^{2}} e^{-\frac{x^{2}+y^{2}}{2\sigma^{2}}}
 \end{equation}
 where $\sigma$ is the standard deviation. 
+Figure \ref{fig:gauss} shows the Gaussian filter that has been applied to the right half of a sample image.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.43]{left5Gblur}
+\caption{Gaussian}
+\label{fig:gauss}
+\end{figure} 
+
+
 A more thorough description of the Gaussian and some other types of filters can be found in chapter 3 of \cite{sze11}.
 
 After smoothing the image with the Gaussian filter, the gradient of the smoothed image should be taken in order to detect the edges. This can be done by convolving 
 the signal with a pair of convolution masks in each direction in order to detect the edges, both horizontally and vertically. An edge extracting operator called {\it Sobel} is normally used
-for this purpose \cite{sze11}. 
-Sobel convolution kernels for both x and y directions are defined as follows \cite{sze11}:
+for this purpose \cite{sobel78}. 
+Sobel convolution kernels for both x and y directions are defined as follows \cite{sobel78}:
 
 \begin{align}
 G_{x} &= \begin{bmatrix}
@@ -291,7 +303,7 @@ Following the estimation of image gradients in each direction, the magnitude and
 \theta &= \arctan (\frac{G_{y}}{G_{x}})
 \end{align}
 
-The process of applying the Sobel operator mask \cite{sobel78} to the smoothed image, is in fact equivalent to getting 
+The process of applying the Sobel operator mask to the smoothed image, is in fact equivalent to getting 
 the first or second order directional derivative of the smoothed image \cite{sze11}. As a result of this process, edge elements are detected throughout the image.
 After finding the edge points, the next step would moving along the edge direction and suppressing, setting to zero, any point which is not an edge;
 a pixel with the gradient less than a specified threshold is a non-edge element.
@@ -337,11 +349,12 @@ In morphological operations, the original image is convolved with a {\it structu
 The structuring element is a mask (a binary image), normally smaller than the original image, 
 with which different structures can be defined for later modification of the image. 
 {\it Dilation} and {\it Erosion} are two of the most basic and widely used morphological operations in binary image processing.
-These two operation are normally used for expansion and erosion of the shapes in the original image. 
+These two operations are normally used for expansion and erosion of the shapes in the original image. 
 In dilation, the structure element which is usually in form of a circle or square with the origin located at its centre, is superimposed on top of the original binary image.
 By moving the structure element over the background pixels, each pixel belonging to the background, that 
 is overlain by the centre of the structuring element, is replaced by foreground value if at least one of the pixels of the structuring element coincide with any pixel marked as foreground.
-Erosion, which can be considered as the complementary operation of dilation, follows a similar process, with only the difference that structuring element is moved over foreground pixels and any
+Erosion, which can be considered as the complementary operation of dilation, follows a similar process, with only the difference that the 
+structuring element is moved over foreground pixels and any
 foreground pixels will be replaced by the background value if at least one pixel of the structuring element overlaps with a pixel marked as background.
 Hence, we can state that dilation of the foreground is equivalent to erosion of the background \cite{ritt00}.
 The dilation and erosion operations are illustrated in figures \ref{fig:dilate} and \ref{fig:erode}, respectively.
