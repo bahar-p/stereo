@@ -9,11 +9,12 @@
 
 #define PI 3.14159265
 //Global Vars//
-cv::Mat img, face, disp, fdisp;
+cv::Mat img, face, disp, fdisp, ARimg;
 float foc, bl;
-double LR_angle=270, UD_angle=0, ZOOM=500;
+double LR_angle=270, UD_angle=0, ZOOM=800;
 int dgt, win_w = 500, win_h=500;
 int dragging, drag_x_origin, drag_y_origin;
+void capture ();
 
 void init(){
 	glClearColor(0.0, 0.0 , 0.0, 0.0);
@@ -39,7 +40,7 @@ void display(){
 	gluPerspective(30.0, (GLfloat)win_w/(GLfloat)win_h, 1.0,8000.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(camX,camY,camZ-300, img.cols/2,img.rows/2,2000, 0.0,1.0,0.0);
+	gluLookAt(camX,camY,camZ-100, -100,300,500, 0.0,1.0,0.0);
 	
 	for(int j=0; j<img.rows; j++){
 		for(int i=0; i<img.cols; i++){
@@ -48,29 +49,41 @@ void display(){
 				float z = (foc*bl)/fdisp.at<float>(j,i);
 				//std::cout << img.at<cv::Vec3b>(j,i) << " " << z << std::endl;
 				glBegin(GL_POINTS);
-					glVertex3f(i-(img.cols/2),j-(img.rows/2),z);
+					glVertex3f(-i,win_h-j,z);
 				glEnd();
 			}
 		}
 	}
 
-	for(int j=0; j<face.rows; j++){
+	float z = (foc*bl)/dgt;
+	glPushMatrix();
+	glTranslatef(-112,352,z);
+	glBegin(GL_TRIANGLES);
+        	glColor3ub(8, 105,240);
+	        glVertex3f(0, 0, 0);
+		glVertex3f(45, 0, 0);
+		glVertex3f(0, 50, 0);
+	glEnd();
+	glPopMatrix();
+
+	/*for(int j=0; j<face.rows; j++){
 		for(int i=0; i<face.cols; i++){
-			float z = (foc*bl)/(dgt-1);
+			float z = (foc*bl)/dgt;
 			glPushMatrix();
-			glTranslatef(20,20,0);
+			glTranslatef(-103,-103,0);
 			glBegin(GL_POINTS);
-				glVertex3f(i-(face.cols/2),j-(face.rows/2),z);
+				glVertex3f(-i,win_h-j,z);
 			glEnd();
 			glPopMatrix();
 		}
-	}
+	}*/
 	//glPushMatrix();
 	//glutWireCube(20.0);
 	//glPopMatrix();
 	glFlush(); 
 	glutSwapBuffers();
 	glutPostRedisplay();
+	//std::cout << "UD_angle: " << UD_angle <<  " LR_angle: " << LR_angle << " ZOOM: " << ZOOM << std::endl;
 }
 void reshape(int w, int h){
 	win_w = w;
@@ -118,6 +131,8 @@ void SpecialKeys(int key, int x, int y){
 /*---Keyboard function to change view position----*/
 void keyboard_press(unsigned char key, int x, int y){
 	//Exit program when "Q" or "q" key is pressed on keyboard
+	if(key== 'C' | key== 'c')
+		capture();
 	if(key== 'Q' | key== 'q')
 		exit(0);
 		
@@ -134,6 +149,16 @@ void mouse_move(int x, int y){
 	
 }
 
+void capture(){
+	ARimg = cv::Mat(img.rows, img.cols, CV_8UC3);
+	glPixelStorei(GL_PACK_ALIGNMENT, (ARimg.step & 3)?1:4);
+        glPixelStorei(GL_PACK_ROW_LENGTH, ARimg.step/ARimg.elemSize());
+	glReadPixels(100, 200, ARimg.cols, ARimg.rows, GL_BGR_EXT, GL_UNSIGNED_BYTE, ARimg.data);
+	cv::Mat flipped(ARimg);
+	cv::flip(ARimg, flipped, 0);
+	cv::imwrite("/home/bahar/snapshot.png", ARimg);
+}
+
 int main(int argc, char* argv[]){
 
 	if(argc < 7){
@@ -143,8 +168,8 @@ int main(int argc, char* argv[]){
 	}
 	glutInit(&argc, argv);
 	img = cv::imread(argv[1],1);
-	face = cv::imread(argv[2],-1);
-	disp = cv::imread(argv[3],-1);
+	face = cv::imread(argv[2],1);
+	disp = cv::imread(argv[3],0);
 	foc = atof(argv[4]);
 	bl= atof(argv[5]);
 	int dmax = atoi(argv[6]);

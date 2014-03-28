@@ -7,13 +7,19 @@ GLFLAGS = -lGL -lglut -lGLU -lm
 OPENCVINC = `pkg-config --cflags opencv`
 OPENCVLIB = `pkg-config --libs opencv`
 
-all: augreal
+all: augreal gtgen
 
 augreal: AR.o
 	$(CC) -std=c++0x AR.o -g -o $(BUILDPATH)/AR $(OPENCVLIB) $(GLFLAGS)
 
 AR.o: AR.cpp
 	$(CC) -std=c++0x $(CFLAGS) $(GLFLAGS) $(OPENCVINC) AR.cpp
+
+gtgen: gtgen.o
+	$(CC) -std=c++0x gtgen.o -g -o $(BUILDPATH)/gtgen $(OPENCVLIB) $(GLFLAGS)
+
+gtgen.o: gtgen.cpp
+	$(CC) -std=c++0x $(CFLAGS) $(GLFLAGS) $(OPENCVINC) gtgen.cpp
 
 clean:
 	rm -rf *.o *~
