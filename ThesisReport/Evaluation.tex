@@ -186,8 +186,8 @@ In our experiments, we set the number of bins to $100$ and the width of each bin
 in each image and the maximum distance over which the results are 
 examined is $50m$.
 
-\section{Assumption}
-\textbf{Talk about camera quality and display resolution}
+%\section{Assumption}
+%\textbf{Talk about camera quality and display resolution}
 
 \section{Experiments}
 In this section, we discuss the experiments conducted to evaluate the system and investigate the validity of our hypotheses.
@@ -314,7 +314,7 @@ algorithm is imperceptible to the human visual system. However, a value higher t
 the error cannot be ignored and should be resolved to achieve a better alignment between the virtual and the 
 real world in the AR application of interest. Moreover, as can be seen most of the errors
 fall below the standard stereoacuity value corresponding to older ages; indicating that they are not perceptible to the visual system of the people at these 
-ages.
+particular ages.
 
 The zero values in the plots imply that either there is no object within the corresponding range or the disparity value estimated by the algorithm
 is equal to the ground truth disparity; however, since the average of the results has been taken over all the images, it is more likely that 
@@ -408,9 +408,9 @@ Furthermore, in SGBM the number of outliers over the masked regions are more tha
 opposite behavior is observed; that is the number of outliers over the masked regions are less than 
 the whole image. This implies that ADCensus performs better in the areas of depth edges and their surroundings than other regions.
 Therefore, it is better to be employed in the applications where preserving the object boundaries and occluded areas
-is more important than the other regions in the image, such as image compositing for layering visual elements
+is adequate and more important than the other regions in the image, such as image compositing for layering visual elements
 on the scene. However, this metric per se
-cannot be an indicator of a proper solution for any target application and should be considered along with the other
+cannot be an indicator of the suitability of the solution for any target application and should be considered along with the other
 relevant metrics. 
 
 We should note that the reason the number of outliers for the valid pixels in the generated disparity is more than the outliers for the valid pixels

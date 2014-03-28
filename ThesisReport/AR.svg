@@ -14,7 +14,7 @@
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="AR.eps"
+   sodipodi:docname="AR.svg"
    version="1.0">
   <defs
      id="defs4">
@@ -48,8 +48,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.540463"
-     inkscape:cx="26.305415"
-     inkscape:cy="238.88922"
+     inkscape:cx="-87.94595"
+     inkscape:cy="186.95678"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:window-width="1855"
@@ -109,7 +109,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -119,7 +119,7 @@
      id="layer1"
      transform="translate(4.149475e-6,-698.0315)">
     <rect
-       style="fill:#7c916f;fill-opacity:1;stroke:#28220b;stroke-width:0.99921262;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:#7c916f;fill-opacity:1;stroke:#28220b;stroke-width:0.99921262000000000;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect7880"
        width="453.5433"
        height="340.15747"
