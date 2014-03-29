@@ -26,7 +26,7 @@ we can refer to:
 \item High demand of computational resources in order to provide a real-time interaction between the user and the system
 \end{enumerate}
 
-\section{3D positioning in AR systems}
+\section{Obtaining Depth Cues in AR Systems}
 AR systems overlay 2D or 3D virtual objects on real scenes. Therefore, depending on the application, certain accuracy is required for 
 registration of the virtual and real objects in the scene which results from an accurate depth map of the surrounding environment.
 In an AR system, different techniques can be used to 
@@ -123,7 +123,7 @@ However, studies show that in practice to build a reasonable interactive augment
 There are different approaches to speed up a system: 
 \begin{enumerate}
 \item Using more advanced technology and hardware
-\item More sophisticated and efficient software design
+\item Achieving a more sophisticated and efficient software design
 \end{enumerate}
 However, having access to advanced technology and hardware is not always feasible and even the most advanced 
 technologies have some limitation in their memory space and computational capability
@@ -146,13 +146,27 @@ tracking, determination of a set of reliable correspondences to build a
 Therefore, in an augmented reality application, wrong depth results, especially in those regions, 
 which will lead to erroneous registration of virtual and real objects, 
 can be perceived easier by the human visual system. This can lead to poor performance of the system and possibly faulty interaction between 
+the user and the augmented world.
+Figure \ref{fig:ARreg} shows an accurate and faulty registration of objects in a 3D environment that results from an accurate and 
+wrong disparity map in the areas of depth discontinuities.
+
+\begin{figure}[h!]
+\centering
+\subcaptionbox{Accurate registration of objects}
+[.5\linewidth]{\includegraphics[scale=1.1]{ARaccurate}}%
+\subcaptionbox{Erroneous registration of objects}
+[.5\linewidth]{\includegraphics[scale=1.1]{ARdist}}%
+\caption{Integration of objects in a 3D environment}
+\label{fig:ARreg}
+\end{figure}
+
 Therefore, we focus the evaluation in our model
 on the depth edges in the scene and their surrounding regions \cite{liv05,kru10}.
 Our hypothesis is that salient edges caused by depth discontinuities, which can also represent the object boundaries and occlusion, and their surroundings
 are one of the most important depth cues for the observer 
 to perceive the depth of different objects in the scene \cite{sze11}. 
-Furthermore, the areas of depth discontinuity and occlusion are known as two of the most challenging regions in the scene
-in the stereo correspondence problem \cite{sch02}.
+Furthermore, the regions of depth discontinuity and occlusion are known as two of the most challenging parts in the image
+for the stereo correspondence algorithms \cite{sch02}.
 Finding correct depth values in these 
 regions can lead to a higher quality combination of the virtual and real objects in the scene, thus providing a more reasonable augmented world 
 for the user to interact with.
@@ -160,7 +174,7 @@ for the user to interact with.
 %%Is this part needed to be in this chapter?%%
 
 \section{Methodology}
-To pursue our objectives in this research, we have surveyed some of the existing approaches to the problem 
+To achieve our objectives in this research, we have surveyed some of the existing approaches to the problem 
 of stereo correspondence and the geometrical principles of the 3D reconstruction from stereo pairs, which will be explained more 
 in the next chapters. 
 In order to investigate the benefits of our proposed model, we have evaluated two sample stereo matching algorithms in our system. 
