@@ -13,7 +13,7 @@ proc finalplot {f} {
 		plot \[:\]\[0:1\] \"$f\" every ::1 using 1:3 with lines t \"Age:17-29\", \
 			\"$f\" every ::1 using 1:4 with lines t \"Age:30-49\", \
 			\"$f\" every ::1 using 1:5 with lines t \"Age:50-69\", \
-			\"$f\" every ::1 using 1:2 pt 7 ps 1.1 t \"Avg Err\"
+			\"$f\" every ::1 using 1:2 pt 1 ps 1.3 t \"Avg Err\"
 		MIN=GPVAL_DATA_Y_MIN
 		MAX=GPVAL_DATA_Y_MAX
 		set term png
