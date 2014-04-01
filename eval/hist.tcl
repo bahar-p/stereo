@@ -49,4 +49,4 @@ proc calhist {noc bnum width args} {
 	}
 }
 
-calhist {*}$::argv 
+#calhist {*}$::argv 

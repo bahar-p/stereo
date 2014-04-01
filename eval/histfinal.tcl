@@ -41,4 +41,4 @@ proc fhist {bnum width f imgcount} {
 	}
 }
 
-fhist {*}$::argv
+#fhist {*}$::argv

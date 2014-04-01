@@ -27,4 +27,4 @@ proc finalplot {f} {
 		"]
 }
 
-finalplot $::argv
+#finalplot $::argv

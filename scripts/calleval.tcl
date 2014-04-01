@@ -61,4 +61,4 @@ proc do_eval {myargs} {
 		evl [list 000193.png 96 $pixThr $noc $adcen 718 537 $msk]
 }
 
-do_eval $::argv
+#do_eval $::argv
