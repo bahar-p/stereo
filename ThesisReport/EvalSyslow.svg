@@ -14,7 +14,7 @@
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="EvalSyslow.eps"
+   sodipodi:docname="EvalSyslow.svg"
    version="1.0">
   <defs
      id="defs4">
@@ -68,7 +68,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.540463"
-     inkscape:cx="107.9762"
+     inkscape:cx="108.39273"
      inkscape:cy="201.2382"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
@@ -129,7 +129,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -160,7 +160,7 @@
        x="391.33859"
        y="719.30066" />
     <rect
-       style="fill:#ac9393;stroke:#28220b;stroke-width:0.80215292999999999;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:#c8b7b7;stroke:#28220b;stroke-width:0.80215292999999999;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect2995"
        width="84.733894"
        height="35.653572"
@@ -216,44 +216,6 @@
            y="33.10693" /></flowRegion><flowPara
          id="flowPara3891"
          style="font-weight:bold;-inkscape-font-specification:Sans Bold">Input</flowPara></flowRoot>    <rect
-       style="fill:#80ffb3;stroke:#28220b;stroke-width:0.99921262000000000;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       id="rect3911"
-       width="56.692913"
-       height="21.259842"
-       x="412.59845"
-       y="755.81097" />
-    <flowRoot
-       xml:space="preserve"
-       id="flowRoot3893"
-       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
-       transform="translate(58.26771,672.77164)"><flowRegion
-         id="flowRegion3895"><rect
-           id="rect3897"
-           width="59.722305"
-           height="24.667908"
-           x="351.84229"
-           y="87.635986" /></flowRegion><flowPara
-         id="flowPara3899"
-         style="font-size:10px;font-weight:bold;-inkscape-font-specification:Sans Bold">Plots</flowPara></flowRoot>    <rect
-       style="fill:#80ffb3;stroke:#28220b;stroke-width:0.99921262000000000;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       id="rect3909"
-       width="70.866142"
-       height="21.259842"
-       x="405.51181"
-       y="798.33063" />
-    <flowRoot
-       xml:space="preserve"
-       id="flowRoot3901"
-       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
-       transform="translate(58.26771,670.77164)"><flowRegion
-         id="flowRegion3903"><rect
-           id="rect3905"
-           width="55.178215"
-           height="22.071287"
-           x="353.78973"
-           y="131.77856" /></flowRegion><flowPara
-         id="flowPara3907"
-         style="font-size:10px;font-weight:bold;-inkscape-font-specification:Sans Bold">Data files</flowPara></flowRoot>    <rect
        style="fill:#ffdd55;fill-opacity:1;stroke:#28220b;stroke-width:1.06637061000000011;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect4937"
        width="59.779549"
@@ -278,14 +240,14 @@
          style="font-size:9px;font-weight:bold;-inkscape-font-specification:Sans Bold"
          id="tspan4991">images</tspan></text>
     <rect
-       style="fill:#ac9393;stroke:#28220b;stroke-width:0.77819698999999998;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:#c8b7b7;stroke:#28220b;stroke-width:0.77819698999999998;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;fill-opacity:1"
        id="rect2995-0"
        width="85.165352"
        height="33.385818"
        x="-86.125992"
        y="692.77167" />
     <rect
-       style="fill:#ac9393;stroke:#28220b;stroke-width:0.77784204000000001;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:#c8b7b7;stroke:#28220b;stroke-width:0.77784204000000001;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect2995-0-1"
        width="85.385826"
        height="33.269241"
@@ -335,7 +297,7 @@
            height="34.405239"
            x="234.34512"
            y="88.285141" /></flowRegion><flowPara
-         id="flowPara5007"></flowPara></flowRoot>    <flowRoot
+         id="flowPara5007" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot5009"
        style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
@@ -493,5 +455,81 @@
            x="153.2007"
            y="-42.844265" /></flowRegion><flowPara
          id="flowPara5654"
-         style="font-weight:bold;-inkscape-font-specification:Sans Bold">Evaluation System</flowPara></flowRoot>  </g>
+         style="font-weight:bold;-inkscape-font-specification:Sans Bold">Evaluation System</flowPara></flowRoot>    <rect
+       style="fill:#80ffb3;stroke:#28220b;stroke-width:0.88540834;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3909-6"
+       width="83.464561"
+       height="14.173205"
+       x="398.8504"
+       y="754.72443" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3856-6"
+       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       transform="translate(-2.5484921,648.18337)"><flowRegion
+         id="flowRegion3858-3"><rect
+           id="rect3860-0"
+           width="65.564705"
+           height="17.527199"
+           x="411.56458"
+           y="107.75981" /></flowRegion><flowPara
+         id="flowPara3862-6"
+         style="font-size:9px;font-weight:bold;-inkscape-font-specification:Sans Bold">Avg_Outlier</flowPara></flowRoot>    <rect
+       style="fill:#80ffb3;stroke:#28220b;stroke-width:0.88540834;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3909-6-7"
+       width="83.464561"
+       height="14.173205"
+       x="399.02362"
+       y="776.33075" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3856-6-4"
+       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       transform="translate(-2.3752617,669.78969)"><flowRegion
+         id="flowRegion3858-3-1"><rect
+           id="rect3860-0-0"
+           width="65.564705"
+           height="17.527199"
+           x="411.56458"
+           y="107.75981" /></flowRegion><flowPara
+         id="flowPara3862-6-8"
+         style="font-size:9px;font-weight:bold;-inkscape-font-specification:Sans Bold">Avg_stAcuity</flowPara></flowRoot>    <rect
+       style="fill:#80ffb3;stroke:#28220b;stroke-width:0.88540834;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3909-6-5"
+       width="83.464561"
+       height="14.173205"
+       x="399.88977"
+       y="797.71655" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3856-6-8"
+       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       transform="translate(-1.50912,691.17552)"><flowRegion
+         id="flowRegion3858-3-5"><rect
+           id="rect3860-0-3"
+           width="65.564705"
+           height="17.527199"
+           x="411.56458"
+           y="107.75981" /></flowRegion><flowPara
+         id="flowPara3862-6-5"
+         style="font-size:9px;font-weight:bold;-inkscape-font-specification:Sans Bold">Avg_error</flowPara></flowRoot>    <rect
+       style="fill:#80ffb3;stroke:#28220b;stroke-width:0.88540834;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3909-6-6"
+       width="83.464561"
+       height="14.173205"
+       x="398.97638"
+       y="820.97638" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3856-6-9"
+       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       transform="translate(-2.422506,714.43536)"><flowRegion
+         id="flowRegion3858-3-3"><rect
+           id="rect3860-0-05"
+           width="65.564705"
+           height="17.527199"
+           x="411.56458"
+           y="107.75981" /></flowRegion><flowPara
+         id="flowPara3862-6-9"
+         style="font-size:9px;font-weight:bold;-inkscape-font-specification:Sans Bold">Avg_exetime</flowPara></flowRoot>  </g>
 </svg>

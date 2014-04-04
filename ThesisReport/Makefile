@@ -28,6 +28,7 @@ FILES = thesis.tex thesis.sty						\
 $(MAIN).dvi:    $(MAIN).tex
 	$(LATEX) $*.tex; 
 	$(BIBTEX) $(MAIN).aux;
+	$(BIBTEX) $(MAIN).aux;
 	$(LATEX) $*.tex;
 	$(LATEX) $*.tex;
 	while grep -s 'Rerun' $*.log 2> /dev/null; do	\

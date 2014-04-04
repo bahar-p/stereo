@@ -69,7 +69,7 @@ with a matrix that is only dependant on the camera's properties, not the scene \
 However, dealing with these transformations while looking for the corresponding points, can increase the complexity of stereo matching algorithms to certain levels \cite{sze11}; therefore, 
 in order to avoid this issue, many stereo matching approaches are proposed based on the assumption that image pairs are first warped \cite{sze11}.
 This process is known as {\it image rectification} which is basically achieved by first having the cameras rotated in a way that their optical axis, 
-the line passing through the camera centre which is perpendicular to the image plane, are parallel to each other; 
+the line passing through the camera centre which is perpendicular to the image plane, are parallel to each other,
 that is, their optical axis is perpendicular to the baseline. As a result of this transformation, the epipoles are sent to infinity. 
 Furthermore, it might be necessary to have the cameras tilted so that their {\it y} axis also becomes perpendicular to the optical axis. 
 After these two steps, corresponding epipolar lines actually become horizontal scanlines; Figure \ref{fig:rectify}. This pre-processing step significantly constrains the process of searching 
@@ -82,7 +82,7 @@ for corresponding points and eliminates certain complications in stereo matching
 \label{fig:rectify}
 \end{figure} 
 
-Sample stereo images taken using two regular webcams are displayed in Figure \ref{fig:unrect} and \ref{fig:rect},
+Sample stereo images taken using two regular webcams are displayed in Figures \ref{fig:unrect} and \ref{fig:rect},
 before and after rectification. 
 The red line shows how features get aligned in the left and right image after the rectification process.
 
@@ -309,7 +309,7 @@ a pixel with the gradient less than a specified threshold is a non-edge element.
 
 The {\it Canny} edge detector, proposed by John F. Canny in 1986 \cite{canny86}, is one of the most commonly used edge detection approaches. In addition 
 to the process described above for detecting the edges in the image, two different thresholds are defined in the Canny edge detection. This
-additional property makes Canny prior to other techniques since it reduces the error in edge detection; that is, it attempts
+additional property makes Canny prior to other techniques since it reduces the error in edge detection, that is, it attempts
 not to miss any edges in the image and not to mistakenly label any non-edge elements as one.
 The purpose of having the two specified thresholds is, in fact, the elimination of streaks, which are the breakage along an edge contour.
 If an image is affected by certain amount of noise, the operator outputs values that fluctuate around the single defined threshold, thus
@@ -356,7 +356,7 @@ Erosion, which can be considered as the complementary operation of dilation, fol
 structuring element is moved over foreground pixels and any
 foreground pixels will be replaced by the background value if at least one pixel of the structuring element overlaps with a pixel marked as background.
 Hence, we can state that dilation of the foreground is equivalent to erosion of the background \cite{ritt00}.
-The dilation and erosion operations are illustrated in Figure \ref{fig:dilate} and \ref{fig:erode}, respectively.
+The dilation and erosion operations are illustrated in Figures \ref{fig:dilate} and \ref{fig:erode}, respectively.
 
 \begin{figure}[H]
 \centering
