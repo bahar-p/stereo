@@ -26,14 +26,23 @@ we can refer to:
 \item High demand of computational resources in order to provide a real-time interaction between the user and the system
 \end{enumerate}
 
-\section{Obtaining Depth Cues in AR Systems}
+%\section{Obtaining Depth Cues in AR Systems}
+\section{Image Registration in Augmented Reality}
 AR systems overlay 2D or 3D virtual objects on real scenes. Therefore, depending on the application, certain accuracy is required for 
-registration of the virtual and real objects in the scene which results from an accurate depth map of the surrounding environment.
+registration of the virtual and real objects in the scene, for which certain knowledge of the location of the user and different objects 
+is essential \cite{azuma01}.
 In an AR system, different techniques can be used to 
-obtain the user's location and the position of other objects in the environment.
-Tracking sensors such as gyroscope and accelerometer along with video sensors can provide information on the user's position and viewing orientation \cite{azuma01}.
-In order to find the position of the objects in the scene, a depth map of the surrounding environment at each time is required. To obtain the depth of the 
-objects in the scene several depth sensing technologies can be used such as 3D laser scanner, depth cameras or regular cameras. However, in order to have a mobile AR
+obtain the user's location and the position of other objects in the environment. In many AR systems, fiducial markers are used
+in the environment with computer vision tracking methods to find the actual position of the objects within the scene. This method, however, is 
+more useful in prepared, indoor AR environments. Tracking sensors such as gyroscope and accelerometer along with video sensors can 
+also be used as complementary techniques to provide information on the user's position and viewing orientation \cite{azuma01}. 
+%however, they usually rely on known features in the surrounding environment.
+However, for unprepared, outdoor environments, especially in mobile AR applications, it is not practical to use markers in various locations 
+in the scene, 
+and therefore, a markerless technique, such as obtaining a dense depth map of the surrounding environment,
+must be considered as an alternative to find the position of the objects in the scene.
+To obtain the depth of the 
+surrounding environment several depth sensing technologies can be used such as 3D laser scanner, depth cameras or regular cameras. However, in order to have a mobile AR
 system that is easy to carry around, the weight of the whole system will be more of a concern, hence, 
 3D laser scanners and depth cameras are not proper choices for such systems.
 Depth cameras, such as Kinect, or DS325 have a strong limitation in the viewing range; Kinect, 0.8m to 4m \cite{mkinect}; and DS325, 0.15m to 1m \cite{skinetic}. 
@@ -60,11 +69,11 @@ are two of the most popular and widely used evaluation systems through which a s
 to others. 
 However, both of these models take a general approach towards evaluating the methods, that is, they 
 have not been designed with an eye to the particular target application. In other words, 
-they mainly focus on the fundamental aspects of designing a stereo algorithm as a solution per se to \textit{efficiently}
+they mainly focus on the fundamental aspects of designing a stereo algorithm as a solution per se to generally
 find the \textit{best matches} of corresponding pixels in stereo pairs. 
 
 In this study, we take steps towards an evaluation design which is based on the potential 
-applications of stereo methods.
+applications of stereo vision methods.
 This enables us to better define and adjust the criteria for \textit{efficiency} and 
 \textit{the best correspondence matches} while doing the evaluation.
 Since AR has attracted more attention in the past few years, 
@@ -78,15 +87,15 @@ normally encounter in outdoor environments.
 In fact, our fundamental research question is: \newline
 
 \begin{quote}
-\textbf{``Can combination of the stereo matching techniques with augmented reality meet the requirements of an AR system for outdoor 
+\textbf{``Can the combination of stereo matching techniques with augmented reality meet the requirements of an AR system in outdoor 
 environments?''} \newline
 \end{quote}
 
 In order to find the answer to this question, some other questions are raised:
 \begin{quote}
 \textbf {``How does the human visual system (HVS) perceive depth?''}\newline
-\textbf {``What is the standard angular disparity for human visual system? How would it affect an AR system?''} \newline
-\textbf {``How can we evaluate stereo vision in an augmented reality framework? What are the important factors we need to consider for 
+\textbf {``What is the standard angular disparity for the human visual system and how would it affect an AR system?''} \newline
+\textbf {``How can we evaluate stereo vision in an augmented reality framework and what are the important factors we need to consider for 
 	this type of evaluation?''} \newline
 \textbf {``In a combination of augmented reality with stereo vision, what is considered an \textbf{\textit {accurate}} depth result?''} \newline
 \textbf {``How can a three dimensional model be built from stereo images using computer vision techniques?''}\newline
@@ -174,7 +183,7 @@ for the user to interact with.
 %%Is this part needed to be in this chapter?%%
 
 \section{Methodology}
-To achieve our objectives in this research, we have surveyed some of the existing approaches to the problem 
+To achieve our objectives in this research, we have surveyed some of the existing approaches to solve the problem 
 of stereo correspondence and the geometrical principles of the 3D reconstruction from stereo pairs, which will be explained more 
 in the next chapters. 
 In order to investigate the benefits of our proposed model, we have evaluated two sample stereo matching algorithms in our system. 
@@ -192,19 +201,20 @@ Although ADCensus is originally proposed as a GPU-based solution, we have used t
 SGBM is selected as it has shown to generate acceptable results within 1-2 seconds on the typical test images \cite{hir08}; moreover,
 its integration within the OpenCV library has made its usage more common in different applications. 
 ADCensus is also currently ranked as one of the best solutions 
-for solving the problem of stereo correspondence regardless of the running time according to the Middlebury evaluation table \cite{mideval}.
+for solving the problem of stereo correspondence in terms of general accuracy, regardless of the running time, 
+according to the Middlebury evaluation table \cite{mideval}.
 In addition, AdCensus does not currently exist in the KITTI evaluation table which motivates us to evaluate its performance
 under real world circumstances with outdoor stereo images.
 
 \section{Organization of Thesis}
 This report is organized in the following structure.
-We discuss a background of the related work and concepts in Chapter 2. The geometry of stereo vision, 
+We discuss a background of the related work and concepts in Chapter 2 where the geometry of stereo vision, 
 stereo correspondence problem, and a survey of the stereo solutions will be reviewed. 
 Moreover, we will introduce some of the key computer vision techniques employed
-during this research work. Chapter 3 introduces some of the relevant concepts in binocular vision to this study.
+during this research work. Chapter 3 introduces some of the most relevant concepts in binocular vision to this study.
 In Chapter 4, we will explain our system and its design and components in detail. Chapter 5 discusses the experiments
 conducted for the evaluation of the proposed system in the framework of an outdoor AR application.
-In Chapter 6, we will discuss the shortcomings and benefits of our system based on the results from Chapter 5. 
-Consequently, a discussion of the potential aspects of improvement 
+In Chapter 6, we discuss the shortcomings and benefits of our system based on the results from Chapter 5. 
+Consequently, a discussion of the potential aspects for improvement 
 and future research will also be provided.
 

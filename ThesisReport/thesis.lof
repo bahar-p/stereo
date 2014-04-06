@@ -1,41 +1,41 @@
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {1.1}{\ignorespaces Integration of objects in a 3D environment\relax }}{8}
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Integration of objects in a 3D environment\relax }}{9}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {2.1}{\ignorespaces Epipolar geometry\relax }}{13}
-\contentsline {figure}{\numberline {2.2}{\ignorespaces Rectified image pairs and disparity geometry\relax }}{15}
-\contentsline {figure}{\numberline {2.3}{\ignorespaces Sample stereo image before rectification\relax }}{16}
-\contentsline {figure}{\numberline {2.4}{\ignorespaces Sample stereo image after rectification\relax }}{16}
-\contentsline {figure}{\numberline {2.5}{\ignorespaces Gaussian filter with kernel size of 5px (on the right side)\relax }}{24}
-\contentsline {figure}{\numberline {2.6}{\ignorespaces Disparity image\relax }}{26}
-\contentsline {figure}{\numberline {2.7}{\ignorespaces Canny edge detection on an image\relax }}{27}
-\contentsline {figure}{\numberline {2.8}{\ignorespaces Dilation operation with a 3x3 structuring element \cite {HIPRdil}\relax }}{29}
-\contentsline {figure}{\numberline {2.9}{\ignorespaces Erosion operation with a 3x3 structuring element \cite {HIPRerod}\relax }}{29}
-\contentsline {figure}{\numberline {2.10}{\ignorespaces Dilation of the detected edges with a 10x10 structuring element\relax }}{30}
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Epipolar geometry\relax }}{14}
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Rectified image pairs and disparity geometry\relax }}{16}
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Sample stereo image before rectification\relax }}{17}
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Sample stereo image after rectification\relax }}{17}
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Gaussian filter with kernel size of 5px (on the right side)\relax }}{25}
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Disparity image\relax }}{27}
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Canny edge detection on an image\relax }}{28}
+\contentsline {figure}{\numberline {2.8}{\ignorespaces Dilation operation with a 3x3 structuring element \cite {HIPRdil}\relax }}{30}
+\contentsline {figure}{\numberline {2.9}{\ignorespaces Erosion operation with a 3x3 structuring element \cite {HIPRerod}\relax }}{30}
+\contentsline {figure}{\numberline {2.10}{\ignorespaces Dilation of the detected edges with a 10x10 structuring element\relax }}{31}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Motion parallax and binocular parallax difference\relax }}{32}
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Binocular disparity\relax }}{34}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Motion parallax and binocular parallax difference\relax }}{33}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Binocular disparity\relax }}{35}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces High-level architecture of an AR system\relax }}{38}
-\contentsline {figure}{\numberline {4.2}{\ignorespaces High-level block diagram of the evaluation system\relax }}{40}
-\contentsline {figure}{\numberline {4.3}{\ignorespaces Low-level architecture of the evaluation system\relax }}{41}
+\contentsline {figure}{\numberline {4.1}{\ignorespaces High-level architecture of an AR system\relax }}{39}
+\contentsline {figure}{\numberline {4.2}{\ignorespaces High-level block diagram of the evaluation system\relax }}{41}
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Low-level architecture of the evaluation system\relax }}{42}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces Sample stereo image from the Kitti dataset\relax }}{56}
-\contentsline {figure}{\numberline {5.2}{\ignorespaces Average disparity error over distance by SGBM\relax }}{57}
-\contentsline {figure}{\numberline {5.3}{\ignorespaces Average disparity error over distance by ADCensus\relax }}{57}
-\contentsline {figure}{\numberline {5.4}{\ignorespaces The mask of depth edges and their surrounding regions\relax }}{58}
-\contentsline {figure}{\numberline {5.5}{\ignorespaces Masked ground truth\relax }}{58}
-\contentsline {figure}{\numberline {5.6}{\ignorespaces Masked disparity by SGBM\relax }}{58}
-\contentsline {figure}{\numberline {5.7}{\ignorespaces Masked disparity by ADCensus\relax }}{59}
-\contentsline {figure}{\numberline {5.8}{\ignorespaces Average disparity error over all the images by SGBM\relax }}{59}
-\contentsline {figure}{\numberline {5.9}{\ignorespaces Average disparity error over all the images by ADCensus\relax }}{60}
-\contentsline {figure}{\numberline {5.10}{\ignorespaces Average disparity error over all the images by SGBM\relax }}{61}
-\contentsline {figure}{\numberline {5.11}{\ignorespaces Average disparity error over all the images by ADCensus\relax }}{62}
-\contentsline {figure}{\numberline {5.12}{\ignorespaces Average disparity error over masked areas by SGBM\relax }}{63}
-\contentsline {figure}{\numberline {5.13}{\ignorespaces Average disparity error over the whole image by SGBM\relax }}{64}
-\contentsline {figure}{\numberline {5.14}{\ignorespaces Average disparity error for the masked regions - not refined\relax }}{67}
-\contentsline {figure}{\numberline {5.15}{\ignorespaces Average disparity error for the masked regions - not refined\relax }}{70}
-\contentsline {figure}{\numberline {5.16}{\ignorespaces Average disparity error for the masked regions - refined\relax }}{71}
-\contentsline {figure}{\numberline {5.17}{\ignorespaces Average disparity error for the whole image - not refined\relax }}{71}
-\contentsline {figure}{\numberline {5.18}{\ignorespaces Average disparity error for the whole image - refined\relax }}{72}
-\contentsline {figure}{\numberline {5.19}{\ignorespaces Average disparity error for the masked regions - not refined\relax }}{73}
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Sample stereo image from the Kitti dataset\relax }}{57}
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Average disparity error over distance by SGBM\relax }}{58}
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Average disparity error over distance by ADCensus\relax }}{58}
+\contentsline {figure}{\numberline {5.4}{\ignorespaces The mask of depth edges and their surrounding regions\relax }}{59}
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Masked ground truth\relax }}{59}
+\contentsline {figure}{\numberline {5.6}{\ignorespaces Masked disparity by SGBM\relax }}{59}
+\contentsline {figure}{\numberline {5.7}{\ignorespaces Masked disparity by ADCensus\relax }}{60}
+\contentsline {figure}{\numberline {5.8}{\ignorespaces Average disparity error over all the images by SGBM\relax }}{60}
+\contentsline {figure}{\numberline {5.9}{\ignorespaces Average disparity error over all the images by ADCensus\relax }}{61}
+\contentsline {figure}{\numberline {5.10}{\ignorespaces Average disparity error over all the images by SGBM\relax }}{62}
+\contentsline {figure}{\numberline {5.11}{\ignorespaces Average disparity error over all the images by ADCensus\relax }}{63}
+\contentsline {figure}{\numberline {5.12}{\ignorespaces Average disparity error over masked areas by SGBM\relax }}{64}
+\contentsline {figure}{\numberline {5.13}{\ignorespaces Average disparity error over the whole image by SGBM\relax }}{65}
+\contentsline {figure}{\numberline {5.14}{\ignorespaces Average disparity error for the masked regions - not refined\relax }}{68}
+\contentsline {figure}{\numberline {5.15}{\ignorespaces Average disparity error for the masked regions - not refined\relax }}{71}
+\contentsline {figure}{\numberline {5.16}{\ignorespaces Average disparity error for the masked regions - refined\relax }}{72}
+\contentsline {figure}{\numberline {5.17}{\ignorespaces Average disparity error for the whole image - not refined\relax }}{72}
+\contentsline {figure}{\numberline {5.18}{\ignorespaces Average disparity error for the whole image - refined\relax }}{73}
+\contentsline {figure}{\numberline {5.19}{\ignorespaces Average disparity error for the masked regions - not refined\relax }}{74}
 \addvspace {10\p@ }
