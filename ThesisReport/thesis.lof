@@ -5,12 +5,12 @@
 \contentsline {figure}{\numberline {2.2}{\ignorespaces Rectified image pairs and disparity geometry\relax }}{15}
 \contentsline {figure}{\numberline {2.3}{\ignorespaces Sample stereo image before rectification\relax }}{16}
 \contentsline {figure}{\numberline {2.4}{\ignorespaces Sample stereo image after rectification\relax }}{16}
-\contentsline {figure}{\numberline {2.5}{\ignorespaces Gaussian filter with kernel size of 5px\relax }}{24}
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Gaussian filter with kernel size of 5px (on the right side)\relax }}{24}
 \contentsline {figure}{\numberline {2.6}{\ignorespaces Disparity image\relax }}{26}
 \contentsline {figure}{\numberline {2.7}{\ignorespaces Canny edge detection on an image\relax }}{27}
 \contentsline {figure}{\numberline {2.8}{\ignorespaces Dilation operation with a 3x3 structuring element \cite {HIPRdil}\relax }}{29}
 \contentsline {figure}{\numberline {2.9}{\ignorespaces Erosion operation with a 3x3 structuring element \cite {HIPRerod}\relax }}{29}
-\contentsline {figure}{\numberline {2.10}{\ignorespaces Dilation of the detected edges in an image with a 10x10 structuring element\relax }}{30}
+\contentsline {figure}{\numberline {2.10}{\ignorespaces Dilation of the detected edges with a 10x10 structuring element\relax }}{30}
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {3.1}{\ignorespaces Motion parallax and binocular parallax difference\relax }}{32}
 \contentsline {figure}{\numberline {3.2}{\ignorespaces Binocular disparity\relax }}{34}

@@ -20,7 +20,7 @@ in stereo pairs, which is referred to as {\it disparity}, is inversely proportio
 distance from the observer, i.e., depth; however,  estimation of the exact depth of the points requires some
 other information as well, such as the position, and the calibration data of the cameras that were used to take the pictures.
 While the physical and geometrical approaches to this problem are well understood by researchers in the field, the process of finding the corresponding pixels correctly, 
-yet efficiently, and measuring the disparity to generate a dense depth map still remains a challenging task. \newline
+yet efficiently, and measuring the disparity to generate a dense depth map still remains a challenging task.
 
 \section{Epipolar Geometry}
 Understanding the fundamentals of the underlying geometry of stereo matching helps to better understand the principal idea behind all the methods designed to address this problem, 
@@ -190,8 +190,7 @@ Another drawback of local methods is their dependency on the window size \cite{s
 \item If the selected window size is too small, the disparity values will be less accurate and harder to find since little information has been considered for 
 finding the correspondences of pixels in the image.
 \end{enumerate}
-
-However, a significant advantage of using local approaches is their high speed in finding disparity results.\newline
+However, a significant advantage of using local approaches is their high speed in finding disparity results.
 
 \subsubsection{Global Approaches}
 Unlike local approaches, in global methods the disparity of a pixel depends on the information in
@@ -271,7 +270,7 @@ Figure \ref{fig:gauss} shows the Gaussian filter that has been applied to the ri
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.43]{left5Gblur}
-\caption{Gaussian filter with kernel size of 5px}
+\caption{Gaussian filter with kernel size of 5px (on the right side)}
 \label{fig:gauss}
 \end{figure} 
 
@@ -303,14 +302,16 @@ Following the estimation of image gradients in each direction, the magnitude and
 \end{align}
 
 The process of applying the Sobel operator mask to the smoothed image, is in fact equivalent to getting 
-the first or second order directional derivative of the smoothed image \cite{sze11}. As a result of this process, edge elements are detected throughout the image.
-After finding the edge points, the next step would moving along the edge direction and suppressing, setting to zero, any point which is not an edge;
+the first or second order directional derivative of the smoothed image and then looking for the maximum values or the zero values, 
+respectively \cite{sze11}. 
+As a result of this process, edge elements are detected throughout the image.
+After finding the edge points, the next step would involve moving along the edge direction and suppressing, setting to zero, any point which is not an edge;
 a pixel with the gradient less than a specified threshold is a non-edge element.
 
 The {\it Canny} edge detector, proposed by John F. Canny in 1986 \cite{canny86}, is one of the most commonly used edge detection approaches. In addition 
 to the process described above for detecting the edges in the image, two different thresholds are defined in the Canny edge detection. This
-additional property makes Canny prior to other techniques since it reduces the error in edge detection, that is, it attempts
-not to miss any edges in the image and not to mistakenly label any non-edge elements as one.
+additional property makes Canny preferable to other techniques since it reduces the error in edge detection, that is, it attempts
+not to miss any edges in the image and not to mistakenly label any non-edge elements as edges.
 The purpose of having the two specified thresholds is, in fact, the elimination of streaks, which are the breakage along an edge contour.
 If an image is affected by certain amount of noise, the operator outputs values that fluctuate around the single defined threshold, thus
 causing many streaks along an edge.
@@ -318,7 +319,7 @@ However, by using two thresholds in the process of edge detection,
 any value above the higher threshold will be output as an edge element and while inspecting other pixels along 
 the edge direction, only those values above the lower threshold will be accepted as neighboring edge elements.
 This process has shown to reduce the streaking effect to a significant amount \cite{canny86}. \newline
-Figure \ref{fig:edgenodil} shows the detected edges obtained by applying the canny operation on the image \ref{fig:imggt5}.
+Figure \ref{fig:edgenodil} shows the detected edges obtained by applying the canny operation on the image in Figure \ref{fig:imggt5}.
 
 \begin{figure}[H]
 \centering
@@ -371,16 +372,15 @@ The dilation and erosion operations are illustrated in Figures \ref{fig:dilate} 
 \caption{Erosion operation with a 3x3 structuring element \cite{HIPRerod}}
 \label{fig:erode}
 \end{figure} 
-
 The sample image shown in Figure \ref{fig:edgenodil} is presented below after applying dilation on the detected edges in the image to expand the 
 detected regions.
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.35]{mask5dil}
-\caption{Dilation of the detected edges in an image with a 10x10 structuring element}
+\caption{Dilation of the detected edges with a 10x10 structuring element}
 \label{fig:edgedil}
-\end{figure} 
+\end{figure}
 
-Next chapter will describe the key concepts in the human visual system and its perception of the depth.
+In the next chapter, we will describe the key concepts in the human visual system that are related to the perception of the depth.
 
