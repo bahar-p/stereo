@@ -4,7 +4,7 @@
 \textit{Binocular vision} is a term used for the visual system of animals with two eyes \cite{how95}, and therefore, applies to the human visual system as well. 
 Possessing binocular vision not only leads to a better perception of depth
 of the surrounding environment, but also helps to better perform many visual tasks such as reading, object detection, interaction with surrounding objects such as grabbing and other manipulative 
-tasks. The most significant advantage of possessing binocular vision is its influence on how the 3D environment, that is, the 
+tasks \cite{how95}. The most significant advantage of possessing binocular vision is its influence on how the 3D environment, that is, the 
 depth of surrounding objects relative to each other, 
 is perceived by the visual system. This visual perception of depth in binocular vision is referred to as {\it Stereoscopic Vision}.
 In the visual system, depth perception is a phenomenon that normally occurs though different types of cues and information existing in the surrounding environment. 
@@ -49,9 +49,11 @@ the same time by the visual system, while the observer is standing at a fixed po
 Binocular disparity, which in fact arises from the spatial difference 
 between the images of the same scene in the visual system, provides a relative perception of depth 
 from the surrounding environment. This perception is known as {\it binocular stereopsis} \cite{how95}. 
-Another important binocular depth cue is the eyes {\it vergence}, which is the simultaneous movement of the pupils in opposite directions in order to obtain a single vision of an object in the visual system. 
-When focusing on an object, the optical axes of the eyes intersect on the object of interest resulting in an angle called vergence angle. Unlike many animals, the human visual system 
-is capable of adjusting this angle based on the distance from the object.
+Another important binocular depth cue is the eyes {\it vergence}, which is the simultaneous movement of the pupils in opposite directions in order to obtain a 
+unified view of an object in the visual system. 
+When focusing on an object, the optical axes of the eyes intersect on the object of interest resulting in an angle called vergence angle. 
+The human visual system 
+is capable of adjusting this angle based on the distance from the object \cite{how95}.
 In stereo vision, the locus of the points that yield a unified view of an object in the visual system is 
 known as the {\it horopter}, and any point located on the horopter is usually called a 
 {\it fixation point} \cite{binr83,how95}.
@@ -82,30 +84,37 @@ In the following section, we will describe how the angular disparity can be calc
 
 According to Figure \ref{fig:stereopsis}, we have:
 \begin{align}
-\theta &= \beta - \alpha\\
-\alpha &= \frac{a}{Z^{'}}\\
-\beta &= \frac{a}{Z}\\
-Z^{'} &= Z + \Delta Z\\
-\Rightarrow \theta &= \frac{a}{Z} - \frac{a}{Z^{'}}= \frac{a}{Z} - \frac{a}{Z+\Delta Z} \\
-\Rightarrow \theta &= \frac{aZ+a\Delta Z-aZ}{Z(Z+\Delta Z)} = \frac{a \Delta Z}{Z(Z+ \Delta Z)}
+\label{eq:tang}
+\tan \frac{\alpha}{2} &= \frac{a}{2Z^{'}}\\
+\tan \frac{\beta}{2} &= \frac{a}{2Z}
 \end{align}
+It is known that for small angles, when the angle approaches zero, the tangent of an angle is approximately equal to the angle in radians. Therefore, we will
+have the following relations:
 
-When $\Delta Z$ is a small value compared to $Z$, the term $\Delta Z$ in denominator can be neglected without 
+\begin{align}
+\theta &= 2\phi = \beta - \alpha\\
+\frac{\alpha}{2} &\approx \frac{a}{2Z^{'}}\\
+\frac{\beta}{2} &\approx \frac{a}{2Z}\\
+Z^{'} &= Z + \Delta Z\\
+\Rightarrow \theta &\approx \frac{a}{Z} - \frac{a}{Z^{'}}= \frac{a}{Z} - \frac{a}{Z+\Delta Z} \\
+\Rightarrow \theta &\approx \frac{aZ+a\Delta Z-aZ}{Z(Z+\Delta Z)} = \frac{a \Delta Z}{Z(Z+ \Delta Z)}
+\end{align}
+When $\Delta Z$ is a small value compared to $Z$, the term $\Delta Z$ in the denominator can be neglected without 
 significant loss of accuracy. This results in
 the approximate formula as follows:
 
 \begin{align}
 \label{eq:stac}
-\theta = \frac{a \Delta Z}{Z^{2}}
+\theta \approx \frac{a \Delta Z}{Z^{2}}
 \end{align}
 
 Here, $a$ is the distance between the center of the pupils of the two eyes, which is known as interpupillary distance.
 It should be noted that $a$, $Z$ and $ \Delta Z$ must all have the same units in this formula. 
-This equation estimates the angular disparity in radian; in order to convert $\theta$ to arcseconds, 
+This equation estimates the angular disparity in radians; in order to convert $\theta$ to arcseconds, 
 according to the conversion rules presented in Equation \ref{eq:arcsec}, it should be multiplied by:
 
 \begin{align}
-\frac {648000} {\pi} = 206,265
+\frac {648000} {\pi} = 206,265 \frac{arcsec}{radians}
 \end{align}
 
 Studies show that the visual system capability to distinguish two objects at different depths relative to each other is limited to certain thresholds \cite{binr83,how95}.
@@ -128,15 +137,15 @@ shows that the average stereoacuity for different age groups is as follows:
 70-83 & 112.5 \\ \hline
 \end{tabular}
 \end{center}
-\end{minipage} \newline \newline
+\end{minipage} \newline
 
-As can be seen, the stereoacuity for the the human visual system increases with aging, that is, 
+As can be seen, the stereoacuity for the the human visual system increases with age, that is, 
 the amount of error in the depth results 
-is less perceptible in the visual system of the elders than the younger people.
+is less perceptible in the visual system of the elders than the youths.
 Using these values in Equation \ref{eq:stac} along with the average interpupillary distance in the human visual system 
 that is reported to be approximately $64$mm \cite{how95}, 
 we can estimate the threshold for minimum detectable depth
-between two objects based on their distance from the observer. \newline 
+between two objects based on their distance from the observer.
 
 We have employed the concepts introduced in this chapter in the design of our evaluation model for an augmented reality system 
 in outdoor environments.
