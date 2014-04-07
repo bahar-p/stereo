@@ -11,8 +11,8 @@
 //Global Vars//
 cv::Mat img, face, disp, fdisp, ARimg;
 float foc, bl;
-double LR_angle=270, UD_angle=0, ZOOM=800;
-int dgt, win_w = 500, win_h=500;
+double LR_angle=264, UD_angle=20, ZOOM=860;
+int dgt, win_w = 700, win_h=500;
 int dragging, drag_x_origin, drag_y_origin;
 void capture ();
 
@@ -57,7 +57,9 @@ void display(){
 
 	float z = (foc*bl)/dgt;
 	glPushMatrix();
-	glTranslatef(-112,352,z);
+	glTranslatef(-200,330,z);
+       	//glColor3ub(8, 105,240);
+	//glutSolidTeapot(25);
 	glBegin(GL_TRIANGLES);
         	glColor3ub(8, 105,240);
 	        glVertex3f(0, 0, 0);
@@ -153,7 +155,7 @@ void capture(){
 	ARimg = cv::Mat(img.rows, img.cols, CV_8UC3);
 	glPixelStorei(GL_PACK_ALIGNMENT, (ARimg.step & 3)?1:4);
         glPixelStorei(GL_PACK_ROW_LENGTH, ARimg.step/ARimg.elemSize());
-	glReadPixels(100, 200, ARimg.cols, ARimg.rows, GL_BGR_EXT, GL_UNSIGNED_BYTE, ARimg.data);
+	glReadPixels(200, 140, ARimg.cols, ARimg.rows, GL_BGR_EXT, GL_UNSIGNED_BYTE, ARimg.data);
 	cv::Mat flipped(ARimg);
 	cv::flip(ARimg, flipped, 0);
 	cv::imwrite("/home/bahar/snapshot.png", ARimg);
@@ -175,8 +177,9 @@ int main(int argc, char* argv[]){
 	int dmax = atoi(argv[6]);
 	dgt = atoi(argv[7]);
 	int adc = atoi(argv[8]);
-	if(adc) disp.convertTo(fdisp, CV_32F, dmax/(16*255.));
-	else disp.convertTo(fdisp, CV_32F, dmax/255.);
+	if(adc==1) disp.convertTo(fdisp, CV_32F, dmax/(16*255.));
+	else if(adc==0) disp.convertTo(fdisp, CV_32F, dmax/255.);
+	else disp.convertTo(fdisp, CV_32F, dmax/8.);
 
 	glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); 
 	glutInitWindowSize(win_w,win_h);
