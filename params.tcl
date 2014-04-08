@@ -82,3 +82,8 @@ set res_noc "${mainp}${res_noc}"
 
 set res_occ "eval/results/occ/"
 set res_occ "${mainp}${res_occ}"
+
+#discretize
+set grad "build/gradient"
+set grad "${mainp}${grad}"
+

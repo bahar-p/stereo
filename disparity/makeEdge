@@ -7,13 +7,19 @@ GLFLAGS = -lGL -lglut -lGLU -lm
 OPENCVINC = `pkg-config --cflags opencv`
 OPENCVLIB = `pkg-config --libs opencv`
 
-all: edge
+all: edge gradient
 
 edge: edge.o
 	$(CC) -std=c++0x edge.o -o $(BUILDPATH)/edge $(OPENCVLIB) $(GLFLAGS)
 
 edge.o: edge.cpp
 	$(CC) -std=c++0x $(CFLAGS) $(GLFLAGS) $(OPENCVINC) edge.cpp
+
+gradient: gradient.o
+	$(CC) -std=c++0x gradient.o -o $(BUILDPATH)/gradient $(OPENCVLIB) $(GLFLAGS)
+
+gradient.o: gradient.cpp
+	$(CC) -std=c++0x $(CFLAGS) $(GLFLAGS) $(OPENCVINC) gradient.cpp
 
 clean:
 	rm -rf *.o *~
