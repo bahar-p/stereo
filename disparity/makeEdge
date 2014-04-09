@@ -7,7 +7,7 @@ GLFLAGS = -lGL -lglut -lGLU -lm
 OPENCVINC = `pkg-config --cflags opencv`
 OPENCVLIB = `pkg-config --libs opencv`
 
-all: edge gradient
+all: edge gradient minStAc
 
 edge: edge.o
 	$(CC) -std=c++0x edge.o -o $(BUILDPATH)/edge $(OPENCVLIB) $(GLFLAGS)
@@ -21,5 +21,10 @@ gradient: gradient.o
 gradient.o: gradient.cpp
 	$(CC) -std=c++0x $(CFLAGS) $(GLFLAGS) $(OPENCVINC) gradient.cpp
 
+minStAc: minStAc.o
+	$(CC) -std=c++0x minStAc.o -o $(BUILDPATH)/minStAc $(OPENCVLIB) $(GLFLAGS)
+
+minStAc.o: minStAc.cpp
+	$(CC) -std=c++0x $(CFLAGS) $(GLFLAGS) $(OPENCVINC) minStAc.cpp
 clean:
 	rm -rf *.o *~

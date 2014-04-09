@@ -51,10 +51,10 @@ int main(int argc, char* argv[]){
 
 	fstream of1;
 	float pupil_dist = 64; 				//Avg value of Interpupillary distance (mm)
-	float c = 206265; 				//constant (1 radian = 206265 arcsecs)
+	float c = 3437.75; 				//constant (1 radian=3437.75 arcmin)
 	//float d1,d2,gtd1,gtd2;
 	float goodpixs=0;
-	int k = 8;
+	int k = 10;
 	//float thresh [2][k];
 	float detected[k];
 	for(int x=0; x<k; x++){
@@ -62,11 +62,7 @@ int main(int argc, char* argv[]){
 		//thresh[1][x] = 0;
 		detected[x]=0;
 	}
-	float thresh[2][8] = {
-		{1/256., 4/256., 8/256. , 32/256., 64/256., 128/256., 1., 2.} ,
-		{1000 , 1000, 1000 , 1000, 1000, 1000, 1000, 1000}
-	
-	};
+	float thresh[10] = {0.002, 0.005, 0.008, 0.01, 0.03, 0.05, 0.1, 0.3, 0.5, 0.7};
 	float INF = std::numeric_limits<float>::infinity();
 	//cout << disp(Rect(700,200, 10,10)) << endl;
 	//cout << gt(Rect(700,200, 10,10)) << endl;
@@ -89,32 +85,15 @@ int main(int argc, char* argv[]){
 					float dpdiff = fabs ( dp2 - dp1 );
 					float stAc_detected = (c*pupil_dist*dpdiff)/(dp1*dp1);
 					for(int p=0;p<k;p++){
-						if(diff1 < thresh[0][p]){
+						if(stAc_detected > 0 && stAc_detected < thresh[p]){
 							if(diff2>0 && 
-							isNegative(gt.at<float>(j,i) - gt.at<float>(j,i+1))==isNegative(disp.at<float>(j,i) - disp.at<float>(j,i+1))){
-								if(dp1!=INF){
-									if(stAc_detected < thresh[1][p])
-										thresh[1][p] = stAc_detected;
-								}
-								else thresh[1][p] = INF;
+							isNegative(gt.at<float>(j,i) - gt.at<float>(j,i+1)) ==
+							isNegative(disp.at<float>(j,i) - disp.at<float>(j,i+1))){
 								detected[p]++;
 							}
 						}
 					}
 				}
-					/*gtd1 = gt.at<float>(j,i);
-					gtd2 = gt.at<float>(j,i+1);
-					if(diff1>1/256 && diff1<3){
-						if(diff2>0){
-						if(diff2<diffMin){
-							diffMin=diff2;
-							xmin=i;
-							ymin=j;
-							d1 = disp.at<float>(j,i);
-							d2 = disp.at<float>(j,i+1);
-						}
-				}
-				}*/
 			}
 		}
 	}
@@ -134,8 +113,7 @@ int main(int argc, char* argv[]){
 	}
 	of1.open(res1, std::ios::out | std::ios::app);
 	for(int i=0;i<k;i++){
-		of1 << fname << " " << i << " " << thresh[0][i] << " " 
-		<< thresh[1][i]/60 << " " << detected[i] <<  " " << goodpixs << 
+		of1 << fname << " " << i << " " << thresh[i] << " " << detected[i] <<  " " << goodpixs << 
 			" " << f << " " << b << " " << width << " " << height << endl;
 	}
 	of1.close();
