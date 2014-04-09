@@ -2,6 +2,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include "cv.h"
+#include "iomanip"
 #include "highgui.h"
 #include <fstream>
 
@@ -26,7 +27,7 @@ bool isNegative(float n){
 
 int main(int argc, char* argv[]){
 	
-	if(argc<5){
+	if(argc<10){
 		cout << "Usage: ./gradient gtImg dispImg dmax pixthresh f b width height adc" << endl;
 		return -1;
 	}
@@ -40,7 +41,6 @@ int main(int argc, char* argv[]){
 	float width = atof(argv[7]);
 	float height = atof(argv[8]);
 	int adc = atoi(argv[9]);
-	//cout << "adc: " << adc <<endl;
 	gtr.convertTo(gt, CV_32F,1/(256.)); 			//if it's sgbm generate disparity
 	if(adc) dispr.convertTo(disp, CV_32F,dmax/(16.*255)); 		//if it's AdCensus generated disparity
 	else dispr.convertTo(disp, CV_32F,dmax/(255.)); 			//if it's sgbm generate disparity
@@ -63,14 +63,13 @@ int main(int argc, char* argv[]){
 		detected[x]=0;
 	}
 	float thresh[2][8] = {
-		{1/256, 4/256, 8/256 , 32/256, 64/256, 128/256, 1, 2} ,
-		{0 , 0, 0 , 0, 0, 0, 0, 0}
+		{1/256., 4/256., 8/256. , 32/256., 64/256., 128/256., 1., 2.} ,
+		{1000 , 1000, 1000 , 1000, 1000, 1000, 1000, 1000}
 	
 	};
 	float INF = std::numeric_limits<float>::infinity();
 	//cout << disp(Rect(700,200, 10,10)) << endl;
 	//cout << gt(Rect(700,200, 10,10)) << endl;
-
 	for(int j=0; j<gt.rows; j++){
 		for(int i=0; i<gt.cols-1; i++){		
 			if(isValid(gt.at<float>(j,i+1)) && isValid(gt.at<float>(j,i))){
@@ -78,20 +77,26 @@ int main(int argc, char* argv[]){
 					goodpixs++;
 					float diff1 = fabs(gt.at<float>(j,i) - gt.at<float>(j,i+1));
 					float diff2 = fabs(disp.at<float>(j,i) - disp.at<float>(j,i+1));
+					float gtd1 = gt.at<float>(j,i) ;
+					float gtd2 = gt.at<float>(j,i+1); 
+					float dp1,dp2;
+					if(gtd1 !=0)
+						dp1 = f*b/(gt.at<float>(j,i));
+					else dp1 = INF;
+					if(gtd2 !=0)
+						dp2 = f*b/(gt.at<float>(j,i+1));
+					else dp2 = INF;
+					float dpdiff = fabs ( dp2 - dp1 );
+					float stAc_detected = (c*pupil_dist*dpdiff)/(dp1*dp1);
 					for(int p=0;p<k;p++){
 						if(diff1 < thresh[0][p]){
-							if(diff2>0 && isNegative(gt.at<float>(j,i) - gt.at<float>(j,i+1)) == isNegative(disp.at<float>(j,i) - disp.at<float>(j,i+1))){
-								float gtd1 = gt.at<float>(j,i) ;
-								float gtd2 = gt.at<float>(j,i+1); 
-								float dp1,dp2;
-								if(gtd1 !=0)
-									dp1 = f*b/(gt.at<float>(j,i));
-								else dp1 = INF;
-								if(gtd2 !=0)
-									dp2 = f*b/(gt.at<float>(j,i+1));
-								else dp2 = INF;
-								float dpdiff = fabs ( dp2 - dp1 );
-								thresh[1][p] = (c*pupil_dist*dpdiff)/(dp1*dp1);
+							if(diff2>0 && 
+							isNegative(gt.at<float>(j,i) - gt.at<float>(j,i+1))==isNegative(disp.at<float>(j,i) - disp.at<float>(j,i+1))){
+								if(dp1!=INF){
+									if(stAc_detected < thresh[1][p])
+										thresh[1][p] = stAc_detected;
+								}
+								else thresh[1][p] = INF;
 								detected[p]++;
 							}
 						}
@@ -129,7 +134,8 @@ int main(int argc, char* argv[]){
 	}
 	of1.open(res1, std::ios::out | std::ios::app);
 	for(int i=0;i<k;i++){
-		of1 << fname << " " << i << " " <<  thresh[0][i] << " " << thresh[1][i] << " " << detected[i] <<  " " << goodpixs << 
+		of1 << fname << " " << i << " " << thresh[0][i] << " " 
+		<< thresh[1][i]/60 << " " << detected[i] <<  " " << goodpixs << 
 			" " << f << " " << b << " " << width << " " << height << endl;
 	}
 	of1.close();
