@@ -11,7 +11,7 @@ proc disc {myargs} {
 	set w [lindex $myargs 5]
 	set h [lindex $myargs 6]
 	set adc [lindex $myargs 7]
-	puts "img: $nu"
+	puts "img: $nu adc: $adc"
 		if {$adc} {
 			if { [catch { exec $::grad "${::gt_noc}${nu}" "${::adc_noc}${nu}" $maxd $pixthr $f $b $w $h $adc} msg] } {
 				puts "Something seems to have gone wrong:"
