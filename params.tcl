@@ -87,3 +87,6 @@ set res_occ "${mainp}${res_occ}"
 set grad "build/gradient"
 set grad "${mainp}${grad}"
 
+#GTminStAc
+set gtstac "build/minStAc"
+set gtstac "${mainp}${gtstac}"
