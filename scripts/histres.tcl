@@ -4,7 +4,7 @@ source ../params.tcl
 proc myhist {bnum f imgcount} {
 	set fp [open "$f" r]
 	set fout [open "/home/bahar/Master/stereo/eval/results/histres.txt" "w+"]
-	set thresh {0.002 0.005 0.008 0.01 0.03 0.05 0.1 0.3 0.5 0.7}
+	set thresh {0.001 0.002 0.004 0.008 0.016 0.032 0.064 0.128 0.256 0.512 1.024 2.048};
 	for {set i 0} {$i<$bnum} {set i [expr {$i+1}]} {
 		set bins($i) [lindex $thresh $i];
 		set bins(avg,$i) 0;
