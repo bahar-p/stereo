@@ -54,7 +54,7 @@ int main(int argc, char* argv[]){
 	float c = 3437.75; 				//constant (1 radian=3437.75 arcmin)
 	//float d1,d2,gtd1,gtd2;
 	float goodpixs=0;
-	int k = 10;
+	int k = 12;
 	//float thresh [2][k];
 	float detected[k];
 	for(int x=0; x<k; x++){
@@ -62,7 +62,7 @@ int main(int argc, char* argv[]){
 		//thresh[1][x] = 0;
 		detected[x]=0;
 	}
-	float thresh[10] = {0.002, 0.005, 0.008, 0.01, 0.03, 0.05, 0.1, 0.3, 0.5, 0.7};
+	float thresh[12] = {0.001, 0.002, 0.004, 0.008, 0.016, 0.032, 0.064, 0.128, 0.256, 0.512, 1.024, 2.048};
 	float INF = std::numeric_limits<float>::infinity();
 	//cout << disp(Rect(700,200, 10,10)) << endl;
 	//cout << gt(Rect(700,200, 10,10)) << endl;
