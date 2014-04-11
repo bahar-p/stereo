@@ -69,7 +69,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.540463"
      inkscape:cx="108.39273"
-     inkscape:cy="201.2382"
+     inkscape:cy="279.13686"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:window-width="1855"
@@ -90,7 +90,7 @@
      inkscape:window-maximized="1">
     <sodipodi:guide
        orientation="vertical"
-       position="56.476527"
+       position="-120.47244,552.75591"
        id="guide3573" />
     <sodipodi:guide
        orientation="horizontal"
@@ -102,11 +102,11 @@
        id="guide3886" />
     <sodipodi:guide
        orientation="horizontal"
-       position="285.62841"
+       position="-460.62992,411.02362"
        id="guide3988" />
     <sodipodi:guide
        orientation="horizontal"
-       position="303.15561"
+       position="-460.62992,425.19685"
        id="guide4081" />
     <inkscape:grid
        id="GridFromPre046Settings"
@@ -120,6 +120,10 @@
        opacity="0.15"
        empopacity="0.38"
        empspacing="5" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="0,559.84252"
+       id="guide3174" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -153,13 +157,6 @@
        x="-103.55906"
        y="667.1181" />
     <rect
-       style="fill:#ffd5d5;stroke:#28220b;stroke-width:0.99921262;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       id="rect3873"
-       width="99.212601"
-       height="136.80951"
-       x="391.33859"
-       y="719.30066" />
-    <rect
        style="fill:#c8b7b7;stroke:#28220b;stroke-width:0.80215292999999999;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect2995"
        width="84.733894"
@@ -185,25 +182,7 @@
            x="164.8855"
            y="81.793587"
            style="font-weight:bold;-inkscape-font-specification:Sans Bold" /></flowRegion><flowPara
-         id="flowPara3833" /></flowRoot>    <text
-       xml:space="preserve"
-       style="font-size:13.69708633px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
-       x="452.01852"
-       y="713.57294"
-       id="text3869"
-       sodipodi:linespacing="125%"
-       transform="scale(0.97794442,1.022553)"><tspan
-         sodipodi:role="line"
-         id="tspan3871"
-         x="452.01852"
-         y="713.57294"
-         style="font-size:11px;font-weight:bold;-inkscape-font-specification:Sans Bold">Output</tspan><tspan
-         sodipodi:role="line"
-         x="452.01852"
-         y="724.3327"
-         style="font-size:8px;font-weight:bold;-inkscape-font-specification:Sans Bold"
-         id="tspan5614">(evaluation metrics)</tspan></text>
-    <flowRoot
+         id="flowPara3833" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot3885"
        style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
@@ -428,11 +407,6 @@
        transform="translate(-4.149475e-6,698.0315)" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend)"
-       d="m 342.15748,790.15748 49.6063,0"
-       id="path5630"
-       inkscape:connector-curvature="0" />
-    <path
-       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend)"
        d="m 0,99.212589 70.866142,0"
        id="path5632"
        inkscape:connector-curvature="0"
@@ -443,93 +417,189 @@
        id="path5634"
        inkscape:connector-curvature="0"
        transform="translate(-4.149475e-6,698.0315)" />
-    <flowRoot
-       xml:space="preserve"
-       id="flowRoot5648"
-       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
-       transform="translate(-4.0000041,692.0315)"><flowRegion
-         id="flowRegion5650"><rect
-           id="rect5652"
-           width="122.04123"
-           height="22.720442"
-           x="153.2007"
-           y="-42.844265" /></flowRegion><flowPara
-         id="flowPara5654"
-         style="font-weight:bold;-inkscape-font-specification:Sans Bold">Evaluation System</flowPara></flowRoot>    <rect
-       style="fill:#80ffb3;stroke:#28220b;stroke-width:0.88540834;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       id="rect3909-6"
-       width="83.464561"
-       height="14.173205"
-       x="398.8504"
-       y="754.72443" />
-    <flowRoot
-       xml:space="preserve"
-       id="flowRoot3856-6"
-       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
-       transform="translate(-2.5484921,648.18337)"><flowRegion
-         id="flowRegion3858-3"><rect
-           id="rect3860-0"
-           width="65.564705"
-           height="17.527199"
-           x="411.56458"
-           y="107.75981" /></flowRegion><flowPara
-         id="flowPara3862-6"
-         style="font-size:9px;font-weight:bold;-inkscape-font-specification:Sans Bold">Avg_Outlier</flowPara></flowRoot>    <rect
-       style="fill:#80ffb3;stroke:#28220b;stroke-width:0.88540834;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       id="rect3909-6-7"
-       width="83.464561"
-       height="14.173205"
-       x="399.02362"
-       y="776.33075" />
-    <flowRoot
-       xml:space="preserve"
-       id="flowRoot3856-6-4"
-       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
-       transform="translate(-2.3752617,669.78969)"><flowRegion
-         id="flowRegion3858-3-1"><rect
-           id="rect3860-0-0"
-           width="65.564705"
-           height="17.527199"
-           x="411.56458"
-           y="107.75981" /></flowRegion><flowPara
-         id="flowPara3862-6-8"
-         style="font-size:9px;font-weight:bold;-inkscape-font-specification:Sans Bold">Avg_stAcuity</flowPara></flowRoot>    <rect
-       style="fill:#80ffb3;stroke:#28220b;stroke-width:0.88540834;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       id="rect3909-6-5"
-       width="83.464561"
-       height="14.173205"
-       x="399.88977"
-       y="797.71655" />
-    <flowRoot
-       xml:space="preserve"
-       id="flowRoot3856-6-8"
-       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
-       transform="translate(-1.50912,691.17552)"><flowRegion
-         id="flowRegion3858-3-5"><rect
-           id="rect3860-0-3"
-           width="65.564705"
-           height="17.527199"
-           x="411.56458"
-           y="107.75981" /></flowRegion><flowPara
-         id="flowPara3862-6-5"
-         style="font-size:9px;font-weight:bold;-inkscape-font-specification:Sans Bold">Avg_error</flowPara></flowRoot>    <rect
-       style="fill:#80ffb3;stroke:#28220b;stroke-width:0.88540834;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       id="rect3909-6-6"
-       width="83.464561"
-       height="14.173205"
-       x="398.97638"
-       y="820.97638" />
-    <flowRoot
-       xml:space="preserve"
-       id="flowRoot3856-6-9"
-       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
-       transform="translate(-2.422506,714.43536)"><flowRegion
-         id="flowRegion3858-3-3"><rect
-           id="rect3860-0-05"
-           width="65.564705"
-           height="17.527199"
-           x="411.56458"
-           y="107.75981" /></flowRegion><flowPara
-         id="flowPara3862-6-9"
-         style="font-size:9px;font-weight:bold;-inkscape-font-specification:Sans Bold">Avg_exetime</flowPara></flowRoot>  </g>
+    <path
+       inkscape:connector-curvature="0"
+       d="m 391.10729,855.92798 99.21388,0 0,-136.81125 -99.21388,0 0,136.81125 z"
+       style="fill:#ffd5d5;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path30" />
+    <path
+       inkscape:connector-curvature="0"
+       d="m 391.10729,855.92798 99.21388,0 0,-136.81125 -99.21388,0 0,136.81125 z"
+       style="fill:none;stroke:#28220b;stroke-width:0.9992125;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path32" />
+    <path
+       inkscape:connector-curvature="0"
+       d="m 398.61729,768.7161 83.46625,0 0,-14.17475 -83.46625,0 0,14.17475 z"
+       style="fill:#80ffb3;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path172" />
+    <path
+       inkscape:connector-curvature="0"
+       d="m 398.61729,768.7161 83.46625,0 0,-14.17475 -83.46625,0 0,14.17475 z"
+       style="fill:none;stroke:#28220b;stroke-width:0.88540876;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path174" />
+    <g
+       id="g176"
+       transform="matrix(1.25,0,0,-1.25,-104.34646,905.1024)">
+      <text
+         transform="matrix(1,0,0,-1,411.699,112.305)"
+         id="text178">
+        <tspan
+           style="font-size:7.19999981px;font-variant:normal;font-weight:bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVuSans-Bold"
+           x="0 5.3142061 10.017982 15.182556 18.782557 24.893963 30.028955 33.476807 35.956562 38.437099 43.307762 46.85619"
+           y="0"
+           sodipodi:role="line"
+           id="tspan180">Avg_Outliers</tspan>
+      </text>
+    </g>
+    <path
+       inkscape:connector-curvature="0"
+       d="m 398.79354,790.3231 83.46238,0 0,-14.17525 -83.46238,0 0,14.17525 z"
+       style="fill:#80ffb3;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path182" />
+    <path
+       inkscape:connector-curvature="0"
+       d="m 398.79354,790.3231 83.46238,0 0,-14.17525 -83.46238,0 0,14.17525 z"
+       style="fill:none;stroke:#28220b;stroke-width:0.88540876;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path184" />
+    <g
+       id="g186"
+       transform="matrix(1.25,0,0,-1.25,-104.34646,905.1024)">
+      <text
+         transform="matrix(1,0,0,-1,418.815,95.0195)"
+         id="text188">
+        <tspan
+           style="font-size:7.19999981px;font-variant:normal;font-weight:bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVuSans-Bold"
+           x="0 5.3142061 10.016809 15.180212 18.780212 23.96265 27.410891 32.97744"
+           y="0"
+           sodipodi:role="line"
+           id="tspan190">Avg_StAc</tspan>
+      </text>
+    </g>
+    <path
+       inkscape:connector-curvature="0"
+       d="m 399.65729,811.70385 83.46625,0 0,-14.16987 -83.46625,0 0,14.16987 z"
+       style="fill:#80ffb3;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path192" />
+    <path
+       inkscape:connector-curvature="0"
+       d="m 399.65729,811.70385 83.46625,0 0,-14.16987 -83.46625,0 0,14.16987 z"
+       style="fill:none;stroke:#28220b;stroke-width:0.88540876;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path194" />
+    <g
+       id="g196"
+       transform="matrix(1.25,0,0,-1.25,-104.34646,905.1024)">
+      <text
+         transform="matrix(1,0,0,-1,413.12,77.9105)"
+         id="text198">
+        <tspan
+           style="font-size:7.19999981px;font-variant:normal;font-weight:bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVuSans-Bold"
+           x="0 5.3149877 10.017982 15.183337 18.783337 24.758556 27.23675 31.519188 36.68298 41.606831 45.162292"
+           y="0"
+           sodipodi:role="line"
+           id="tspan200">Avg_DispErr</tspan>
+      </text>
+    </g>
+    <path
+       inkscape:connector-curvature="0"
+       d="m 398.73979,834.9666 83.46625,0 0,-14.17475 -83.46625,0 0,14.17475 z"
+       style="fill:#80ffb3;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path202" />
+    <path
+       inkscape:connector-curvature="0"
+       d="m 398.73979,834.9666 83.46625,0 0,-14.17475 -83.46625,0 0,14.17475 z"
+       style="fill:none;stroke:#28220b;stroke-width:0.88540876;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path204" />
+    <g
+       id="g206"
+       transform="matrix(1.25,0,0,-1.25,-104.34646,905.1024)">
+      <text
+         transform="matrix(1,0,0,-1,407.887,59.3027)"
+         id="text208">
+        <tspan
+           style="font-size:7.19999981px;font-variant:normal;font-weight:bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVuSans-Bold"
+           x="0 5.3142061 10.017982 15.181384 18.781384 23.698202 28.342203 33.21521 37.493404 42.403023 44.881214 52.390648"
+           y="0"
+           sodipodi:role="line"
+           id="tspan210">Avg_ExecTime</tspan>
+      </text>
+    </g>
+    <path
+       inkscape:connector-curvature="0"
+       d="m 343.04604,802.08523 56.05,-0.4975"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path212" />
+    <path
+       inkscape:connector-curvature="0"
+       d="m 393.84229,799.21423 6.57625,2.3535 -6.5325,2.46625 c 1.035,-1.43113 1.01125,-3.37988 -0.0437,-4.81975 z"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="path214" />
+    <path
+       inkscape:connector-curvature="0"
+       d="m 342.05479,814.4041 35.215,0 0.4975,12.4815 21.32875,0.42475"
+       style="fill:none;stroke:#000000;stroke-width:1.06952751;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path216" />
+    <path
+       inkscape:connector-curvature="0"
+       d="m 393.45104,829.78548 7.06125,-2.4365 -6.95875,-2.71975 c 1.08875,1.54737 1.04,3.62737 -0.1025,5.15625 z"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="path218" />
+    <path
+       inkscape:connector-curvature="0"
+       d="m 342.55354,781.74785 56.04875,0"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path220" />
+    <path
+       inkscape:connector-curvature="0"
+       d="m 393.36854,784.17023 6.5575,-2.41263 -6.5575,-2.4115 c 1.05,1.42563 1.04,3.369 0,4.82413 z"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="path222" />
+    <path
+       inkscape:connector-curvature="0"
+       d="m 342.12354,770.33735 34.0325,0 -0.0825,-10.90875 21.82625,0.4925"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path224" />
+    <path
+       inkscape:connector-curvature="0"
+       d="m 392.61604,762.2211 6.60625,-2.25875 -6.49875,-2.56 c 1.01625,1.445 0.9675,3.39375 -0.1075,4.81875 z"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="path226" />
+    <text
+       style="font-size:15px"
+       y="660.40955"
+       x="98.552757"
+       id="text168">
+      <tspan
+         style="font-size:11px;font-variant:normal;font-weight:bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVuSans-Bold"
+         x="98.552757 106.62676 114.19499 125.66823 133.55545 138.98969 146.43645 154.27968 161.73769 169.5809 176.1259 179.91014 187.09337 194.54015 198.36813 205.88115 213.06436 220.5006 224.28484 232.12807 239.5643 244.82228 248.60651 256.17477 264.01797 267.83475 275.76599 282.93799 289.4942 294.7522 302.21021"
+         y="660.40955"
+         sodipodi:role="line"
+         id="tspan170">Comprehensive Evaluation System</tspan>
+    </text>
+    <text
+       style="font-size:14.6691637px"
+       y="714.88818"
+       x="428.99728"
+       transform="scale(0.97794423,1.0225532)"
+       id="text44">
+      <tspan
+         style="font-size:11.00000286px;font-variant:normal;font-weight:bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVuSans-Bold"
+         x="428.99728 438.34497 446.17883 451.44708 459.33789 467.18274"
+         y="714.88818"
+         sodipodi:role="line"
+         id="tspan46">Output</tspan>
+    </text>
+    <text
+       style="font-size:14.6691637px"
+       y="722.19928"
+       x="406.20953"
+       transform="scale(0.97794423,1.0225532)"
+       id="text48">
+      <tspan
+         style="font-size:8px;font-variant:normal;font-weight:bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVuSans-Bold"
+         x="406.20953 409.86554 415.28558 420.5043 425.91525 428.67065 434.37628 439.7872 443.61121 446.36612 451.87024 460.3519 468.69565 474.11621 477.93958 481.88922 484.64462 489.40024 494.16528"
+         y="722.19928"
+         sodipodi:role="line"
+         id="tspan50">(evaluationmetrics)</tspan>
+    </text>
+  </g>
 </svg>

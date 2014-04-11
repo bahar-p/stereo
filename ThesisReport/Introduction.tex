@@ -38,8 +38,7 @@ more useful in prepared, indoor AR environments. Tracking sensors such as gyrosc
 also be used as complementary techniques to provide information on the user's position and viewing orientation \cite{azuma01}. 
 %however, they usually rely on known features in the surrounding environment.
 However, for unprepared, outdoor environments, especially in mobile AR applications, it is not practical to use markers in various locations 
-in the scene, 
-and therefore, a markerless technique, such as obtaining a dense depth map of the surrounding environment,
+in the scene and, therefore, a markerless technique, such as obtaining a dense depth map of the surrounding environment,
 must be considered as an alternative to find the position of the objects in the scene.
 To obtain the depth of the 
 surrounding environment several depth sensing technologies can be used such as 3D laser scanner, depth cameras or regular cameras. However, in order to have a mobile AR
@@ -157,7 +156,7 @@ which will lead to erroneous registration of virtual and real objects,
 can be perceived easier by the human visual system. This can lead to poor performance of the system and possibly faulty interaction between 
 the user and the augmented world.
 Figure \ref{fig:ARreg} shows an accurate and faulty registration of objects (the lamp, the head and the synthetic triangle) in a 3D environment that results from an accurate and 
-wrong disparity map in a speacific area of depth discontinuity.
+wrong disparity map in a specific area of depth discontinuity.
 
 \begin{figure}[H]
 \centering
@@ -193,7 +192,7 @@ These algorithms are:
 \item The solution  proposed by Mei et al., ``On building an accurate stereo matching system on graphics hardware'' \cite{mei11}, also known as ADCensus.
 \end{enumerate}
 
-SGBM is now integrated in the Open Source Computer Vision Library (OpenCV) \cite{sgbm}, and therefore, we have used this implementation
+SGBM is now integrated in the Open Source Computer Vision Library (OpenCV) \cite{sgbm} and, therefore, we have used this implementation
 in our evaluation.
 On the other hand, since no implementation of ADCensus is available in the public vision libraries, we have used our own implementation of it.
 Although ADCensus is originally proposed as a GPU-based solution, we have used the CPU implementation of it in our evaluation.

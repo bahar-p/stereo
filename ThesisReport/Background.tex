@@ -12,7 +12,7 @@ depth in a scene.
 Using computer vision techniques, it is possible to extract depth information from stereo
 images. This process is called {\it Stereo Matching} or {\it Stereo Correspondence} in computer vision,
 which in fact leads to the construction of a
-3D model of a scene from two or multiple views by finding corresponding pixels and therefore, their spatial displacement within various views of the same scene \cite{sze11}.
+3D model of a scene from two or multiple views by finding corresponding pixels and, therefore, their spatial displacement within various views of the same scene \cite{sze11}.
 
 Corresponding pixels in stereo images are the ones that represent the same point in the real
 world. As it will be seen shortly in more detail, the amount of horizontal motion of such pixels
@@ -164,7 +164,7 @@ from this class of algorithms in the last 20 years.
 
 \subsection{Dense Correspondence Algorithms}
 Unlike feature-based methods, dense correspondence algorithms try to find the
-correspondences for all the pixels in the image, and therefore, result in a dense disparity map. Most recent algorithms and studies have focused on this class of algorithms since many applications 
+correspondences for all the pixels in the image and, therefore, result in a dense disparity map. Most recent algorithms and studies have focused on this class of algorithms since many applications 
 nowadays, such as graphical rendering, 3D model construction, or augmented reality require a dense depth map of the scene. 
 However, these algorithms face many challenges that need to be properly
 addressed, such as finding the depth values in occluded regions, depth discontinuities, and textureless areas \cite{sch02,bro03}.
@@ -182,7 +182,7 @@ Local methods tend to find the disparity of each pixel based on its neighboring 
 other words, the disparity of a pixel is calculated in a finite window containing its neighboring pixels, based on a particular metric, e.g. the intensity values \cite{sch02}.
 
 These methods make an implicit smoothness assumption for the pixels in the search
-window, and therefore, assign the same disparity to all the pixels belonging to the same window which could result in incorrect disparity values in slanted surfaces or
+window and, therefore, assign the same disparity to all the pixels belonging to the same window which could result in incorrect disparity values in slanted surfaces or
 depth discontinuities \cite{hirsch02}. This assumption can be considered as one of the major drawbacks of local methods.
 Another drawback of local methods is their dependency on the window size \cite{sch02}. A fixed window size can raise certain problems in these algorithms:
 \begin{enumerate}
