@@ -23,7 +23,6 @@ of these properties are listed as follows:
 \item Well textured and not properly textured regions
 \end{itemize}
 
-
 \section{Methodology}
 
 Before going through the explanation of the experiments to assess our evaluation model, we restate our main research question in this
@@ -57,6 +56,7 @@ the user's point of view.
 
 \item \textbf{Hypothesis 2:} \emph{Observing, evaluating, and consequently 
 refining the areas near the depth edges in an image are more important in an AR application.}
+
 Salient edges caused by depth discontinuities, 
 which can also represent the object boundaries and occlusion, are one of the 
 most important depth cues that helps the observer to better perceive the depth of different objects in the scene. In other words, the areas near the edges corresponding to depth discontinuities
@@ -67,20 +67,27 @@ the evaluation results can be of great value to an outdoor AR application.
 
 \item \textbf{Hypothesis 3:} \emph{Our system is better than other evaluation models for assessing the performance of the algorithm in
 real-time AR applications.}
+
 Other evaluation models, the Kitti and Middlebury benchmarks, do not evaluate and report on the efficiency of the algorithms
 with respect to their execution time. On the other hand, our system is capable of examining and evaluating an algorithm 
 based on its execution time and, therefore, can report on its efficiency for real-time AR applications.
 
 \item \textbf{Hypothesis 4:} \emph{The trade-off between the accuracy and the running time of the stereo algorithms can be effectively evaluated 
 in the framework of an outdoor AR application through our system.} 
+
 Nearly all the solutions to the problem of stereo correspondence have been dealing with the trade-off between the accuracy of the results and the running time.
 Therefore, most of the solutions focus only on improving one of these aspects in the final results. Some methods use certain post processing techniques to refine the 
-disparity results in the end, thus improving the accuracy, whereas the others propose particular approaches that can be implemented on the GPU.
+disparity results in the end, thus improving the accuracy, whereas the others propose particular approaches that can be implemented on the GPU to reduce the processing time.
 Due to the importance of both metrics in an outdoor AR application, we argue that the trade-off between these metrics can be effectively analyzed in our evaluation system.
 
+\item \textbf{Hypothesis 5:} \emph{The ability to detect the difference in depth in stereo correspondence methods not only depends on their accuracy
+in estimation of the disparity values, but also is affected by other factors, such as the resolution of the capturing device or environmental noise.}
 
+According to different studies \cite{dras96, kru10,azuma01}, some other factors such as issues associated with the environment, display devices, or capturing devices
+can also affect the perception of depth in the visual system. As a result, we hypothesize that the ability to detect the difference in depth in an outdoor AR system,
+does not merely depend on the accuracy of the stereo correspondence algorithm, and other factors should also be taken into account.
 \end{itemize}
-
+\noindent
 The experiments designed to validate these hypotheses are explained in the following sections.
 
 \section{Experimental Environment and Settings}
@@ -577,57 +584,14 @@ Analyzing the results in this experiment, we can conclude that despite the consi
 accuracy is achieved in our evaluation criteria through refinement of the disparity results; therefore, the execution of ADCensus without any LR check and
 refinement step is more beneficial to an AR application in outdoor environments.
 
-\section{Hypotheses Validation}
-Next, we will review our hypotheses mentioned earlier in this chapter and discuss their validity in the light of our experiments and their results.
+\section{Detectability of Depth Changes in Outdoor AR System}
 
-\begin{itemize}
-\item \textbf{Hypothesis 1}: \emph{Our model evaluates and demonstrates the accuracy of a stereo matching algorithm in the framework of 
-outdoor augmented reality applications.} 
-As can be seen in the results of the experiments, our system employs a systematic approach for the measurement and demonstration of different 
-evaluation metrics in the framework of an outdoor augmented reality application. 
-In our system, the disparity error, which is the most important metric for the accuracy of the disparity results, 
-is converted to a certain measurement, stereoacuity, that is relevant and applicable to the human visual
-system and its perception of depth. We evaluated two stereo matching methods in our system and analyzed their performance in terms of
-the accuracy of the depth map for an outdoor AR application. Due to the application-oriented design of the system, we could comment on the suitability of each method
-for an AR application in outdoor environments. As a result, we can claim that our evaluation model is more appropriate for the evaluation of the solutions 
-in an outdoor AR system than the conventional evaluation systems.
-
-\item \textbf{Hypothesis 2:} \emph{Observing, evaluating, and consequently 
-refining the areas near the depth edges in an image are more important in an AR application.}
-The results of our experiments on two sample stereo matching solutions showed no significant difference between the evaluation metrics corresponding to the whole image and
-the regions of the depth edges and their surroundings, thereby implying that there may be no specific benefit into the analysis of these particular regions 
-in an outdoor AR application.
-However, due to the importance of these regions as depth cues to the human visual system for the perception of the 3D location of the surrounding 
-objects in an environment, we argue that more solutions should be tested within our evaluation model 
-to be able to certainly approve or disapprove this hypothesis. 
-
-\item \textbf{Hypothesis 3:} \emph{Our system performs better than the the conventional evaluation models for assessing the performance of a stereo algorithm in
-Real-time AR applications.}
-As explained in the design of our model and demonstrated in the experimental results, the execution time of the algorithms 
-is estimated and evaluated in the system based on the requirements of having a real-time and interactive augmented reality application.
-In the experiments, we evaluated the running time of the two sample stereo matching algorithms which proved to be inefficient in both cases for 
-a real-time augmented reality application. Through this property, we can claim that the evaluation results through our system is more beneficial to AR applications
-than the conventional evaluation models which do not take this important aspect of the solutions into account.
-
-\item \textbf{Hypothesis 4:} \emph{The trade-off between the accuracy and the running time of the stereo algorithms can be effectively evaluated 
-in the framework of an outdoor AR application through our system.} 
-In one of the experiments, we focused on the trade-off between the accuracy of the results and the running time of the algorithm by studying the effect
-of the post processing steps, also referred to as refinement steps, on the evaluation metrics. Results on ADCensus showed that integrating these steps in the algorithm
-does not significantly improve the accuracy of the results in the framework of an outdoor AR system; on the other hand, it causes a considerable increase in the execution
-time of the algorithm which is not beneficial to a real-time and interactive AR system. The results of this evaluation indicates that the trade-off between the accuracy 
-of the results and the execution time of the algorithm, which normally exists in nearly all the stereo matching solutions, can be effectively analyzed 
-through our evaluation system. The conventional evaluation models lack this property which is of great importance to certain applications, such as applications of AR.
-
-\end{itemize}
-
-\section{Detectability of Depth in AR}
 According to different studies \cite{dras96, kru10,azuma01}, some other factors such as issues associated with the environment, display device, and capturing device
 can also affect the perception of depth in the visual system. As a result, the ability to detect the difference in depth 
-does not merely depend on how accurate the stereo correspondence algorithm can estimate the depth values and detect the steps in depth.
-In order to investigate the validity of this statement, we conducted another experiment. In this experiment we defined some stereoacuity thresholds,
-or better to phrase as the detectable depth difference
-in terms of stereoacuity. In order to find the minimum threshold to start with, we attempted to find the 
-minimum disparity change in the grount truth disparity images. To this end, we move through horizontal scanlines in each image and 
+does not merely depend on how accurate the stereo correspondence algorithm can estimate the depth values and detect the changes in depth.
+In order to investigate the validity of this statement, we conducted another experiment. In this experiment we defined some stereoacuity thresholds. 
+In order to find the minimum threshold to start with, we attempted to find the 
+minimum disparity change in the grount truth disparity images. To this end, we move along horizontal scanlines in each image and 
 compute the difference between the values of consecutive pixels, which is, in fact, an indicator of the detectability of the difference in depth. 
 After finding the minimum value in each image, a global minimum is sought between all the computed values from different images.
 The value we found for image size of $1242\times375$ and the focal length of $721$ millimeters was $0.0022$ arcmins.
@@ -644,7 +608,7 @@ This process is repeated for different images and, finally, the average of the d
       define StAc\_thresh;
       for all pixels p in the image; do
          if (\( |disp\sb{gt}-disp\sb{gen}|<pix\_thresh\));
-            \(pix\_count++\);
+            \(pix\_count += 1\);
             \(diff = |disp\sb{gen\sb{i}}-disp\sb{gen\sb{i+1}}|\);
             \(depth\sb{gt\sb{i}} = \frac{focal\_length \times baseline}{disp\sb{gen\sb{i}}}\);
             \(depth\sb{gt\sb{i+1}} = \frac{focal\_length \times baseline}{disp\sb{gen\sb{i+1}}}\);
@@ -674,17 +638,12 @@ The results for both algorithms are shown in Figure \ref{fig:algthresh}.
 
 As can be seen in these plots, for both algorithms, the average detected changes in disparity differences starts to converge at the value of approximately $0.4$ arcmins.
 We also observe that for the values below this threshold the average detected changes are much lower and for some values, such as the minimum detectable threshold in ground truth,
-both algorithms are not capable of detecting any change. 
+both algorithms are not capable of detecting any change in depth values. 
 This implies that, regardless of the accuracy resolution of the algorithms, which is $1/8$th of a pixel for SGBM and $1/16$th of a pixel for ADCensus and approximately equal to
 $0.6$ arcmins and $0.3$ arcmins, respectively, for Kitti images based on the camera parameters and the geometrical relation presented in Figure \ref{fig:camResolution} and 
 Equation \ref{eq:algResolution}, some changes in 
-depth in the real world are still not be detected by the algorithm. This effect might be related to the sensor resolution, that is, the resolution of the capturing device or the effect
-of noise. Therefore, in order to achieve better detectability of depth changes by the algorithms, that is, to obtain a lower threshold
-which is closer to the actual resolution of the implemented algorithm, using higher resolution devices is also essential.
-However, our previous experimental results show that despite various types of error caused by the capturing device, noise, or the discretization limit of the stereo correspondence 
-algorithm in the estimation of disparity values, in many cases depending on the distance of the object from the observer,  
-the error in the results will not be perceptible to the HVS in an outdoor AR
-application.
+depth in the real world cannot be still detected by the algorithm. This effect might be due to the constraints of the sensor, that is, the errors associated with the capturing 
+device and its resolution, or the environmental noise. 
 
 \begin{figure}[H]
 \centering
@@ -696,9 +655,76 @@ application.
 Where, $w$ is the image width and $f$ is the focal length of the capturing device.
 For the image size of $1242\times375$ and focal length of $721$, and based on the resolution of SGBM and ADCensus in the estimation of the disparity values, 
 the detectable disparity difference in terms of stereoacuity is as follows:
-
 \begin{align}
 \label{eq:algResolution}
-SGBM: \theta &= \arctan (\frac{\frac{1}{8}}{721}) = 0.0099 degrees \times 60 \frac{arcmins}{degrees} = 0.59 arcmins \\
+SGBM: \theta &= \arctan (\frac{\frac{1}{8}}{721}) = 0.0099 degrees \times 60 \frac{arcmins}{degrees} = 0.59 arcmins \\[2ex]
 ADCensus: \theta &= \arctan (\frac{\frac{1}{16}}{721}) = 0.0049 degrees \times 60 \frac{arcmins}{degrees}= 0.29 arcmins
 \end{align}
+
+Therefore, in order to achieve more accurate depth values in the stereo algorithms and better detectability of their changes, 
+in areas of depth discontinuities, that is, to obtain a lower 
+detection threshold of depth changes
+closer to the actual resolution of the implemented algorithm, using higher resolution devices and considering their robustness to noise are also essential.
+However, the experimental results presented earlier in this chapter
+show that despite various types of error relevant to the capturing device, environmental noise, and the accuracy of the stereo correspondence algorithm
+in the estimation of disparity values, the effect of such error on the results, depending on the distance of the object from the observer, 
+will not be perceptible in the HVS for outdoor AR applications.
+
+
+\section{Hypotheses Validation}
+Next, we will review our hypotheses mentioned earlier in this chapter and discuss their validity in the light of our experiments and their results.
+
+\begin{itemize}
+\item \textbf{Hypothesis 1}: \emph{Our model evaluates and demonstrates the accuracy of a stereo matching algorithm in the framework of 
+outdoor augmented reality applications.} 
+
+As can be seen in the results of the experiments, our system employs a systematic approach for the measurement and demonstration of different 
+evaluation metrics in the framework of an outdoor augmented reality application. 
+In our system, the disparity error, which is the most important metric for the accuracy of the disparity results, 
+is converted to a certain measurement, stereoacuity, that is relevant and applicable to the human visual
+system and its perception of depth. We evaluated two stereo matching methods in our system and analyzed their performance in terms of
+the accuracy of the depth map for an outdoor AR application. Due to the application-oriented design of the system, we could comment on the suitability of each method
+for an AR application in outdoor environments. As a result, we can claim that our evaluation model is more appropriate for the evaluation of the solutions 
+in an outdoor AR system than the conventional evaluation systems.
+
+\item \textbf{Hypothesis 2:} \emph{Observing, evaluating, and consequently 
+refining the areas near the depth edges in an image are more important in an AR application.}
+
+The results of our experiments on two sample stereo matching solutions showed no significant difference between the evaluation metrics corresponding to the whole image and
+the regions of the depth edges and their surroundings, thereby implying that there may be no specific benefit into the analysis of these particular regions 
+in an outdoor AR application.
+However, due to the importance of these regions as depth cues to the human visual system for the perception of the 3D location of the surrounding 
+objects in an environment, we argue that more solutions should be tested within our evaluation model 
+to be able to certainly approve or disapprove this hypothesis. 
+
+\item \textbf{Hypothesis 3:} \emph{Our system performs better than the the conventional evaluation models for assessing the performance of a stereo algorithm in
+Real-time AR applications.}
+
+As explained in the design of our model and demonstrated in the experimental results, the execution time of the algorithms 
+is estimated and evaluated in the system based on the requirements of having a real-time and interactive augmented reality application.
+In the experiments, we evaluated the running time of the two sample stereo matching algorithms which proved to be inefficient in both cases for 
+a real-time augmented reality application. Through this property, we can claim that the evaluation results through our system is more beneficial to AR applications
+than the conventional evaluation models which do not take this important aspect of the solutions into account.
+
+\item \textbf{Hypothesis 4:} \emph{The trade-off between the accuracy and the running time of the stereo algorithms can be effectively evaluated 
+in the framework of an outdoor AR application through our system.} 
+
+In one of the experiments, we focused on the trade-off between the accuracy of the results and the running time of the algorithm by studying the effect
+of the post processing steps, also referred to as refinement steps, on the evaluation metrics. Results on ADCensus showed that integrating these steps in the algorithm
+does not significantly improve the accuracy of the results in the framework of an outdoor AR system; on the other hand, it causes a considerable increase in the execution
+time of the algorithm which is not beneficial to a real-time and interactive AR system. The results of this evaluation indicates that the trade-off between the accuracy 
+of the results and the execution time of the algorithm, which normally exists in nearly all the stereo matching solutions, can be effectively analyzed 
+through our evaluation system. The conventional evaluation models lack this property which is of great importance to certain applications, such as applications of AR.
+
+\item \textbf{Hypothesis 5:} \emph{The ability to detect the difference in depth in stereo correspondence methods not only depends on their accuracy
+in estimation of the disparity values, but also is affected by other factors, such as the environmental noise, the resolution of the capturing device and its
+robustness to noise.}
+
+Our experimental results show that, regardless of the theoretical accuracy of the implemented algorithm in the estimation of depth values and its resovability of depth changes,
+its effective stereoacuity threshold, that is, its ability to detect the changes in depth values, can be different from its ideal detectability threshold and is affected by other factors, 
+such as the error associated with the capturing device or its resolution. Therefore, in order to achieve a higher quality depth map of the surrounding environment in outdoor AR applications, 
+in addition to a wise choice of stereo correspondence algorithm, considering the resolution of the capturing device and its robustness to noise
+is also essential. It should be noted that this conclusion is apart from the observation in other experiments which show that in many cases
+the error in the estimated depth values will not be perceived by the HVS.
+\end{itemize}
+
