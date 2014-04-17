@@ -81,7 +81,8 @@ disparity results in the end, thus improving the accuracy, whereas the others pr
 Due to the importance of both metrics in an outdoor AR application, we argue that the trade-off between these metrics can be effectively analyzed in our evaluation system.
 
 \item \textbf{Hypothesis 5:} \emph{The ability to detect the difference in depth in stereo correspondence methods not only depends on their accuracy
-in estimation of the disparity values, but also is affected by other factors, such as the resolution of the capturing device or environmental noise.}
+in estimation of the disparity values, but also is affected by other factors, such as the environmental noise, the resolution of the capturing device and its
+robustness to noise.}
 
 According to different studies \cite{dras96, kru10,azuma01}, some other factors such as issues associated with the environment, display devices, or capturing devices
 can also affect the perception of depth in the visual system. As a result, we hypothesize that the ability to detect the difference in depth in an outdoor AR system,
@@ -330,7 +331,7 @@ the significant amount of error
 corresponds to the near field objects, within the first 5 meters. This range of the depth field can be considerably important in some applications,
 such as the ones involving certain manipulative tasks.
 
-\subsection{Depth edges and Occlusion}
+\subsection{Depth Edges and Occlusion}
 In order to examine the effect of evaluating certain regions of the disparity image instead of the whole image, 
 we estimated the average error both for the masked areas and the whole disparity map. 
 Results of SGBM are shown in Figures \ref{fig:sgbmfull3} and \ref{fig:sgbmmsk3}.
@@ -652,16 +653,21 @@ device and its resolution, or the environmental noise.
 \label{fig:camResolution}
 \end{figure}
 \noindent
-
 In Figure \ref{fig:camResolution}, $w$ is the image width and $f$ is the focal length of the capturing device.
+\begin{align}
+\label{eq:algResolution}
+\theta = \arctan(\frac{pixel\_resolution}{focal\_length})
+\end{align}
+
 For the image size of $1242\times375$ pixels and focal length of $721$ millimeters, and based on the resolution of SGBM and ADCensus in the estimation of the disparity values, 
 the detectable disparity difference in terms of effective stereoacuity is as follows:
 \begin{align}
-\label{eq:algResolution}
+\label{eq:alg:sgbmresolv} 
 SGBM: \theta &= \arctan (\frac{\frac{1}{8}}{721}) = 0.0099 degrees \times 60 \frac{arcmins}{degrees} = 0.59 arcmins \\[2ex]
-ADCensus: \theta &= \arctan (\frac{\frac{1}{16}}{721}) = 0.0049 degrees \times 60 \frac{arcmins}{degrees}= 0.29 arcmins
+ADCensus: \theta &= \arctan (\frac{\frac{1}{16}}{721}) = 0.0049 degrees \times 60 \frac{arcmins}{degrees}= 0.29 arcmins \label{eq:adcenresolv}
 \end{align}
 \noindent
+
 Therefore, in order to achieve more accurate depth values in the stereo algorithms and better detectability of their changes, 
 in areas of depth discontinuities, that is, to obtain a lower 
 detection threshold of depth changes
