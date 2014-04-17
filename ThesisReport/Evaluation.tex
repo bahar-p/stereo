@@ -104,7 +104,7 @@ Canny have been used to detect the depth edges in the ground truth disparity map
 for expanding the detected edge regions in the masking process. The extent to which the regions are expanded
 is determined by the number of iterations in the dilation operation. Table \ref{tab:candilparam} shows the parameters used in the Dilation
 and the Canny edge detection. However, the \textit{minimum threshold} in Canny is tuned and selected separately for each image 
-since the threshold should change depending on the scene.
+since the threshold should change depending on the scene. \newline
 
 {\footnotesize
 \begin{minipage}{\linewidth}
@@ -137,7 +137,7 @@ edges in the image.
 \subsection{Stereo Algorithms Settings}
 The parameters for each algorithm used in our experiments to generate the disparity
 maps are kept constant over all the images in the dataset. These parameters are presented in Tables \ref{tab:sgbmparams} and \ref{tab:adcparams} 
-for SGBM and ADCensus, respectively.
+for SGBM and ADCensus, respectively. \newline
 
 {\footnotesize
 \begin{minipage}{\linewidth}
@@ -154,7 +154,7 @@ speckleWindowSize & 100 & speckleRange & 2 \\ \hline
 \end{minipage} \newline
 }
 
-Other parameters not mentioned in the table are considered with their default values.
+Other parameters not mentioned in the table are considered with their default values. \newline
 
 {\footnotesize
 \begin{minipage}{\linewidth}
@@ -361,10 +361,10 @@ In this experiment the average outliers were measured for both algorithms.
 The values for both validity criteria mentioned in chapter \ref{chap:System}, valid pixels in the ground truth and generated disparity, 
 are presented in Tables \ref{tab:outlmsk} and \ref{tab:outlfull} for each age group. For simplicity, we have labelled the valid pixels
 in the ground truth and the generated disparity with \textbf{vG} and \textbf{vD}, respectively.
-Figure \ref{fig:outlbar} also represents a chart of all the results for one of these validity criteria, when the ground truth disparity is valid.
+Figure \ref{fig:outlbar} also represents a chart of all the results for one of these validity criteria, when the ground truth disparity is valid. \newline
 
 %{\footnotesize
-\begin{minipage}{0.8\linewidth}
+\begin{minipage}{\linewidth}
 \begin{center}
 \captionof{table}{Average outliers for the masked regions}
 \label{tab:outlmsk}
@@ -384,7 +384,7 @@ Algorithm & Age & Avg\_Outliers(vG) & Avg\_Outliers(vD) \\ \hline
 \end{minipage} \newline \newline
 %}
 
-\begin{minipage}{0.8\linewidth}
+\begin{minipage}{\linewidth}
 \begin{center}
 \captionof{table}{Average outliers for the whole image}
 \label{tab:outlfull}
@@ -445,9 +445,9 @@ average value in the end.
 
 \subsection{Average Disparity Error}
 The average disparity error have also been estimated in the evaluation process for both pixel validity criteria. However, the resulting values
-were similar for both cases and, therefore, only one value is reported in the following table for this metric.
+were similar for both cases and, therefore, only one value is reported in the following table for this metric. \newline
 
-\begin{minipage}{0.8\linewidth}
+\begin{minipage}{\linewidth}
 \begin{center}
 \captionof{table}{Average disparity error}
 \label{tab:avgerr}
@@ -533,9 +533,9 @@ are not significantly different from the results of the algorithm when LR check 
 and only a few average values have slightly changed. We have marked a few of these values with a blue circle in Figures \ref{fig:adcmnoLR} and \ref{fig:adcfnoLR}.
 
 We also estimated the average execution time, the average disparity error, and the average outliers in this experiment. The results for 
-the average error and outliers are shown in the tables below.
+the average error and outliers are shown in the tables below. \newline
 
-\begin{minipage}{0.8\linewidth}
+\begin{minipage}{\linewidth}
 \begin{center}
 \captionof{table}{ADCensus average disparity error - no refinement}
 \label{tab:adcerrNref}
@@ -548,7 +548,7 @@ Full & 5.29 \\ \hline
 \end{center}
 \end{minipage} \newline
 
-\begin{minipage}{0.8\linewidth}
+\begin{minipage}{\linewidth}
 \begin{center}
 \captionof{table}{ADCensus average outliers - no refinement}
 \label{tab:adcoutlNref}
@@ -609,14 +609,14 @@ This process is repeated for different images and, finally, the average of the d
       for all pixels p in the image; do
          if (\( |disp\sb{gt}-disp\sb{gen}|<pix\_thresh\));
             \(pix\_count += 1\);
-            \(diff = |disp\sb{gen\sb{i}}-disp\sb{gen\sb{i+1}}|\);
-            \(depth\sb{gt\sb{i}} = \frac{focal\_length \times baseline}{disp\sb{gen\sb{i}}}\);
-            \(depth\sb{gt\sb{i+1}} = \frac{focal\_length \times baseline}{disp\sb{gen\sb{i+1}}}\);
-            \(depthDiff = |depth\sb{gt\sb{i}}-depth\sb{gt\sb{i+1}}|\);
-            \(stAc\_detected = \frac{pupil\_distance*depthDiff}{depth\sb{gt\sb{i}}\sp{2}}\);
+            \(dispDiff = |disp\sb{gen\sb{p}}-disp\sb{gen\sb{p+1}}|\);
+            \(depth\sb{gt\sb{p}} = \frac{focal\_length \times baseline}{disp\sb{gt\sb{p}}}\);
+            \(depth\sb{gt\sb{p+1}} = \frac{focal\_length \times baseline}{disp\sb{gt\sb{p+1}}}\);
+            \(depthDiff = |depth\sb{gt\sb{p}}-depth\sb{gt\sb{p+1}}|\);
+            \(stAc\_detected = \frac{pupil\_distance*depthDiff}{depth\sb{gt\sb{p}}\sp{2}}\);
             for each threshold \textit{thr} in StAc\_thresh; do
                if (\(stAc\_detected<thr\))
-                  if (\(diff>0\))
+                  if (\(dispDiff>0\))
                      \(detected[thr]++\);
                   fi
                fi
@@ -628,6 +628,14 @@ This process is repeated for different images and, finally, the average of the d
 \textbf{ADP}; END
 \end{alltt}
 The results for both algorithms are shown in Figure \ref{fig:algthresh}.
+As can be seen in these plots, for both algorithms, the average detected changes in disparity differences starts to converge at the value of approximately $0.4$ arcmins.
+We also observe that for the values below this threshold the average detected changes are much lower and for some values, such as the minimum detectable threshold in ground truth,
+both algorithms are not capable of detecting any change in depth values. 
+This implies that, regardless of the accuracy resolution of the algorithms, which is $1/8$th of a pixel for SGBM and $1/16$th of a pixel for ADCensus, approximately equal to
+$0.6$ arcmins and $0.3$ arcmins, respectively, for Kitti images based on the camera parameters and the geometrical relation presented in Figure \ref{fig:camResolution} and 
+Equation \ref{eq:algResolution}, some changes in 
+depth in the real world cannot be still detected by the algorithm. This effect might be due to the constraints of the sensor, that is, the errors associated with the capturing 
+device and its resolution, or the environmental noise. 
 
 \begin{figure}[H]
 \centering
@@ -636,15 +644,6 @@ The results for both algorithms are shown in Figure \ref{fig:algthresh}.
 \label{fig:algthresh}
 \end{figure} 
 
-As can be seen in these plots, for both algorithms, the average detected changes in disparity differences starts to converge at the value of approximately $0.4$ arcmins.
-We also observe that for the values below this threshold the average detected changes are much lower and for some values, such as the minimum detectable threshold in ground truth,
-both algorithms are not capable of detecting any change in depth values. 
-This implies that, regardless of the accuracy resolution of the algorithms, which is $1/8$th of a pixel for SGBM and $1/16$th of a pixel for ADCensus and approximately equal to
-$0.6$ arcmins and $0.3$ arcmins, respectively, for Kitti images based on the camera parameters and the geometrical relation presented in Figure \ref{fig:camResolution} and 
-Equation \ref{eq:algResolution}, some changes in 
-depth in the real world cannot be still detected by the algorithm. This effect might be due to the constraints of the sensor, that is, the errors associated with the capturing 
-device and its resolution, or the environmental noise. 
-
 \begin{figure}[H]
 \centering
 \includegraphics{camRes}
@@ -652,15 +651,16 @@ device and its resolution, or the environmental noise.
 \label{fig:camResolution}
 \end{figure}
 \noindent
-Where, $w$ is the image width and $f$ is the focal length of the capturing device.
-For the image size of $1242\times375$ and focal length of $721$, and based on the resolution of SGBM and ADCensus in the estimation of the disparity values, 
-the detectable disparity difference in terms of stereoacuity is as follows:
+
+In Figure \ref{fig:camResolution}, $w$ is the image width and $f$ is the focal length of the capturing device.
+For the image size of $1242\times375$ pixels and focal length of $721$ millimeters, and based on the resolution of SGBM and ADCensus in the estimation of the disparity values, 
+the detectable disparity difference in terms of effective stereoacuity is as follows:
 \begin{align}
 \label{eq:algResolution}
 SGBM: \theta &= \arctan (\frac{\frac{1}{8}}{721}) = 0.0099 degrees \times 60 \frac{arcmins}{degrees} = 0.59 arcmins \\[2ex]
 ADCensus: \theta &= \arctan (\frac{\frac{1}{16}}{721}) = 0.0049 degrees \times 60 \frac{arcmins}{degrees}= 0.29 arcmins
 \end{align}
-
+\noindent
 Therefore, in order to achieve more accurate depth values in the stereo algorithms and better detectability of their changes, 
 in areas of depth discontinuities, that is, to obtain a lower 
 detection threshold of depth changes
