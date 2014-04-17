@@ -51,7 +51,7 @@ Figure \ref{fig:AR} illustrates a high level architecture of an AR system with i
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.8]{AR}
+\includegraphics[scale=0.75]{AR}
 \caption{High-level architecture of an AR system}
 \label{fig:AR}
 \end{figure} 
@@ -174,11 +174,10 @@ The pseudocode for this operation is as follows:
    for all pixels p in the image; do
       if (masked)
          if(!mask[p]) continue;
-      else 
-         \(pix\_count += 1\);
-         \(Disp\sb{err} = |disp\sb{gt}-disp\sb{gen}|\);
-         \(DispErr\sb{total} += Disp\sb{err}\);
       fi
+      \(pix\_count += 1\);
+      \(Disp\sb{err} = |disp\sb{gt}-disp\sb{gen}|\);
+      \(DispErr\sb{total} += Disp\sb{err}\);
   end for
    \(Avg\_DispErr = (DispErr\sb{total})/(pix\_count)\);
 \textbf{ADE Estimation}; END
@@ -203,16 +202,15 @@ eight values are reported at the end of the evaluation for the average outliers.
    for all pixels p in the image; do
          if (masked)
             if(!mask[p]) continue;
-         else 
-            \(pix\_count += 1\);
-            \(depth\sb{gt} = \frac{focal\_length * baseline}{disp\sb{gt}}\);
-            \(depth\sb{gen} = \frac{focal\_length * baseline}{disp\sb{gen}}\);
-            \(depth\sb{err} = |depth\sb{gt}-depth\sb{gen}|\);
-            \(stAc\sb{err} = \frac{pupil\_distance*depth\sb{err}}{depth\sb{gt}\sp{2}}\);
-            if (\(stAc\sb{err} \geq stAc\sb{threshold}\))
-               \(Outliers\sb{total} += 1\);
-            fi
-        fi
+         fi
+         \(pix\_count += 1\);
+         \(depth\sb{gt} = \frac{focal\_length * baseline}{disp\sb{gt}}\);
+         \(depth\sb{gen} = \frac{focal\_length * baseline}{disp\sb{gen}}\);
+         \(depth\sb{err} = |depth\sb{gt}-depth\sb{gen}|\);
+         \(stAc\sb{err} = \frac{pupil\_distance*depth\sb{err}}{depth\sb{gt}\sp{2}}\);
+         if (\(stAc\sb{err} \geq stAc\sb{threshold}\))
+            \(Outliers\sb{total} += 1\);
+         fi
    end for
    \(Avg\_Outliers = (Outliers\sb{total})/(pix\_count)\);
 \textbf{AO Estimation}; END
@@ -259,14 +257,13 @@ similar to the histogram constructed in the the previous step.
       for all pixels p in the image; do
             if (masked)
                if(!mask[p]) continue;
-            else 
-               \(pix\_count += 1\);
-               \(depth\sb{gt} = \frac{focal\_length * baseline}{disp\sb{gt}}\);
-               \(depth\sb{gen} = \frac{focal\_length * baseline}{disp\sb{gen}}\);
-               \(depth\sb{err} = |depth\sb{gt}-depth\sb{gen}|\);
-               \(stAc\sb{err} = \frac{pupil\_distance*depth\sb{err}}{depth\sb{gt}\sp{2}}\);
-               Append(stActFile,\(stAc\sb{err}\));
-            fi 
+            fi    
+            \(pix\_count += 1\);
+            \(depth\sb{gt} = \frac{focal\_length * baseline}{disp\sb{gt}}\);
+            \(depth\sb{gen} = \frac{focal\_length * baseline}{disp\sb{gen}}\);
+            \(depth\sb{err} = |depth\sb{gt}-depth\sb{gen}|\);
+            \(stAc\sb{err} = \frac{pupil\_distance*depth\sb{err}}{depth\sb{gt}\sp{2}}\);
+            Append(stActFile,\(stAc\sb{err}\));
       end for
    end for
    /**Historgram over depth ranges for each image**/
@@ -277,7 +274,7 @@ similar to the histogram constructed in the the previous step.
    end for
    /**Histogram for final stereoacuity over all the images**/
    \(Avg\_StAc\) = histogram.build(bins,width);
-   Write(Avg\_StAc,\(Avg\_StAcFile\));
+   Write(Avg\_StAcFile,\(Avg\_StAc\));
    plot(Avg\_StAcFile);
 \textbf{ASA Estimation}; END
 \end{alltt}

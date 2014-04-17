@@ -7,11 +7,34 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.2"
    width="453.5433"
    height="340.15747"
-   id="svg2">
+   id="svg2"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="AR.svg">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1855"
+     inkscape:window-height="1056"
+     id="namedview116"
+     showgrid="false"
+     inkscape:zoom="1.3875926"
+     inkscape:cx="563.21547"
+     inkscape:cy="25.598566"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
   <defs
      id="defs4">
     <inkscape:path-effect
@@ -59,7 +82,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -445,17 +468,18 @@
     <rect
        width="74.866135"
        height="42.519657"
-       x="483.41733"
+       x="473.41733"
        y="945.62207"
        id="rect3941-0"
        style="fill:#ffccaa;stroke:#28220b;stroke-width:1.25784373;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
     <text
-       x="519.76379"
+       x="509.76379"
        y="968.88177"
        id="text7262"
        xml:space="preserve"
-       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"><tspan
-         x="519.76379"
+       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       sodipodi:linespacing="125%"><tspan
+         x="509.76379"
          y="968.88177"
          id="tspan7264"
          style="font-size:10px;font-weight:bold;-inkscape-font-specification:Sans Bold">User</tspan></text>
@@ -518,8 +542,9 @@
            id="rect4118" /></flowRegion><flowPara
          id="flowPara4120"
          style="font-size:10px">Depth</flowPara></flowRoot>    <path
-       d="m 420.11023,967.32283 61.77953,0"
+       d="m 420.11023,967.32283 52.16122,0"
        id="path4122"
-       style="fill:none;stroke:#000000;stroke-width:0.99921262;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow2Mend-9)" />
+       style="fill:none;stroke:#000000;stroke-width:0.91814119;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow2Mend-9)"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>
