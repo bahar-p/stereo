@@ -189,20 +189,21 @@ In order to investigate the benefits of our proposed model, we have evaluated tw
 These algorithms are:
 \begin{enumerate}
 \item Semi-global block matching, also known as SGBM, which is a modified version of the semi-global matching by Hirschmuller \cite{hir08}.
-\item The solution  proposed by Mei et al., ``On building an accurate stereo matching system on graphics hardware'' \cite{mei11}, also known as ADCensus.
+\item Our implementation of the solution proposed by Mei et al., ``On building an accurate stereo matching system on graphics hardware'' \cite{mei11}, also known as ADCensus.
 \end{enumerate}
 
 SGBM is now integrated in the Open Source Computer Vision Library (OpenCV) \cite{sgbm} and, therefore, we have used this implementation
 in our evaluation.
-On the other hand, since no implementation of ADCensus is available in the public vision libraries, we have used our own implementation of it.
-Although ADCensus is originally proposed as a GPU-based solution, we have used the CPU implementation of it in our evaluation.
+On the other hand, since no implementation of ADCensus is available in the public vision libraries, we have used our own implementation of it 
+which we refer to as ADCensusB in this report.
+Although ADCensus is originally proposed as a GPU-based solution, we have used the CPU implementation of it in our evaluation, as no public GPU-implementation was also available.
 
 SGBM is selected as it has shown to generate acceptable results within 1-2 seconds on the typical test images \cite{hir08}; moreover,
 its integration within the OpenCV library has made its usage more common in different applications. 
 ADCensus is also currently ranked as one of the best solutions 
 for solving the problem of stereo correspondence in terms of general accuracy, regardless of the running time, 
 according to the Middlebury evaluation table \cite{mideval}.
-In addition, AdCensus does not currently exist in the KITTI evaluation table which motivates us to evaluate its performance
+In addition, AdCensus does not currently exist in the KITTI evaluation table which motivates us to evaluate our implementation of it
 under real world circumstances with outdoor stereo images.
 
 \section{Organization of Thesis}
