@@ -162,7 +162,7 @@ the values corresponding to different image pairs is taken to obtain the average
 Two average disparity errors are calculated in our evaluation. One corresponds to the valid pixels in the ground truth, depending on what value is considered valid
 in the ground truth disparity, and the other to
 the valid pixels in the generated disparity which depends on the implementation of the stereo algorithm.
-The valid ground truth disparity for the Kitti disparity maps, is a value greater than 0 and in the selected algorithms, SGBM and ADCensus, 
+The valid ground truth disparity for the Kitti disparity maps, is a value greater than 0 and in the selected algorithms, SGBM and ADCensusB, 
 values equal to or greater than 0 are considered valid.
 To this end, for each validity criteria, the mean difference between the ground truth disparity and the one found by the algorithm
 is estimated for all the pixels in the image or merely the masked pixels depending on the availability of a mask. 
