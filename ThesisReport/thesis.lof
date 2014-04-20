@@ -40,6 +40,6 @@
 \contentsline {figure}{\numberline {5.19}{\ignorespaces Average disparity error for the whole images - unrefined\relax }}{75}
 \contentsline {figure}{\numberline {5.20}{\ignorespaces Average disparity error for the whole images - refined\relax }}{76}
 \contentsline {figure}{\numberline {5.21}{\ignorespaces Average disparity error for the masked regions - not refined\relax }}{77}
-\contentsline {figure}{\numberline {5.22}{\ignorespaces Average detected changes for different stereoacuity thresholds\relax }}{81}
+\contentsline {figure}{\numberline {5.22}{\ignorespaces Average detected pixels for different stereoacuity thresholds\relax }}{81}
 \contentsline {figure}{\numberline {5.23}{\ignorespaces Resolution of image in angular disparity\relax }}{82}
 \addvspace {10\p@ }
