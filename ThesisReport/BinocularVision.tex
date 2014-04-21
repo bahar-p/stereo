@@ -17,7 +17,7 @@ In motion parallax, which is a monocular depth cue, the scene is viewed at diffe
 whereas in binocular parallax, the scene is viewed from slightly different viewpoints at
 the same time by the visual system, while the observer is standing at a fixed position \cite{how95}.
 
-\begin{figure}[!h]
+\begin{figure}[H]
 \centering
 \subcaptionbox{Motion Parallax}
 [.4\linewidth]{\includegraphics{Mparallax}}%
@@ -75,13 +75,13 @@ or seconds of arc (arcseconds). The relation between these measurements is as fo
 
 In the following section, we will describe how the angular disparity can be calculated utilizing the geometry of stereopsis \cite{binr83}.
 
-\begin{figure}[!h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.5\textwidth]{binocular}
 \caption{Binocular disparity}
 \label{fig:stereopsis}
 \end{figure} 
-
+\noindent
 According to Figure \ref{fig:stereopsis}, we have:
 \begin{align}
 \label{eq:tang}
@@ -90,7 +90,6 @@ According to Figure \ref{fig:stereopsis}, we have:
 \end{align}
 It is known that for small angles, when the angle approaches zero, the tangent of an angle is approximately equal to the angle in radians. Therefore, we will
 have the following relations:
-
 \begin{align}
 \theta &= 2\phi = \beta - \alpha\\
 \frac{\alpha}{2} &\approx \frac{a}{2Z^{'}}\\
@@ -102,7 +101,6 @@ Z^{'} &= Z + \Delta Z\\
 When $\Delta Z$ is a small value compared to $Z$, the term $\Delta Z$ in the denominator can be neglected without 
 significant loss of accuracy. This results in
 the approximate formula as follows:
-
 \begin{align}
 \label{eq:stac}
 \theta \approx \frac{a \Delta Z}{Z^{2}}
@@ -122,7 +120,7 @@ This threshold, which is defined as the minimum detectable depth between two
 objects at difference distances, is known as {\it stereoacuity} which varies in different visual systems \cite{binr83,how95}. According to standard
 stereo tests \cite{binr83}, the finest detectable disparity in the human visual system is approximately 10-15 arcseconds.
 However, a more recent study on 60 subjects \cite{garn06} at different age groups, from 17 to 83 using standard stereotests, 
-shows that the average stereoacuity for different age groups is as follows:
+shows that the average stereoacuity for different age groups is as follows: \newline
 
 \begin{minipage}{\linewidth}
 \begin{center}
@@ -137,7 +135,7 @@ shows that the average stereoacuity for different age groups is as follows:
 70-83 & 112.5 \\ \hline
 \end{tabular}
 \end{center}
-\end{minipage} \newline
+\end{minipage} \newline \newline
 
 As can be seen, the stereoacuity for the the human visual system increases with age, that is, 
 the amount of error in the depth results 
