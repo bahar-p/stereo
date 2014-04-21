@@ -41,7 +41,7 @@ Consequently, the intersection of the plane $S$ and each of the image planes, cr
 The {\it epipolar line} always passes through the {\it epipole} in the image plane. 
 These concepts, illustrated in Figure \ref{fig:epg}, constitute the important components of the stereo correspondence geometry.
 
-\begin{figure}[!h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.5\textwidth]{epipole}
 %\includesvg{epipole}
@@ -75,7 +75,7 @@ Furthermore, it might be necessary to have the cameras tilted so that their {\it
 After these two steps, corresponding epipolar lines actually become horizontal scanlines; Figure \ref{fig:rectify}. This pre-processing step significantly constrains the process of searching 
 for corresponding points and eliminates certain complications in stereo matching algorithms \cite{sze11}.
 
-\begin{figure}[!h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.65\textwidth, trim=20mm 0mm 0mm 150mm,clip]{rectdisp}
 \caption{Rectified image pairs and disparity geometry}
@@ -86,7 +86,7 @@ Sample stereo images taken using two regular webcams are displayed in Figures \r
 before and after rectification. 
 The red line shows how features get aligned in the left and right image after the rectification process.
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
 \subcaptionbox{Left image unrectified}
 [.5\linewidth]{\includegraphics[scale=0.35]{RectL}}%
@@ -96,7 +96,7 @@ The red line shows how features get aligned in the left and right image after th
 \label{fig:unrect}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
 \subcaptionbox{Left image rectified}
 [.5\linewidth]{\includegraphics[scale=0.35]{rectLmark}}%
@@ -108,7 +108,8 @@ The red line shows how features get aligned in the left and right image after th
 
 Using the rectification model and epipolar geometry described earlier, 
 derivation of the geometrical relation through which the depth of a certain point in 3D space 
-can be obtained, will be straightforward. This relation is presented as follows \cite{sze11}:
+can be obtained, will be straightforward \cite{sze11}. This relation is presented as follows:
+
 \begin{align}
 \frac{X_{L}}{Z} &= \frac{x_{l}}{f} \label{eq:1} \\
 \frac{-X_{R}}{Z} &= -\frac{x_{r}}{f}  \Rightarrow B-\frac{X_{L}}{Z}=-\frac{x_{r}}{f} \label{eq:2} \\
@@ -118,6 +119,7 @@ d &= \frac{Bf}{Z} \label{eq:dispeq}
 \end{align}
 where f is the {\it focal length} measured in pixels, B is the {\it baseline}, Z is the {\it 3D depth}, and d is the {\it disparity}. The relationship between corresponding pixels in the left
 and right images according to disparity {\it d} is also as follows:
+
 \begin{align}
 {P}^{"}_{x} &= {P}^{'}_{x}+d(x,y) \\
 {P}^{"}_{y} &= {P}^{'}_{y}
@@ -141,8 +143,7 @@ According to the taxonomy by Scharstein et al. these steps are as follows:
 \item {Disparity computation}
 \item {Disparity refinement}
 \end{enumerate}
-Depending on each algorithm, these steps and their sequence may change.
-
+Depending on each algorithm, these steps and their sequence may change.\newline
 In this section, we are going to briefly describe the important specifications of the algorithms belonging to each of these two categories.
 \subsection{Sparse Correspondence Algorithms}
 Sparse correspondence algorithms, also known as feature-based algorithms, are the early stereo matching methods. In the 1980s, this class of algorithms received considerable attention by
@@ -158,7 +159,7 @@ sort result in a sparse disparity map \cite{matt89,hsie92, sze11}. The introduct
 such as illumination variations; in other words, when there is a considerable difference in photometric properties between the images, 
 particular features, such as the edges, may be more reliable to start the correspondence search.
 \end{itemize}
-
+\noindent
 However, the requirement of having dense depth maps for many applications and also the emergence of efficient {\it dense correspondence algorithms}, have diverted the attention away
 from this class of algorithms in the last 20 years.
 
@@ -167,8 +168,7 @@ Unlike feature-based methods, dense correspondence algorithms try to find the
 correspondences for all the pixels in the image and, therefore, result in a dense disparity map. Most recent algorithms and studies have focused on this class of algorithms since many applications 
 nowadays, such as graphical rendering, 3D model construction, or augmented reality require a dense depth map of the scene. 
 However, these algorithms face many challenges that need to be properly
-addressed, such as finding the depth values in occluded regions, depth discontinuities, and textureless areas \cite{sch02,bro03}.
-
+addressed, such as finding the depth values in occluded regions, depth discontinuities, and textureless areas \cite{sch02,bro03}. \newline
 Dense correspondence algorithms are usually classified in two groups based on how they assign
 disparities to pixels \cite{sze11}:
 \begin{enumerate}
@@ -206,10 +206,9 @@ The term $E_{data}$ is normally defined as the difference of a common metric, e.
 \begin{equation}
 E_{data}(d) = \sum_{(x,y)}C(x,y,d(x,y))
 \end{equation}
-
+\noindent
 where C is a matching cost. The matching cost function can have various definitions depending on the algorithm; however, as mentioned above, it is normally defined as sum of absolute difference 
-between the intensity of the corresponding pixels in two images \cite{sch02}.
-
+between the intensity of the corresponding pixels in two images \cite{sch02}. \newline
 The term, $E_{smooth}$, is the smoothness assumption based on which the disparity values in different regions are refined. The definition of this term can also vary in 
 different solutions. $\lambda$ is also a weighting factor, by which the effect of the smoothness assumption in the global function can be controlled in the algorithm \cite{sze11}.
 In order to find the minimum of the global function, certain approaches in computer science have proved to be particularly useful. 
@@ -244,10 +243,12 @@ which only passes low frequencies.
 A widely known class of image blurring filters in computer vision are called {\it linear filters}, whose output is a linear function of their input. 
 In linear filtering operators, for each pixel a weighted summation of its neighboring pixels
 is used in order to estimate its final value \cite{sze11}. In mathematics, this process can be modelled by convolution of the input signal with a particular function, known as kernel. 
+
 \begin{equation}
 g(i,j)=\sum_{k,l}f(i+k,j+l)h(k,l)
 \end{equation}
 which is denoted as:
+
 \begin{equation}
 g=f\bigotimes h
 \end{equation}
@@ -261,6 +262,7 @@ with a symmetric 2D kernel function.
 This feature is particularly found in the Gaussian filter, since it employs a 2D symmetric kernel. Because of this unique feature, 
 the Gaussian filter is normally used in most edge detection algorithms as a pre-processing step.
 An isotropic, i.e. circularly symmetric, the Gaussian kernel has the following form \cite{sze11}:
+
 \begin{equation}
 G(x,y)=\frac{1}{2\pi \sigma ^{2}} e^{-\frac{x^{2}+y^{2}}{2\sigma^{2}}}
 \end{equation}
@@ -293,14 +295,13 @@ G_{y} &= \begin{bmatrix}
 0 & 0 & 0 \\ 
 +1 & +2 & +1
 \end{bmatrix}
-\end{align}
-
+\end{align} \newline
 Following the estimation of image gradients in each direction, the magnitude and the direction of an edge element can then be found by \cite{sze11}:
+
 \begin{align}
 \left | G \right | &= \sqrt{G_{x}^{2} + G_{y}^{2}} \\
 \theta &= \arctan (\frac{G_{y}}{G_{x}})
-\end{align}
-
+\end{align} \newline
 The process of applying the Sobel operator mask to the smoothed image, is in fact equivalent to getting 
 the first or second order directional derivative of the smoothed image and then looking for the maximum values or the zero values, 
 respectively \cite{sze11}. 
@@ -331,7 +332,7 @@ Figure \ref{fig:edgenodil} shows the detected edges obtained by applying the can
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.35]{mask5nodil}
-\caption{Canny edge detection on an image}
+\caption{Canny edge detection on Figure \protect\ref{fig:imggt5}}
 \label{fig:edgenodil}
 \end{figure} 
 
@@ -378,9 +379,9 @@ detected regions.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.35]{mask5dil}
-\caption{Dilation of the detected edges with a 10x10 structuring element}
+\caption{Dilation of the detected edges in Figure \protect\ref{fig:edgenodil} with a 10x10 structuring element}
 \label{fig:edgedil}
 \end{figure}
-
+\noindent
 In the next chapter, we will describe the key concepts in the human visual system that are related to the perception of the depth.
 
