@@ -96,7 +96,7 @@ Experiments were carried out on a Linux machine with Intel Core(TM) i7 3.20GHz C
 Although the GPU-based approach to both algorithms are proposed in the literature,
 we have used their CPU implementations in all the experiments, since none of the GPU implementations is publicly available.
 The disparity results by our implementation of ADCensus corresponding to Tsukuba and Venus images from Middlebury dataset, Figure \ref{fig:midburyimgs}, 
-are shown in Figure \ref{fig:midburydisps}, which resemble the results published in the paper \cite{mei11}; therefore, we can
+are shown in Figure \ref{fig:midburydisps}, which nearly resemble the results published in the paper \cite{mei11}; therefore, we can
 claim that our implementation is rather similar to the original solution. \newline
 The set of parameters used at different steps of the evaluation are presented in the following sections.
 It should be noted that these parameters were kept constant for all the images and experiments. However, if a parameter is changed during an experiment for specific
@@ -436,7 +436,9 @@ words, it is reasonable to first investigate which regions in the image are more
 %other regions in the image or not.
 For instance, ADCensusB performs better in an application where the areas
 near the depth discontinuities and occlusion are more important than the rest of the image, such as image compositing for layering visual elements
-on the scene, compared to application scenarios where obtaining an accurate, dense disparity map for all the regions in an image is essential.
+on the scene, compared to application scenarios where obtaining an accurate, dense disparity map for all the regions in an image is essential, such as
+constructing a 3D model of the scene or preparing a model for 3D printing.
+
 
 \begin{figure}[H]
 \centering
@@ -699,7 +701,7 @@ device and its resolution, or the environmental noise.
 \begin{figure}[H]
 \centering
 \includegraphics{algthreshBoth}
-\caption{Average detected pixels for different stereoacuity thresholds}
+\caption{Average detected pixels by SGBM and ADCensusB for specific stereoacuity thresholds marked on each curve}
 \label{fig:algthresh}
 \end{figure} 
 \begin{figure}[H]
@@ -718,16 +720,34 @@ In Figure \ref{fig:camResolution}, $w$ is the image width and $f$ is the focal l
 \end{align}
 
 For the image size of $1242\times375$ pixels and focal length of $721$ millimeters, and based on the resolution of SGBM and ADCensusB in the estimation of the disparity values, 
-the detectable disparity difference in terms of effective stereoacuity is as follows:
+the minimum and maximum detectable disparity, that is, at the center and at the boundary of the image, respectively, 
+in terms of effective stereoacuity are as follows:
 
 \begin{align}
-\label{eq:alg:sgbmresolv} 
-SGBM: \theta &= \arctan (\frac{\frac{1}{8}}{721}) = 0.0099 degrees \times 60 \frac{arcmins}{degrees} = 0.59 arcmins \\[2ex]
-ADCensusB: \theta &= \arctan (\frac{\frac{1}{16}}{721}) = 0.0049 degrees \times 60 \frac{arcmins}{degrees}= 0.29 arcmins \label{eq:adcenresolv}
-\end{align}
+\label{eq:algsgbmresolv} 
+&\begin{aligned}
+SGBM: \theta_{max} &= \arctan (\frac{\frac{1}{8}}{721}) \\
+&= 0.00993 \text{ degrees} \times 60 \frac{arcmins}{degrees} = 0.596 \text{ arcmins}
+\end{aligned}\\[2ex]
+&\begin{aligned}
+SGBM: \theta_{min} &= \arctan (\frac{\frac{1}{8}\times(\frac{1242}{2})}{721}) - \arctan (\frac{\frac{1}{8}\times(\frac{1242}{2}-1)}{721}) \\
+&= 0.00982 \text{ degrees} \times 60 \frac{arcmins}{degrees} = 0.589 \text{ arcmins}
+\end{aligned}\\[2ex]
+&\begin{aligned}
+ADCensusB: \theta_{max} &= \arctan (\frac{\frac{1}{16}}{721}) \\
+&= 0.00496 \text{ degrees} \times 60 \frac{arcmins}{degrees}= 0.298 \text{ arcmins} 
+\label{eq:adcenresolv}
+\end{aligned}\\[2ex]
+&\begin{aligned}
+ADCensusB: \theta_{min} &= \arctan (\frac{\frac{1}{16}\times(\frac{1242}{2})}{721}) - \arctan (\frac{\frac{1}{16}\times(\frac{1242}{2}-1)}{721}) \\
+&= 0.00495 \text{ degrees} \times 60 \frac{arcmins}{degrees}= 0.297 \text{ arcmins}
+\end{aligned}
+\end{align} \newline
 \noindent
+However, as can be seen, the minimum and maximum angular resolution in the image are not considerably different.
 
-Therefore, in order to achieve more accurate depth values in the stereo algorithms and better detectability of their changes, 
+As a result of this experiment, we can conclude that in order to achieve 
+more accurate depth values in the stereo algorithms and better detectability of their changes, 
 in areas of depth discontinuities, that is, to obtain a lower 
 threshold of depth changes
 closer to the actual resolution of the implemented algorithm, using higher resolution devices and considering their robustness to noise are also essential.

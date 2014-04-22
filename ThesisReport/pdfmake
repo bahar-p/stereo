@@ -1,0 +1,26 @@
+# make -f Makefile_latex
+
+R1 = thesis
+#FIG = images/samplefigure.pdf
+
+pdf: $(R1).pdf
+
+$(R1).dvi: $(R1).tex
+	latex $*.tex
+	bibtex $*.aux
+	bibtex $*.aux
+	latex $*.tex
+	latex $*.tex
+	while grep -s 'Rerun' $*.log 2> /dev/null; do	\
+		latex $*.tex;			\
+	done
+
+$(R1).ps: $(R1).dvi
+	dvips -Ppdf -G0 -t letter -o $@ $<
+
+$(R1).pdf: $(R1).dvi
+	ps2pdf -sPAPERSIZE=letter $< $@
+
+clean:
+	rm -f $(R1).log $(R1).aux $(R1).bbl $(R1).blg $(R1).dvi $(R1).ps $(R1).out
+	rm -f $(R2).log $(R2).aux $(R2).bbl $(R2).blg $(R2).dvi $(R2).ps $(R2).out
