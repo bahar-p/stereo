@@ -169,10 +169,12 @@ The pseudocode for this operation is as follows:
 \begin{alltt}
 \textbf{ADE Estimation}; START
    \(DispErr\sb{total}=0\);
-   for all pixels p in the image; do
+   for all pixels p in the image:
       if (masked)
-         if(!mask[p]) continue;
-      fi
+         if(!mask[p]) 
+            continue; 
+         end if
+      end if
       \(pix\_count += 1\);
       \(Disp\sb{err} = |disp\sb{gt}-disp\sb{gen}|\);
       \(DispErr\sb{total} += Disp\sb{err}\);
@@ -196,21 +198,23 @@ eight values are reported at the end of the evaluation for the average outliers.
 
 \begin{alltt}
 \textbf{AO Estimation}; START
-   \(Outliers\sb{total} = 0\);
-   for all pixels p in the image; do
+   \(Total\_Outliers = 0\);
+   for all pixels p in the image:
          if (masked)
-            if(!mask[p]) continue;
-         fi
+            if(!mask[p])
+               continue;
+            end if
+         end if
          \(pix\_count += 1\);
          \(depth\sb{gt} = \frac{focal\_length * baseline}{disp\sb{gt}}\);
          \(depth\sb{gen} = \frac{focal\_length * baseline}{disp\sb{gen}}\);
          \(depth\sb{err} = |depth\sb{gt}-depth\sb{gen}|\);
          \(stAc\sb{err} = \frac{pupil\_distance*depth\sb{err}}{depth\sb{gt}\sp{2}}\);
          if (\(stAc\sb{err} \geq stAc\sb{threshold}\))
-            \(Outliers\sb{total} += 1\);
-         fi
+            \(Total\_Outliers += 1\);
+         end if
    end for
-   \(Avg\_Outliers = (Outliers\sb{total})/(pix\_count)\);
+   \(Avg\_Outliers = (Total\_Outliers)/(pix\_count)\);
 \textbf{AO Estimation}; END
 \end{alltt}
 
@@ -251,11 +255,14 @@ similar to the histogram constructed in the the previous step.
 
 \begin{alltt}
 \textbf{ASA Estimation}; START
-   for all images; do
-      for all pixels p in the image; do
+   // STEP1:
+   for all images:
+      for all pixels p in the image:
             if (masked)
-               if(!mask[p]) continue;
-            fi    
+               if(!mask[p]) 
+                  continue;
+               end if
+            end if    
             \(pix\_count += 1\);
             \(depth\sb{gt} = \frac{focal\_length * baseline}{disp\sb{gt}}\);
             \(depth\sb{gen} = \frac{focal\_length * baseline}{disp\sb{gen}}\);
@@ -264,12 +271,14 @@ similar to the histogram constructed in the the previous step.
             Append(stActFile,\(stAc\sb{err}\));
       end for
    end for
-   /**Historgram over depth ranges for each image**/
+   // STEP2:
+   /**Histogram over depth ranges for each image**/
    width = depth\_range;
-   for each stActFile; do
+   for each stActFile:
       \(Avg\_StAc\_img\) = histogram.build(bins,width);
       Append(img\_histFile,\(Avg\_StAc\_img\));
    end for
+   // STEP3:
    /**Histogram for final stereoacuity over all the images**/
    \(Avg\_StAc\) = histogram.build(bins,width);
    Write(Avg\_StAcFile,\(Avg\_StAc\));

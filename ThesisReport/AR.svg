@@ -24,19 +24,32 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1855"
-     inkscape:window-height="1056"
+     inkscape:window-width="1535"
+     inkscape:window-height="876"
      id="namedview116"
      showgrid="false"
      inkscape:zoom="1.3875926"
-     inkscape:cx="563.21547"
-     inkscape:cy="25.598566"
+     inkscape:cx="183.60532"
+     inkscape:cy="92.729013"
      inkscape:window-x="65"
      inkscape:window-y="24"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
      id="defs4">
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="marker4138"
+       style="overflow:visible;">
+      <path
+         id="path3909"
+         style="fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(0.6) rotate(180) translate(0,0)" />
+    </marker>
     <inkscape:path-effect
        effect="spiro"
        id="path-effect4124" />
@@ -545,6 +558,16 @@
        d="m 420.11023,967.32283 52.16122,0"
        id="path4122"
        style="fill:none;stroke:#000000;stroke-width:0.91814119;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow2Mend-9)"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m -190.25757,783.95355 c 0,125.39704 0,122.51435 0,122.51435"
+       id="path3094"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker4138)"
+       d="M -189.69892,905.58521 9.2067221,904.86454"
+       id="path3096"
        inkscape:connector-curvature="0" />
   </g>
 </svg>

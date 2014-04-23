@@ -653,9 +653,12 @@ different pixels, Figure \ref{fig:scanline}.
 \end{figure} 
 
 After finding the minimum value in each image, a global minimum is sought between all the computed values from different images.
-The value we found for image size of $1242\times375$ and the focal length of $721$ millimeters was $0.0022$ arcmins.
-After finding this minimum and defining our thresholds, we apply a nearly similar operation on the disparity results from each of the sample algorithms.
-In this process, while moving through each image, for those pixels whose generated disparity is close to the ground truth disparity, within a specific pixel threshold, 
+The value we found for a group of twelve images selected from our dataset with the size of $1242\times375$ and the focal length of $721$ 
+millimeters was $0.0022$ arcmins.
+After finding this minimum and defining our thresholds, we apply a nearly similar operation on the disparity results of the same group of images 
+from each of the sample algorithms.
+In this process, while moving through each image, for those pixels whose generated disparity is close to the ground truth disparity, 
+within a specific pixel threshold, 
 we estimate their depth difference from their following pixel
 in the ground truth and compare the value to each of the specified thresholds; if this value is less than a threshold, then we check to see whether
 the stereo algorithm has also detected different values for the corresponding pixels. 
@@ -665,25 +668,36 @@ This process is repeated for different images and, finally, the average of detec
 \begin{alltt}
 \textbf{ADP}; START
       define StAc\_thresh;
-      for all pixels p in the image; do
-         if (\( |disp\sb{gt}-disp\sb{gen}|<pix\_thresh\));
-            \(pix\_count += 1\);
-            \(dispDiff = |disp\sb{gen\sb{p}}-disp\sb{gen\sb{p+1}}|\);
-            \(depth\sb{gt\sb{p}} = \frac{focal\_length \times baseline}{disp\sb{gt\sb{p}}}\);
-            \(depth\sb{gt\sb{p+1}} = \frac{focal\_length \times baseline}{disp\sb{gt\sb{p+1}}}\);
-            \(depthDiff = |depth\sb{gt\sb{p}}-depth\sb{gt\sb{p+1}}|\);
-            \(stAc\_detected = \frac{pupil\_distance*depthDiff}{depth\sb{gt\sb{p}}\sp{2}}\);
-            for each threshold \textit{thr} in StAc\_thresh; do
-               if (\(stAc\_detected<thr\))
-                  if (\(dispDiff>0\))
-                     \(detected[thr]++\);
-                  fi
-               fi
-            end for
+      for all images; do
+         for all pixels p in the image:
+            if (\( |disp\sb{gt}-disp\sb{gen}|<pix\_thresh\))
+               \(pix\_count += 1\);
+               \(dispDiff = |disp\sb{gen\sb{p}}-disp\sb{gen\sb{p+1}}|\);
+               \(depth\sb{gt\sb{p}} = \frac{focal\_length \times baseline}{disp\sb{gt\sb{p}}}\);
+               \(depth\sb{gt\sb{p+1}} = \frac{focal\_length \times baseline}{disp\sb{gt\sb{p+1}}}\);
+               \(depthDiff = |depth\sb{gt\sb{p}}-depth\sb{gt\sb{p+1}}|\);
+               \(stAc\_detected = \frac{pupil\_distance*depthDiff}{depth\sb{gt\sb{p}}\sp{2}}\);
+               for each threshold \textit{thr} in StAc\_thresh:
+                  if (\(stAc\_detected<thr\))
+                     if (\(dispDiff>0\))
+                        \(detected[thr]++\);
+                     end if
+                  end if
+               end for
+            end if
+         end for
+         for each threshold \textit{thr} in StAc\_thresh:
+            \(Avg\_detected[thr] = detected[thr]/pix\_count\);
+            Append(Avg\_pixFile, \(Avg\_detected[thr]\));
+         end for
       end for
-      for each threshold \textit{thr} in StAc\_thresh; do
-         \(Avg\_detected[thr] = detected[thr]/pix\_count\);
+      /**Concatenate the files for all images into one **/
+      for each Avg\_pixFile:
+         Concat(AllimgFile,Avg\_pixFile);
       end for
+      /**Getting the average over all images for each threshold**/
+      Calc\_Average(AllimgFile, OutAvgFile);
+      plot(OutAvgFile);
 \textbf{ADP}; END
 \end{alltt}
 The results for both algorithms are shown in Figure \ref{fig:algthresh}.

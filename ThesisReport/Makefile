@@ -21,15 +21,13 @@ FIGURES =	$(FIGDIR)/MUN_Logo_Pantone.eps		\
 		$(FIGDIR)/db-deadlock.eps
 
 FILES = thesis.tex thesis.sty						\
-	Introduction.tex Background.tex BinocularVision.tex System.tex				\
-	reference.bib
-	#abstract.tex ack.tex contents.tex tables.tex figures.tex	\
+	abstract.tex ack.tex contents.tex tables.tex figures.tex	\
+	Introduction.tex Background.tex BinocularVision.tex System.tex Evaluation.tex Conclusion.tex	\
+	bib.tex reference.bib apdxa.tex
 
-$(MAIN).dvi:    $(MAIN).tex
+$(MAIN).dvi:    $(MAIN).tex $(FILES)
 	$(LATEX) $*.tex; 
-	$(BIBTEX) $(MAIN).aux;
-	$(BIBTEX) $(MAIN).aux;
-	$(LATEX) $*.tex;
+	$(BIBTEX) $*;
 	$(LATEX) $*.tex;
 	while grep -s 'Rerun' $*.log 2> /dev/null; do	\
 		$(LATEX) $*.tex;			\

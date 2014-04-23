@@ -17,30 +17,28 @@
 \usepackage{color}
 \usepackage{alltt}
 \usepackage{pifont}
-%\usepackage{epstopdf}
-%\numberwithin{equation}{section}
 
 %\definecolor{dkgreen}{rgb}{0,0.6,0}
 %\definecolor{gray}{rgb}{0.5,0.5,0.5}
 %\definecolor{mauve}{rgb}{0.58,0,0.82}
 
-\lstset{frame=tb,
-  language=Java,
-  aboveskip=3mm,
-  belowskip=3mm,
-  showstringspaces=false,
-  columns=flexible,
-  basicstyle={\small\ttfamily},
-  numbers=none,
-  numberstyle=\tiny\color{gray},
-  keywordstyle=\color{blue},
-  commentstyle=\color{dkgreen},
-  stringstyle=\color{mauve},
-  breaklines=true,
-  breakatwhitespace=true
-  tabsize=3
-}
-%\makeindex
+%\lstset{frame=tb,
+%  language=Java,
+%  aboveskip=3mm,
+%  belowskip=3mm,
+%  showstringspaces=false,
+%  columns=flexible,
+%  basicstyle={\small\ttfamily},
+%  numbers=none,
+%  numberstyle=\tiny\color{gray},
+%  keywordstyle=\color{blue},
+%  commentstyle=\color{dkgreen},
+%  stringstyle=\color{mauve},
+%  breaklines=true,
+%  breakatwhitespace=true
+%  tabsize=3
+%}
+\makeindex
 \begin{document}
 
 \pagenumbering{roman}
@@ -55,8 +53,9 @@
 	{April 2014}
 
 \include{abstract}
-%\include{ack}
+\include{ack}
 \include{contents}
+\include{tables}
 \include{figures}
 
 
@@ -68,6 +67,5 @@
 \include{Evaluation}
 \include{Conclusion}
 
-\bibliographystyle{plain}
-\bibliography{reference} 
+\include{bib}
 \end{document}
