@@ -1,34 +1,36 @@
 \chapter{Conclusion}
 \label{chap:Conclusion}
-In this chapter, we succinctly mention our contributions in this study and specify some interesting aspects of research and improvement to our proposed system 
-for future studies.
+In this chapter, we succinctly mention our contributions in this study and specify some interesting paths for future 
+research and improvement to our proposed system.
 
 \section{Contributions}
 Due to the emergence of various applications which combine different techniques in computer vision 
 to build a practical system, developing testbeds which are particularly designed for the evaluation of different components in the criteria of the important factors
 in the target application is essential.
-Nowadays, building practical AR applications is a challenging problem due to the various constraints that these systems normally face. Therefore, we believe that
+Nowadays, building practical AR applications is a challenging problem due to the various constraints that these systems normally face. We believe that
 addressing these constraints and attempting to find the efficient solutions are propitious research directions.
 
 In this research, we suggest that stereo correspondence methods can be used in outdoor AR systems
-as a practical alternative to conventional and inefficient technologies, 3D laser scanner or depth cameras, for obtaining the depth map of the surrounding environment.
-This approach requires an evaluation scheme which can effectively evaluate the stereo correspondence methods with an eye to the target application. As a result, the conventional
-evaluation models, the Middlebury and Kitti, will not be sufficient for an effective evaluation of the solutions.
-Therefore, our main contribution in this study, is proposing an application-oriented evaluation scheme that is designed in the light of the important
-factors in an outdoor AR system. Since humans are often the ultimate users of an AR system, we have focused on the relevant factors in the human visual system
+as a practical alternative to conventional and inefficient technologies, 3D laser scanner or depth cameras, for obtaining the depth map 
+of the surrounding environment, but only if a real-time implementation is used.
+This approach, that is, employing stereo correspondence solutions, requires an evaluation scheme which can effectively evaluate the stereo correspondence methods 
+while taking the target application into consideration. As a result, the available
+evaluation models, Middlebury and Kitti, will not be sufficient for an effective evaluation of the solutions.
+Therefore, our main contribution in this study, is proposing an application-oriented evaluation scheme that is designed in the light of the most important
+factors in an outdoor AR system. Since humans are the ultimate users of an AR system, we have focused on the relevant factors in the human visual system
 that are important for the real-time interaction with the augmented world and the perception of depth of the surrounding environment. We have integrated
 specific metrics in our evaluation system which are measured and subsequently evaluated in the framework of an outdoor AR application, thus effectively
 analyzing the performance of the solutions in terms of their accuracy and efficiency, that is its execution time, for the target application. These metrics are
 the average stereoacuity over distance, the average number of outliers, the average disparity error and the the average execution time. We also suggest that some specific areas 
 in a scene are of more importance to AR applications in outdoor environments. Due to the importance of depth discontinuities and occlusion as depth cues to the human visual system,
 we define these regions as the depth edges and their surroundings in the scene. Although our experiments did not prove to be sufficient to investigate the validity of this hypothesis,
-we would still argue that these regions are worthy of being more studied in AR applications.
+we would still hypothesize that these regions are worthy of being studied in AR applications.
 In addition, the trade-off between the accuracy and the running time of a stereo algorithm can be studied through our system in the framework of an outdoor AR system, thus
-better determining the benefit of certain post processing steps to the target application.
+better determining the net benefit of certain post processing steps to the target application.
 
 In conclusion, the experimental results in most cases showed the effectiveness of our approach for evaluation of the stereo solutions in outdoor AR applications, which encourages
 further research in this particular direction to improve this model in more useful aspects.
-Next, we will mention some aspects in which we believe the system can improve.
+Next, we will mention some aspects in which we believe the system can be improved.
 
 \section{Future Work}
 This evaluation model can be improved in a few aspects that we will discuss here.
@@ -37,8 +39,9 @@ of the stereo algorithms. We believe that a solid conclusion can be made by eval
 within our model and observing the results in the masked regions and the whole image.
 
 Another interesting aspect of improvement is a rigorous study on the effect of other factors that can affect the effectiveness and usability of the outdoor AR system and, therefore, 
-are important to be considered in the evaluation of the method that is used to obtain the depth map of the surrounding environment. To name some of these factors we can refer to
-the resolution of the display devices in the AR system, the effect of contrast and brightness, and other relevant factors. A more complete list of these factors can be
+are important to be considered in the evaluation of the method that is used to obtain the depth map of the surrounding environment. 
+To name some of these factors we can refer to
+the resolution of the display devices in the AR system and the effect of contrast and brightness. A more complete list of these factors can be
 found in the survey on the perceptual issues in augmented reality by Kruijff et al. \cite{kru10}.
 
 There are different post processing techniques in computer vision that can be used to refine the disparity results, such as color segmentation and plane fitting, 
