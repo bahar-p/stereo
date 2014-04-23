@@ -19,7 +19,7 @@ of these properties are listed as follows:
 \begin{itemize}
 \item Variation in light and shading, that is, the scenes including bright, dim, and dark regions.
 \item Various depth ranges, that is, including near field, medium field and far field objects. 
-\item Depth discontinuity and occlusion, as observed in the images.
+\item Various degrees of depth discontinuity and occlusion, as observed in the images.
 \item Well textured and not properly textured regions.
 \end{itemize}
 
@@ -81,7 +81,7 @@ disparity results in the end, thus improving the accuracy, whereas the others pr
 Due to the importance of both metrics in an outdoor AR application, we argue that the trade-off between these metrics can be effectively analyzed in our evaluation system.
 
 \item \textbf{Hypothesis 5:} \emph{The ability to detect the difference in depth in stereo correspondence methods not only depends on their accuracy
-in estimation of the disparity values, but also is affected by other factors, such as the environmental noise, the resolution of the capturing device and its
+in estimation of the disparity values, but is also affected by other factors, such as the environmental noise, the resolution of the capturing device and its
 robustness to noise.}
 
 According to different studies \cite{dras96, kru10,azuma01}, some other factors such as issues associated with the environment, display devices, or capturing devices
@@ -94,7 +94,7 @@ The experiments designed to validate these hypotheses are explained in the follo
 \section{Experimental Environment and Settings}
 Experiments were carried out on a Linux machine with Intel Core(TM) i7 3.20GHz CPU. 
 Although the GPU-based approach to both algorithms are proposed in the literature,
-we have used their CPU implementations in all the experiments, since none of the GPU implementations is publicly available.
+we have used their CPU implementations in this research, since none of the GPU implementations is publicly available.
 
 The disparity results from our implementation of ADCensus corresponding to Tsukuba and Venus images from Middlebury dataset, 
 Figure \ref{fig:midburyimgs}, is shown in Figure \ref{fig:midburydisps}, 
@@ -137,14 +137,14 @@ reasons, it will be explicitly mentioned in the description of the experiment.
 \end{figure}
 
 \subsection{ADCensusB Implementation} \label{subsec:adcB}
-As thoroughly described in the paper by Mei et al. \cite{mei11}, our implementation includes various cost estimation 
-at different steps of the algorithm that is done by separate functions in the code; as a result of each function call, 
-specific arrays of type \textit{float} corresponding to various costs are filled in and use by the subsequent functions in the algorithm.
+As thoroughly described in the paper by Mei et al. \cite{mei11}, our implementation includes various cost estimations
+at different steps of the algorithm that are computed by separate functions in the code; as a result of each function call, 
+specific arrays of type \textit{float} corresponding to various costs are filled in and used by the subsequent functions in the algorithm.
 The main cost estimations are as follows:
 \begin{enumerate}
-\item \textbf{AD-Census Cost:} The initial cost which consists of the average intensity of pixel values in the left and right images, 
-and the Census cost that is formulated
-based on the relative ordering of the pixels intensities within a specific window size \cite{hirseval09}, defined as $9\times7$ in the paper. This 
+\item \textbf{AD-Census Cost:} The initial matching cost which consists of the average intensity of pixel values in the left and right images, 
+and the census cost that is formulated
+based on the relative ordering of the pixel intensities within a specific window size \cite{hirseval09}, defined as a $9\times7$ window in the implementation. This 
 step is accomplished by three function calls in our implementation which are named \textit{costAD}, \textit{c\_census} and \textit{initCost}.
 \item \textbf{Aggregated Cost:} The aggregated matching cost of each pixel over a specified support region, which is defined as a cross-based 
 region in the paper and originates from the method proposed by Zhang et al. \cite{zha09}. This cost is computed by a function called \textit{aggregatecost}
@@ -155,12 +155,12 @@ multi-direction cost optimization originates from Hirshmuller's semi-global matc
 \end{enumerate}
 
 We have followed the approach in each of the referenced papers for the implementation of each cost estimation. As a result of the aforementioned steps
-a 3 dimensional cost volume with the size of $image\_width\times image\_height\times disparity\_range $ is generated as the final cost.
+a 3 dimensional cost volume with the size of $image\_width\times image\_height\times disparity\_range $ is generated as the final cost of type \textit{float}.
 After this step, disparity values are selected by following the ``winner takes all'' approach, that is, the disparity with the minimum cost is
 selected as the final disparity value of each pixel \cite{sch02}.
 After the main body of the method is implemented, the algorithm proceeds with a multi-step refining process. This step, which is one of the unique features
 of ADCensus method, attempts to detect the outliers, that is the wrong matches of pixels, and refines the disparity results based on the detected outliers.
-For the detection of outliers, we follow a common approach, which is also mentioned in the paper,  
+For the detection of outliers, we follow a common approach  
 known as left-right (L-R) consistency check. In this check, the disparity map for both
 the left and right images is first calculated. Then, if a pixel in the left image, based on its disparity value, corresponds to a pixel in the right image
 that does not map back to it, it will be labeled as an outlier \cite{mei11}. This description can be formulated as follows:
@@ -184,18 +184,18 @@ is chosen as the final disparity value of the outlier pixel.
 In this strategy, mismatch pixels are
 interpolated differently from occluded pixels. If a pixel is occluded, its disparity is taken from the background, that is, the minimum disparity of its neighboring
 pixels is selected as the disparity value of the outlier pixel. On the other hand, if the pixel is a mismatch point, the disparity of the pixel with the most
-similar color to the outlier pixel, is selected form the neighbors.
+similar color to the outlier pixel, is selected from the neighbors.
 \item \textit{discAdjust}, which first attempts to find the edges in the disparity map, that is, finding the depth discontinuities, and then, for each pixel on any
-detected edge, the disparity values of its both sides are sought, and then the disparity value of the pixel of interest is updated with the disparity of 
-any of adjacent pixels with the least matching cost.
+detected edges, the disparity values of its neighbors on the both sides of the edge are sought. Next, the disparity value of the pixel of interest is updated with the disparity of 
+any of the adjacent pixels with the least matching cost.
 \item \textit{subpxEnhance}, which applies a quadratic polynomial interpolation on the estimated disparity values to decrease the discretization 
 error and is followed by a $3\times3$ median filter for smoothing the results.  
 \end{enumerate}
-We have attempted to carefully follow and implement the strategies described in ADCensus solution and its referenced papers; however, the extent to which
-our implementation is close to the original proposed method is a matter out of hand, due to unavailability of any actual disparity image 
-to compare our results with or the source code of ADcensus.
-It should also be noted that we could not proceed with porting our implementation to GPU due to time constraint and 
-the little instruction about it in the published paper.
+We have attempted to carefully follow and implement the strategies described in ADCensus solution as explained in \cite{mei11}; however, measuring the extent to which
+our implementation is close to the proposed method is a matter out of hand, due to unavailability of any actual disparity image 
+to compare our results with or the original source code of ADcensus.
+It should also be noted that we could not proceed with porting our implementation to GPU due to time constraint and inadequate description
+about it in the published paper.
 
 \subsection{Masking}
 In order to build the masks in our system, the OpenCV Canny edge detector and Dilation are used.
@@ -277,7 +277,7 @@ and objects are located at different depth fields.
 The minimum disparity is set to $0$ for both algorithms. The maximum disparity for each image pair is selected based on the maximum value in their
 corresponding ground truth disparity. The only restriction to consider here is to choose a value greater than or equal to 
 the maximum disparity of the ground truth that is a multiple of 16, which is a constraint
-in the available implementation of the SGBM algorithm in OpenCV library.
+in the available implementation of the SGBM algorithm in the OpenCV library.
 
 \subsection{Evaluation Parameters}
 In our evaluation model, due to the large amount of data which grows as more images are added to the input selection, 
@@ -286,7 +286,7 @@ first, getting the average of the stereoacuity over specific
 depth ranges for each image and then calculating the average of the values from the previous step over all of the images. This operation finally results in a single plot
 that demonstrates the average stereoacuity within specific distances.
 The averaging operations at this step are implemented by building histogram over the resulting data. 
-In our experiments, we set the number of bins to $100$ and the total range is from 0 to 50. Therefore, the first averaging is conducted over distances of $0.5m$, the range
+In our experiments, we set the number of bins to $100$ and the total range is from $0$ to $50m$. Therefore, the first averaging is conducted over distances of $0.5m$, the range
 of each bin, in each image and the maximum distance over which the results are 
 examined is $50m$.
 
@@ -413,7 +413,7 @@ particular ages.
 
 The zero values in the plots imply that either there is no object within the corresponding range or the disparity value estimated by the algorithm
 is equal to the ground truth disparity; however, since the average of the results has been taken over all the images, it is more likely that 
-the zero values indicate that no object was within the particular range.
+the zero values indicate that no object was found within the particular range.
 
 As can be seen in the results, SGBM performs better in finding more accurate corresponding matches 
 compared to ADCensusB, as most of the error points fall below the standard stereoacuity lines. Moreover, the plots show that in both methods 
@@ -499,7 +499,7 @@ Algorithm & Age & valid\_gtDisp & valid\_genDisp \\ \hline
 
 Results in Figure \ref{fig:outlbar} show that in both cases, the masked regions and the whole image, SGBM has less outliers than ADCensusB, indicating that
 SGBM generates a more accurate disparity map as perceived by the human visual system.
-Another observation is that in SGBM, the average outliers over the masked regions are more than the outliers over the whole image, whereas in ADCensusB the
+Another observation from Figure \ref{fig:outlbar} is that in SGBM, the average outliers over the masked regions are more than the outliers over the whole image, whereas in ADCensusB the
 opposite behavior is observed. This implies that SGBM generates less accurate results
 near the depth discontinuities and occluded regions compared to the other areas in the image.
 On the other hand, ADCensusB generates more accurate disparity values near the depth edges compared to the other regions in the image and 
@@ -518,7 +518,7 @@ constructing a 3D model of the scene or preparing a model for 3D printing.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.95]{outlchart}
-\caption{Average outliers for SGBM and ADCensusB over the masked and the whole image; each bin color corresponds to different age group with specific stereoacuity threshold}
+\caption{Average outliers for SGBM and ADCensusB over the masked and the whole image; each bin color corresponds to different age groups with specific stereoacuity threshold}
 \label{fig:outlbar}
 \end{figure} 
 
@@ -632,14 +632,13 @@ The results for both cases, not refined and refined, over the masked regions and
 \caption{Refinement on disparity results}
 \label{fig:adcf3mrk}
 \end{subfigure}
-\caption{Average disparity error for the whole images; Blue circles show some sample values that have slightly changed as a result of refinement}
+\caption{Average disparity error by ADCensusB for the whole images; Blue circles show some sample values that have slightly changed as a result of refinement}
 \label{fig:adcFLRnoLR}
 \end{figure} 
 
 As can be observed in the plots, the evaluation results in our specific criteria 
 are not significantly different from the results of the algorithm when L-R check and refinement were triggered
-and only a few average values have slightly changed. We have marked a few of these values with a blue circle in Figures \ref{fig:adcmnoLR}, \ref{fig:adcm3mrk}, 
-\ref{fig:adcfnoLR}, and \ref{fig:adcf3mrk}. \newline
+and only a few average values have slightly changed. We have marked a few of these values with blue circles in Figures \ref{fig:adcMLRnoLR}, \ref{fig:adcFLRnoLR}. \newline
 We also estimated the average execution time, the average disparity error, and the average outliers in this experiment. The results for 
 the average error and outliers are shown in the tables below. \newline
 
@@ -916,10 +915,10 @@ of the post processing steps, also referred to as refinement steps, on the evalu
 does not significantly improve the accuracy of the results in the framework of an outdoor AR system; on the other hand, it causes a considerable increase in the execution
 time of the algorithm which is detrimental to a real-time and interactive AR system. The results of this evaluation indicates that the trade-off between the accuracy 
 of the results and the execution time of the algorithm, which normally exists in nearly all the stereo matching solutions, can be effectively analyzed 
-through our evaluation system. The conventional evaluation models lack this property which is of great importance to outdoor applications of AR.
+through our evaluation system. The other available evaluation models lack this property which is of great importance to outdoor applications of AR.
 
 \item \textbf{Hypothesis 5:} \emph{The ability to detect the difference in depth in stereo correspondence methods not only depends on their accuracy
-in estimation of the disparity values, but also is affected by other factors, such as the environmental noise, the resolution of the capturing device and its
+in estimation of the disparity values, but is also affected by other factors, such as the environmental noise, the resolution of the capturing device and its
 robustness to noise.}
 
 Our experimental results show that, regardless of the theoretical accuracy of the implemented algorithm in the estimation of depth values and its resolvability of depth changes,
