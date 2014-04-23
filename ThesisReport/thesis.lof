@@ -40,6 +40,6 @@
 \contentsline {figure}{\numberline {5.19}{\ignorespaces Average disparity error by ADCensusB for the whole images; Blue circles show some sample values that have slightly changed as a result of refinement\relax }}{80}
 \contentsline {figure}{\numberline {5.20}{\ignorespaces Average disparity error by ADCensusB in refined and unrefined cases for both masked and whole images; Different colored bins correspond to different age groups with specific stereoacuity thresholds\relax }}{82}
 \contentsline {figure}{\numberline {5.21}{\ignorespaces The scanline pixels difference process\relax }}{83}
-\contentsline {figure}{\numberline {5.22}{\ignorespaces Average detected pixels by SGBM and ADCensusB for specific stereoacuity thresholds marked on each curve\relax }}{87}
+\contentsline {figure}{\numberline {5.22}{\ignorespaces Average of detected pixels by SGBM and ADCensusB for specific stereoacuity thresholds marked on each curve for a group of 12 images\relax }}{87}
 \contentsline {figure}{\numberline {5.23}{\ignorespaces Resolution of image in angular disparity\relax }}{87}
 \addvspace {10\p@ }
