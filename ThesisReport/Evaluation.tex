@@ -93,8 +93,80 @@ The experiments designed to validate these hypotheses are explained in the follo
 
 \section{Experimental Environment and Settings}
 Experiments were carried out on a Linux machine with Intel Core(TM) i7 3.20GHz CPU. 
+We have evaluated two sample stereo matching algorithms in our system: First, Semi-global block matching, also known as SGBM, which is a modified version 
+of the semi-global matching by Hirschmuller \cite{hir08}. Second, our implementation of the solution proposed by Mei et al. \cite{mei11}, known as ADCensus. \newline
+SGBM is now integrated in the Open Source Computer Vision Library (OpenCV) \cite{sgbm} and, therefore, we have used this implementation
+in our evaluation.
+On the other hand, since no implementation of ADCensus was available, we have used our own implementation of it 
+which we refer to as ADCensusB.
 Although the GPU-based approach to both algorithms are proposed in the literature,
 we have used their CPU implementations in this research, since none of the GPU implementations is publicly available.
+Before moving forward with other experimental settings, we provide a brief description of our implementation of the ADCensus algorithm in the following section.
+
+\subsection{ADCensusB Implementation} \label{subsec:adcB}
+ADcensus proposed by Mei. et al. is one of the top ranked algorithms in the Middlebury benchmark \cite{mideval} which is proved to efficiently generate highly accurate disparity 
+results for Middlebury dataset. The main reason for its superior performance, in terms of both accuracy and processing time, is the combination of various computer vision techniques that can 
+be properly mapped to GPU for acceleration and result in accurate matches of pixels in stereo images \cite{mei11}.  Various cost functions are estimated through these techniques 
+which, in the end, are used for the assignment of the
+disparity values. As suggestd in the paper \cite{mei11}, our implementation of ADCensus also includes various cost estimations
+at different steps of the algorithm that are computed by separate functions in the code; as a result of each function call, 
+specific arrays of type \textit{float} corresponding to various costs are filled in and used by the subsequent functions in the algorithm.
+The main cost estimations are as follows:
+\begin{enumerate}
+\item \textbf{AD-Census Cost:} The initial matching cost which consists of the average intensity of pixel values in the left and right images, 
+and the census cost that is formulated
+based on the relative ordering of the pixel intensities within a specific window size \cite{hirseval09}, defined as a $9\times7$ window in the implementation. This 
+step is accomplished by three functions in our implementation which are named \textit{costAD()}, \textit{c\_census()} and \textit{initCost()}.
+\item \textbf{Aggregated Cost:} The aggregated matching cost of each pixel over a specified support region, which is defined as a cross-based 
+region in \cite{mei11} and originates from the method proposed by Zhang et al. \cite{zha09}. This cost is computed by a function called \textit{aggregatecost()}
+in our implementation
+\item \textbf{Path Cost:} The path cost that is estimated from the aggregated cost of each pixel by scanline optimization from different directions. The idea of
+multi-direction cost optimization originates from Hirshmuller's semi-global matching solution \cite{hir08}. This step is accomplished by a function called 
+\textit{scanline()} in our implementation.
+\end{enumerate}
+
+We have followed the approach in each of the referenced papers for the implementation of each cost estimation. As a result of the aforementioned steps
+a three-dimensional cost volume with the size of $image\_width\times image\_height\times disparity\_range $ is generated as the final cost of type \textit{float}.
+After this step, disparity values are selected by following the ``winner takes all'' approach, that is, the disparity with the minimum cost is
+selected as the final disparity value of each pixel \cite{sch02}.
+After the main body of the method is implemented, the algorithm proceeds with a multi-step refining process. This step, which is one of the unique features
+of ADCensus method, attempts to detect the outliers, that is the wrong matches of pixels, and refines the disparity results based on the detected outliers.
+For the detection of outliers, we follow a common approach  
+known as left-right (L-R) consistency check. In this check, the disparity map for both
+the left and right images is first calculated. Then, if a pixel in the left image, based on its disparity value, corresponds to a pixel in the right image
+that does not map back to it, it will be labeled as an outlier \cite{mei11}. This description can be formulated as follows:
+
+\begin{align}
+D_{L}(p) \neq D_{R}(p-(D_{L},0))
+\end{align}
+\noindent
+Where $D_{L}(p)$ is the disparity function for the left image and $D_{R}$ is the disparity function for the right image. \newline 
+In our implementation of ADCensus, we have the L-R check and its subsequent refinement steps triggered with a flag.
+Therefore, when the flag is not set, neither the check nor the refining steps are triggered in the algorithm.
+Following the proposed approach in the paper, we also have multiple steps of refinement in our implementation, which occurs through different function calls.
+These functions are as follows:
+\begin{enumerate}
+\item \textbf{\textit{findOutliers()}}, which tends to find the outliers by conducting the L-R check.
+\item \textbf{\textit{regionVoting()}}, which iteratively updates the disparity value of each outlier pixel 
+based on a histogram of its reliable neighboring pixel values in its cross-based support region; the disparity with the most votes in the neighboring region 
+is chosen as the final disparity value of the outlier pixel.
+\item \textbf{\textit{interpolate()}}, which follows an interpolation strategy to find the remaining outliers disparity value based on their 
+16 reliable neighboring pixels. 
+In this strategy, mismatch pixels are
+interpolated differently from occluded pixels. If a pixel is occluded, its disparity is taken from the background, that is, the minimum disparity of its neighboring
+pixels is selected as the disparity value of the outlier pixel. On the other hand, if the pixel is a mismatch point, the disparity of the pixel with the most
+similar color to the outlier pixel, is selected from the neighbors.
+\item \textbf{\textit{discAdjust()}}, which first attempts to find the edges in the disparity map, that is, finding the depth discontinuities, and then, for each pixel on any
+detected edges, the disparity values of its neighbors on the both sides of the edge are sought. Next, the disparity value of the pixel of interest is updated with the disparity of 
+any of the adjacent pixels with the least matching cost.
+\item \textbf{\textit{subpxEnhance()}}, which applies a quadratic polynomial interpolation on the estimated disparity values to decrease the discretization 
+error and is followed by a $3\times3$ median filter for smoothing the results.  
+\end{enumerate}
+We have attempted to carefully follow and implement the strategies described in ADCensus solution as explained in \cite{mei11}; however, measuring the extent to which
+our implementation is close to the proposed method is a matter out of hand, due to unavailability of any actual disparity image 
+to compare our results with or the original source code of ADcensus.
+It should also be noted that we could not proceed with porting our implementation to GPU due to time constraint and inadequate description
+about it in the published paper.
 
 The disparity results from our implementation of ADCensus corresponding to Tsukuba and Venus images from Middlebury dataset, 
 Figure \ref{fig:midburyimgs}, is shown in Figure \ref{fig:midburydisps}, 
@@ -118,9 +190,9 @@ reasons, it will be explicitly mentioned in the description of the experiment.
 
 \begin{figure}[H]
 \centering
-\subcaptionbox{Tsukuba disparity image by ADCensus}
+\subcaptionbox{Tsukuba}
 [.5\linewidth]{\includegraphics[scale=0.5]{adctsukuba}}%
-\subcaptionbox{Venus disparity image by ADCensus}
+\subcaptionbox{Venus}
 [.5\linewidth]{\includegraphics[scale=0.51]{adcvenus}}%
 \caption{Disparity images by ADCensus for Middlebury images in Figure \protect\ref{fig:midburyimgs}}
 \label{fig:adcmidbury}
@@ -128,77 +200,18 @@ reasons, it will be explicitly mentioned in the description of the experiment.
 
 \begin{figure}[H]
 \centering
-\subcaptionbox{Tsukuba disparity image by ADCensusB}
+\subcaptionbox{Tsukuba}
 [.5\linewidth]{\includegraphics[scale=0.5]{tsukubadisp}}%
-\subcaptionbox{Venus disparity image by ADCensusB}
+\subcaptionbox{Venus}
 [.5\linewidth]{\includegraphics[scale=0.51]{venusdisp}}%
 \caption{Disparity images by ADCensusB for Middlebury images in Figure \protect\ref{fig:midburyimgs}}
 \label{fig:midburydisps}
 \end{figure}
 
-\subsection{ADCensusB Implementation} \label{subsec:adcB}
-As thoroughly described in the paper by Mei et al. \cite{mei11}, our implementation includes various cost estimations
-at different steps of the algorithm that are computed by separate functions in the code; as a result of each function call, 
-specific arrays of type \textit{float} corresponding to various costs are filled in and used by the subsequent functions in the algorithm.
-The main cost estimations are as follows:
-\begin{enumerate}
-\item \textbf{AD-Census Cost:} The initial matching cost which consists of the average intensity of pixel values in the left and right images, 
-and the census cost that is formulated
-based on the relative ordering of the pixel intensities within a specific window size \cite{hirseval09}, defined as a $9\times7$ window in the implementation. This 
-step is accomplished by three function calls in our implementation which are named \textit{costAD}, \textit{c\_census} and \textit{initCost}.
-\item \textbf{Aggregated Cost:} The aggregated matching cost of each pixel over a specified support region, which is defined as a cross-based 
-region in the paper and originates from the method proposed by Zhang et al. \cite{zha09}. This cost is computed by a function called \textit{aggregatecost}
-in our implementation
-\item \textbf{Path Cost:} The path cost that is estimated from the aggregated cost of each pixel by scanline optimization from different directions. The idea of
-multi-direction cost optimization originates from Hirshmuller's semi-global matching solution \cite{hir08}. This step is accomplished by a function called 
-\textit{scanline} in the implementation.
-\end{enumerate}
-
-We have followed the approach in each of the referenced papers for the implementation of each cost estimation. As a result of the aforementioned steps
-a 3 dimensional cost volume with the size of $image\_width\times image\_height\times disparity\_range $ is generated as the final cost of type \textit{float}.
-After this step, disparity values are selected by following the ``winner takes all'' approach, that is, the disparity with the minimum cost is
-selected as the final disparity value of each pixel \cite{sch02}.
-After the main body of the method is implemented, the algorithm proceeds with a multi-step refining process. This step, which is one of the unique features
-of ADCensus method, attempts to detect the outliers, that is the wrong matches of pixels, and refines the disparity results based on the detected outliers.
-For the detection of outliers, we follow a common approach  
-known as left-right (L-R) consistency check. In this check, the disparity map for both
-the left and right images is first calculated. Then, if a pixel in the left image, based on its disparity value, corresponds to a pixel in the right image
-that does not map back to it, it will be labeled as an outlier \cite{mei11}. This description can be formulated as follows:
-
-\begin{align}
-D_{L}(p) \neq D_{R}(p-(D_{L},0))
-\end{align}
-\noindent
-Where $D_{L}(p)$ is the disparity function for the left image and $D_{R}$ is the disparity function for the right image. \newline 
-In our implementation of ADCensus, we have the L-R check and its subsequent refinement steps triggered with a flag.
-Therefore, when the flag is not set, neither the check nor the refining steps are triggered in the algorithm.
-Following the proposed approach in the paper, we also have multiple steps of refinement in our implementation, which occurs through different function calls.
-These functions are as follows:
-\begin{enumerate}
-\item \textit{findOutliers}, which tends to find the outliers by conducting the L-R check.
-\item \textit{regionVoting}, which iteratively updates the disparity value of each outlier pixel 
-based on a histogram of its reliable neighboring pixel values in its cross-based support region; the disparity with the most votes in the neighboring region 
-is chosen as the final disparity value of the outlier pixel.
-\item \textit{interpolate}, which follows an interpolation strategy to find the remaining outliers disparity value based on their 
-16 reliable neighboring pixels. 
-In this strategy, mismatch pixels are
-interpolated differently from occluded pixels. If a pixel is occluded, its disparity is taken from the background, that is, the minimum disparity of its neighboring
-pixels is selected as the disparity value of the outlier pixel. On the other hand, if the pixel is a mismatch point, the disparity of the pixel with the most
-similar color to the outlier pixel, is selected from the neighbors.
-\item \textit{discAdjust}, which first attempts to find the edges in the disparity map, that is, finding the depth discontinuities, and then, for each pixel on any
-detected edges, the disparity values of its neighbors on the both sides of the edge are sought. Next, the disparity value of the pixel of interest is updated with the disparity of 
-any of the adjacent pixels with the least matching cost.
-\item \textit{subpxEnhance}, which applies a quadratic polynomial interpolation on the estimated disparity values to decrease the discretization 
-error and is followed by a $3\times3$ median filter for smoothing the results.  
-\end{enumerate}
-We have attempted to carefully follow and implement the strategies described in ADCensus solution as explained in \cite{mei11}; however, measuring the extent to which
-our implementation is close to the proposed method is a matter out of hand, due to unavailability of any actual disparity image 
-to compare our results with or the original source code of ADcensus.
-It should also be noted that we could not proceed with porting our implementation to GPU due to time constraint and inadequate description
-about it in the published paper.
-
 \subsection{Masking}
-In order to build the masks in our system, the OpenCV Canny edge detector and Dilation are used.
+In order to test our hypothesis for the benefit of evaluating the disparity results in the areas of depth edges and their surroundings in AR applications, 
+we build the corresponding masks using
+the OpenCV Canny edge detector and Dilation.
 Canny have been used to detect the depth edges in the ground truth disparity map, and the dilation operation 
 for expanding the detected edge regions in the masking process. The extent to which the regions are expanded
 is determined by the number of iterations in the dilation operation. Table \ref{tab:candilparam} shows the parameters used in the Dilation
