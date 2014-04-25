@@ -36,8 +36,8 @@
 \contentsline {figure}{\numberline {5.15}{\ignorespaces Average disparity error over masked areas by SGBM\relax }}{72}
 \contentsline {figure}{\numberline {5.16}{\ignorespaces Average disparity error over the whole image by SGBM\relax }}{72}
 \contentsline {figure}{\numberline {5.17}{\ignorespaces Average outliers for SGBM and ADCensusB over the masked and the whole image; each bin color corresponds to different age groups with specific stereoacuity threshold\relax }}{76}
-\contentsline {figure}{\numberline {5.18}{\ignorespaces Average disparity error by ADCensusB for the masked images; Blue circles show some sample values that have slightly changed as a result of refinement\relax }}{80}
-\contentsline {figure}{\numberline {5.19}{\ignorespaces Average disparity error by ADCensusB for the whole images; Blue circles show some sample values that have slightly changed as a result of refinement\relax }}{81}
+\contentsline {figure}{\numberline {5.18}{\ignorespaces Average disparity error by ADCensusB for the masked images; blue circles show some sample values that have slightly changed as a result of refinement\relax }}{80}
+\contentsline {figure}{\numberline {5.19}{\ignorespaces Average disparity error by ADCensusB for the whole images; blue circles show some sample values that have slightly changed as a result of refinement\relax }}{81}
 \contentsline {figure}{\numberline {5.20}{\ignorespaces Average disparity error by ADCensusB in refined and unrefined cases for both masked and whole images; each bin color corresponds to different age groups with specific stereoacuity thresholds\relax }}{83}
 \contentsline {figure}{\numberline {5.21}{\ignorespaces The scanline pixels difference process\relax }}{84}
 \contentsline {figure}{\numberline {5.22}{\ignorespaces Average of detected pixels by SGBM and ADCensusB for specific stereoacuity thresholds marked on each curve for a group of 12 images; the vertical blue line shows the approximate threshold after which the average of detected pixels converge\relax }}{88}
