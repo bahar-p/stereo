@@ -583,7 +583,8 @@ Considering the requirements of having an interactive real-time AR system \cite{
 Although the current implementation of SGBM could be used when the real world scene remains stable for approximately one second, it can be safely concluded that
 none of these algorithms meet the requirements of a real-time interactive AR system.
 This suggests that GPU-based solutions are more suitable to achieve the processing speed required for the real-time 
-interactive applications of AR. In \cite{mei11}, it is stated that the GPU implementation of ADCensus brings $140\times$ speedup in the processing speed.
+interactive applications of AR. In \cite{mei11}, it is stated that the GPU implementation of ADCensus brings $140\times$ speedup in the processing speed; however,
+it should be noted that the amount of speedup depends on the particular hardware and system enviroment used.
 
 \subsection{Effect of Refinement}
 In this experiment, we studied the effect of the post processing steps, also referred to as the \textit{refinement steps}, 
@@ -856,6 +857,7 @@ more accurate depth results in the stereo algorithms
 and correctly detect the difference between depth values, that is, to obtain a lower 
 threshold of depth changes
 closer to the actual resolution of the implemented algorithm, using higher resolution devices and considering their robustness to noise are also essential.
+Based on the information provided in Chapter 3 about the average stereoacuity in the HVS, we can say that the lower bound resolution of a capturing device with focal length of $721$ pixels should be $\frac{1}{8}th$ of a pixel.
 In the end, we should note that the experimental results presented earlier in this chapter
 show that despite various types of error relevant to the capturing device, environmental noise, and the actual accuracy of the stereo correspondence algorithm
 in the estimation of disparity values, the effect of such errors on the results will still be imperceptible for most cases to the HVS in outdoor 
