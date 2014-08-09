@@ -11,7 +11,7 @@ the Middlebury and Kitti Stereo Evaluation.
 It should be noted that the stereo images we have used to conduct the experiments on stereo algorithms in our system,
 are selected from the Kitti Stereo Dataset.
 In contrary to the Middlebury dataset, the Kitti Stereo Project provides stereo images and ground truth disparity maps
-that are taken from outdoor scenes under real circumstances. These properties them more appropriate 
+that are taken from outdoor scenes under real circumstances. These properties make them more appropriate 
 for evaluating the performance of the algorithms in outdoor AR applications, thus better meeting the objectives of this study.
 We have selected fifty-two image pairs from the Kitti Stereo dataset based on different photometric and visual properties that are important
 in stereo vision and an AR application, as observed by the human visual system. Some 
@@ -580,7 +580,7 @@ within different regions of the images.
 In another experiment, we estimated the average execution time for both algorithms. Results show that the average execution time over all the images 
 for SGBM and ADCensusB are $0.54$ and $272.82$ seconds, respectively.
 Considering the requirements of having an interactive real-time AR system \cite{hertz00}, the processing time of each frame should not be more than 0.06-0.08 seconds.
-Although the current implementation of SGBM could be used when the real world scene remains stable for approximately one second, it can be safely concluded that
+Therefore, we need to get at least $6.75x$ and $3410.25x$ speedup for each algorithm, respectively. Although the current implementation of SGBM could be used when the real world scene remains stable for approximately one second, it can be safely concluded that
 none of these algorithms meet the requirements of a real-time interactive AR system.
 This suggests that GPU-based solutions are more suitable to achieve the processing speed required for the real-time 
 interactive applications of AR. In \cite{mei11}, it is stated that the GPU implementation of ADCensus brings $140\times$ speedup in the processing speed; however,
