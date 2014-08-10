@@ -14,7 +14,7 @@ images. This process is called {\it Stereo Matching} or {\it Stereo Corresponden
 which in fact leads to the construction of a
 3D model of a scene from two or multiple views by finding corresponding pixels and, therefore, their spatial displacement within various views of the same scene \cite{sze11}.
 
-Corresponding pixels in stereo images are the ones that represent the same point in the real
+Theoretically, corresponding pixels in stereo images are the ones that represent the same point in the real
 world. As it will be seen shortly in more detail, the amount of horizontal motion of such pixels
 in stereo pairs, which is referred to as {\it disparity}, is inversely proportional to the
 distance from the observer, i.e., depth; however,  estimation of the exact depth of the points requires some
@@ -65,7 +65,7 @@ It is now apparent that in order to find the correspondence of a particular poin
 the corresponding epipolar line, must first be sought. 
 The projection from a point to its corresponding epipolar line can be obtained through certain transformations in space; normally a rotation and translation, Figure \ref{fig:rectify}.
 For further geometrical calculations, these transformations can be represented
-with a matrix that is only dependant on the camera's properties, not the scene \cite{hart2000}.
+with a matrix that is only dependent on the camera's properties, not the scene \cite{hart2000}.
 However, dealing with these transformations while looking for the corresponding points, can increase the complexity of stereo matching algorithms to certain levels \cite{sze11}; therefore, 
 in order to avoid this issue, many stereo matching approaches are proposed based on the assumption that image pairs are first warped \cite{sze11}.
 This process is known as {\it image rectification} which is basically achieved by first having the cameras rotated in a way that their optical axis, 

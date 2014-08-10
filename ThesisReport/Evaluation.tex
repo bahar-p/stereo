@@ -108,7 +108,7 @@ ADcensus proposed by Mei. et al. is one of the top ranked algorithms in the Midd
 results for Middlebury dataset. The main reason for its superior performance, in terms of both accuracy and processing time, is the combination of various computer vision techniques that can 
 be properly mapped to GPU for acceleration and result in accurate matches of pixels in stereo images \cite{mei11}.  Various cost functions are estimated through these techniques 
 which, in the end, are used for finding the corresponding
-disparity values. As suggestd in the paper \cite{mei11}, our implementation of ADCensus also includes various cost estimations
+disparity values. As suggested in the paper \cite{mei11}, our implementation of ADCensus also includes various cost estimations
 at different steps of the algorithm that are computed by separate functions in the code; as a result of each function call, 
 specific arrays of type \textit{float} corresponding to various costs are filled in and used by the subsequent functions in the algorithm.
 The main cost estimations are as follows:
@@ -391,7 +391,7 @@ do not demonstrate any consistent pattern. When we investigated the cause of thi
 the results of both algorithms, there are some disparity values which differ from the ground truth 
 by a considerable amount and yet have not been invalidated by the
 algorithm. We assume that these types of outliers can be easily removed from the set by applying a post processing filter, or 
-they will be eventually culled out by the 3D renderer in the AR system. Based on this assumption, we fliter them out in our evaluation.
+they will be eventually culled out by the 3D renderer in the AR system. Based on this assumption, we filter them out in our evaluation.
 %Therefore, we have added another filtering condition to our evaluation module is similar to the approach employed by the
 %Kiiti and Middlebury stereo evaluation. 
 In order to filter out the disparity values which largely differ from the ground truth disparity, we have integrated another 
@@ -580,11 +580,11 @@ within different regions of the images.
 In another experiment, we estimated the average execution time for both algorithms. Results show that the average execution time over all the images 
 for SGBM and ADCensusB are $0.54$ and $272.82$ seconds, respectively.
 Considering the requirements of having an interactive real-time AR system \cite{hertz00}, the processing time of each frame should not be more than 0.06-0.08 seconds.
-Therefore, we need to get at least $6.75x$ and $3410.25x$ speedup for each algorithm, respectively. Although the current implementation of SGBM could be used when the real world scene remains stable for approximately one second, it can be safely concluded that
+Therefore, we need to get at least $6.75\times$ and $3410.25\times$ speedup for each algorithm, respectively. Although the current implementation of SGBM could be used when the real world scene remains stable for approximately one second, it can be safely concluded that
 none of these algorithms meet the requirements of a real-time interactive AR system.
 This suggests that GPU-based solutions are more suitable to achieve the processing speed required for the real-time 
 interactive applications of AR. In \cite{mei11}, it is stated that the GPU implementation of ADCensus brings $140\times$ speedup in the processing speed; however,
-it should be noted that the amount of speedup depends on the particular hardware and system enviroment used.
+it should be noted that the amount of speedup depends on the particular hardware and system environment used.
 
 \subsection{Effect of Refinement}
 In this experiment, we studied the effect of the post processing steps, also referred to as the \textit{refinement steps}, 
