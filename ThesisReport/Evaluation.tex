@@ -582,9 +582,12 @@ for SGBM and ADCensusB are $0.54$ and $272.82$ seconds, respectively.
 Considering the requirements of having an interactive real-time AR system \cite{hertz00}, the processing time of each frame should not be more than 0.06-0.08 seconds.
 Therefore, we need to get at least $6.75\times$ and $3410.25\times$ speedup for each algorithm, respectively. Although the current implementation of SGBM could be used when the real world scene remains stable for approximately one second, it can be safely concluded that
 none of these algorithms meet the requirements of a real-time interactive AR system.
-This suggests that GPU-based solutions are more suitable to achieve the processing speed required for the real-time 
-interactive applications of AR. In \cite{mei11}, it is stated that the GPU implementation of ADCensus brings $140\times$ speedup in the processing speed; however,
-it should be noted that the amount of speedup depends on the particular hardware and system environment used.
+This suggests that GPU-based solutions along with using more advanced hardware are more suitable to achieve the processing speed required for the real-time 
+interactive applications of AR. In \cite{mei11}, it is stated that for the Tsukuba image of Middlebury dataset, the CPU implementation takes 2.5 seconds whereas 
+the GPU implementation takes only 0.016 seconds. Their evaluations on a PC with Core2Duo 2.20GHz CPU and NVIDIA GeForce GTX 480 graphics card 
+show that their GPU implementation of ADCensus brings $140\times$ speedup in the processing speed.
+%, which can even improve to about 5 times faster with
+%the more modern hardware and graphics cards. 
 
 \subsection{Effect of Refinement}
 In this experiment, we studied the effect of the post processing steps, also referred to as the \textit{refinement steps}, 
