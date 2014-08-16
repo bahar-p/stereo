@@ -127,7 +127,7 @@ and right images according to disparity {\it d} is also as follows:
 {P}^{"}_{x} &= {P}^{'}_{x}+d(x,y) \\
 {P}^{"}_{y} &= {P}^{'}_{y}
 \end{align}
-where $d(x,y)$ is the disparity function dependent on variables x and y that can be chosen beased on the coordinate of the pixel from which the displacement is
+where $d(x,y)$ is the disparity function dependent on variables x and y that can be chosen based on the coordinate of the pixel from which the displacement is
 calculated.
 This function, in fact, indicates the transformation between the corresponding pixels in the stereo images and if stereo images are aligned, then the function
 only indicates horizontal displacement of corresponding pixels between the two images. 
@@ -265,8 +265,8 @@ Therefore, each filter can modify the input signal differently based on its corr
 The Gaussian filter is a filter commonly used for attenuating higher frequencies in an image and filtering out the noise \cite{wells86}. 
 Since edges in an image may be oriented along any arbitrary direction, 
 applying a filter which is biased towards a particular direction in filtering out the noise, would not be a prudent decision. Instead, a better choice would be choosing a filter 
-with a symmetric 2D kernel function such as the Gaussian filter, which is normally used in most edge detection algorithms as a pre-processing step. 
-An isotropic, i.e. circularly symmetric, the Gaussian kernel has the following form \cite{sze11}:
+with a circularly symmetric, i.e. isotropic, 2D kernel function such as the Gaussian filter, which is normally used in most edge detection algorithms as a pre-processing step. 
+The Gaussian kernel has the following form \cite{sze11}:
 
 \begin{equation}
 G(x,y)=\frac{1}{2\pi \sigma ^{2}} e^{-\frac{x^{2}+y^{2}}{2\sigma^{2}}}
