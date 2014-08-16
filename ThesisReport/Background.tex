@@ -15,7 +15,7 @@ which in fact leads to the construction of a
 3D model of a scene from two or multiple views by finding corresponding pixels and, therefore, their spatial displacement within various views of the same scene \cite{sze11}.
 
 Corresponding pixels in stereo images are the ones that are originated from the same point in the real
-world. In most cases, the corresponding pixel are represented by the same color emanating from the same point. However, some pixels may not have a corresponding 
+world. In most cases, the corresponding pixels are represented by the same color emanating from the same point. However, some pixels may not have a corresponding 
 pixel in the other image for a number of reasons. For example, pixels may have become occluded or may have appeared as the result of the change in the position
 of the viewpoint. 
 As it will be seen shortly in more detail, the amount of horizontal motion of such pixels
@@ -127,7 +127,11 @@ and right images according to disparity {\it d} is also as follows:
 {P}^{"}_{x} &= {P}^{'}_{x}+d(x,y) \\
 {P}^{"}_{y} &= {P}^{'}_{y}
 \end{align}
-where $d(x,y)$ is the disparity function which, as mentioned earlier, indicates the transformation between the corresponding pixels in the stereo images. Therefore, based on the aforementioned formulas, the depth of points in 3D space can be easily calculated after finding the corresponding pixels in multiple views and consequently their
+where $d(x,y)$ is the disparity function dependent on variables x and y that can be chosen beased on the coordinate of the pixel from which the displacement is
+calculated.
+This function, in fact, indicates the transformation between the corresponding pixels in the stereo images and if stereo images are aligned, then the function
+only indicates horizontal displacement of corresponding pixels between the two images. 
+Therefore, based on the aforementioned formulas, the depth of points in 3D space can be easily calculated after finding the corresponding pixels in multiple views and consequently their
 disparities \cite{bol87,oku93,sch02}.
 
 \section{Stereo Correspondence Algorithms}
@@ -261,7 +265,7 @@ Therefore, each filter can modify the input signal differently based on its corr
 The Gaussian filter is a filter commonly used for attenuating higher frequencies in an image and filtering out the noise \cite{wells86}. 
 Since edges in an image may be oriented along any arbitrary direction, 
 applying a filter which is biased towards a particular direction in filtering out the noise, would not be a prudent decision. Instead, a better choice would be choosing a filter 
-with a symmetric 2D kernel function such as Gaussian filter, which is normally used in most edge detection algorithms as a pre-processing step. 
+with a symmetric 2D kernel function such as the Gaussian filter, which is normally used in most edge detection algorithms as a pre-processing step. 
 An isotropic, i.e. circularly symmetric, the Gaussian kernel has the following form \cite{sze11}:
 
 \begin{equation}
